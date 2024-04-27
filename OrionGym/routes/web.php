@@ -33,6 +33,8 @@ Route::get('/alunos/{aluno}/edit', [AlunoController::class, 'edit'])->name('alun
 Route::put('/alunos/{aluno}', [AlunoController::class, 'update'])->name('alunos.update');
 Route::delete('/alunos/{aluno}', [AlunoController::class, 'destroy'])->name('alunos.destroy');
 
+Route::get('/alunos/search', [AlunoController::class, 'search'])->name('alunos.search');
+
 // Rotas para Professores
 Route::get('/professores', [ProfessorController::class, 'index'])->name('professores.index');
 Route::get('/professores/create', [ProfessorController::class, 'create'])->name('professores.create');
