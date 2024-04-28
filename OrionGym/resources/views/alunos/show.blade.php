@@ -63,6 +63,9 @@
 
                     <div class="form-group mb-0">
                         <div class="col-md-6 offset-md-10">
+                            <!-- Botão para Editar -->
+                            <a href="{{ route('alunos.edit', $aluno->id) }}" class="btn btn-primary mr-2">Editar</a>
+
                             <!-- Botão para Excluir com Confirmação -->
                             <form action="{{ route('alunos.destroy', $aluno->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este aluno?')">
                                 @csrf

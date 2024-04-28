@@ -95,6 +95,10 @@
             const body = document.body;
             body.classList.toggle('sidebar-collapse');
         }
+
+    
+
+        
     </script>
 </body>
 

@@ -6,7 +6,7 @@ use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\PacoteController;
 use App\Http\Controllers\FuncionarioController;
-
+use App\Http\Controllers\CompraController;
 
 Route::get('/alunos', [AlunoController::class, 'index']);
 Route::get('/', function () {
@@ -62,3 +62,11 @@ Route::get('/funcionarios/{funcionario}/edit', [FuncionarioController::class, 'e
 Route::put('/funcionarios/{funcionario}', [FuncionarioController::class, 'update'])->name('funcionarios.update');
 Route::delete('/funcionarios/{funcionario}', [FuncionarioController::class, 'destroy'])->name('funcionarios.destroy');
 
+
+// Rotas para Compras
+
+Route::get('/compra/create', [CompraController::class, 'create'])->name('compra.create');
+
+Route::post('/compra', [CompraController::class, 'store'])->name('compra.store');
+
+Route::get('compra/historico', [CompraController::class, 'index'])->name('compra.historico');
