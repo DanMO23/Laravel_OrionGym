@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\PacoteController;
 use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\CompraController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/alunos', [AlunoController::class, 'index']);
 Route::get('/', function () {
@@ -70,3 +71,7 @@ Route::get('/compra/create', [CompraController::class, 'create'])->name('compra.
 Route::post('/compra', [CompraController::class, 'store'])->name('compra.store');
 
 Route::get('compra/historico', [CompraController::class, 'index'])->name('compra.historico');
+
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
