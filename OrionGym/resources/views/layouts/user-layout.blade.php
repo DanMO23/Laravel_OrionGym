@@ -114,13 +114,13 @@
                 <li class="nav-item">
                     <a href="{{ route('pacotes.create') }}" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>Criar Novo</p>
+                        <p>Novo Pacote</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('pacotes.index') }}" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>Exibir Lista</p>
+                        <p>Exibir Pacotes</p>
                     </a>
                 </li>
             </ul>
