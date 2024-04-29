@@ -36,7 +36,14 @@ class CompraController extends Controller
     public function index()
     {
         $compras = AlunoPacote::all();
-        
+
         return view('compra.historico', compact('compras'));
     }
+
+    public function historico()
+    {
+        $compras = AlunoPacote::all(); // Recupera todas as compras do banco de dados
+        return view('compras.historico', compact('compras'));
+    }
+
 }

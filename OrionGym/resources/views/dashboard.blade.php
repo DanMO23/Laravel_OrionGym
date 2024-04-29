@@ -34,7 +34,7 @@
                         <i class="ion ion-person-add"></i>
                     </div>
                     
-                    <a href="{{route('alunos.index')}}" class="small-box-footer">Mais Informações<i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('alunos.index') }}" class="small-box-footer">Mais Informações <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -42,14 +42,14 @@
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>R${{ $valorFinanceiro}}</h3>
+                        <h3>R${{ $valorFinanceiro }}</h3>
 
                         <p>Faturamento Total</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-stats-bars"></i>
                     </div>
-                    <a href="{{route('compra.historico')}}" class="small-box-footer">Mais Informações<i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('compra.historico') }}" class="small-box-footer">Mais Informações <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -64,7 +64,7 @@
                     <div class="icon">
                         <i class="ion ion-person"></i>
                     </div>
-                    <a href="{{route('funcionarios.index')}}" class="small-box-footer">Mais Informações<i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('funcionarios.index') }}" class="small-box-footer">Mais Informações <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -90,6 +90,8 @@
             <!-- Left col -->
             <section class="col-lg-7 connectedSortable">
                 <!-- Custom tabs (Charts with tabs)-->
+
+                
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">

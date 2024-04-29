@@ -10,9 +10,10 @@ use App\Http\Controllers\CompraController;
 use App\Http\Controllers\DashboardController;
 
 Route::get('/alunos', [AlunoController::class, 'index']);
-Route::get('/', function () {
-    return view('welcome');
-});
+
+
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+
 
 Route::middleware([
     'auth:sanctum',
@@ -38,6 +39,7 @@ Route::get('/alunos/search', [AlunoController::class, 'search'])->name('alunos.s
 
 // Rotas para Professores
 Route::get('/professores', [ProfessorController::class, 'index'])->name('professores.index');
+
 Route::get('/professores/create', [ProfessorController::class, 'create'])->name('professores.create');
 Route::post('/professores', [ProfessorController::class, 'store'])->name('professores.store');
 Route::get('/professores/{professor}', [ProfessorController::class, 'show'])->name('professores.show');
@@ -69,6 +71,7 @@ Route::delete('/funcionarios/{funcionario}', [FuncionarioController::class, 'des
 Route::get('/compra/create', [CompraController::class, 'create'])->name('compra.create');
 
 Route::post('/compra', [CompraController::class, 'store'])->name('compra.store');
+Route::get('/compras/historicoChart', 'CompraController@historicoCompras')->name('compras.historicoChart');
 
 Route::get('compra/historico', [CompraController::class, 'index'])->name('compra.historico');
 

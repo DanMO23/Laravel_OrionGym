@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">Detalhes do Funcionário</div>
 
@@ -29,11 +29,15 @@
                     </div>
 
                     @if($funcionario->foto)
-                    <div class="form-group">
+                    <div class="form-group offset-md-4">
                         <label for="foto">Foto:</label><br>
                         <img src="{{ asset('uploads/' . $funcionario->foto) }}" alt="Foto do Funcionário" style="max-width: 300px;">
                     </div>
                     @endif
+
+                    <div class="col-md-6">
+                        <a href="{{ route('funcionarios.index') }}" class="btn btn-primary">Voltar</a>
+                    </div>
                 </div>
             </div>
         </div>

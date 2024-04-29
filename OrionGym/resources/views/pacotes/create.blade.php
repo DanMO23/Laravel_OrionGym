@@ -1,6 +1,6 @@
 @extends('layouts.user-layout')
 
-@section('title', 'Criar Novo Pacote')
+@section('header-user', 'Criar Novo Pacote')
 
 @section('content')
 <div class="container">

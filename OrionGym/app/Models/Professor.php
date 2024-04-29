@@ -5,5 +5,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Professor extends Model
 {
-    protected $fillable = ['nome_completo', 'email', 'sexo', 'cargo', 'foto'];
+    protected $table = 'professores';
+    protected $fillable = ['nome_completo', 'email', 'telefone', 'endereco', 'sexo', 'cargo', 'foto'];
 }

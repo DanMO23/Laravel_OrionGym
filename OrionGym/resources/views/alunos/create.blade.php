@@ -1,6 +1,6 @@
 @extends('layouts.create')
 
-@section('title', 'Criar Aluno')
+@section('header-user', 'Criar Aluno')
 
 @section('content')
 <div class="container">
