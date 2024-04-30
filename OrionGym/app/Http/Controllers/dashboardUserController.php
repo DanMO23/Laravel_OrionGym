@@ -5,7 +5,7 @@ use App\Models\Funcionario;
 use Illuminate\Http\Request;
 use App\Models\Aluno;
 
-class DashboardController extends Controller
+class dashboardUserController extends Controller
 {
     public function index()
     {
@@ -28,6 +28,6 @@ class DashboardController extends Controller
             // Adicione mais meses conforme necessário
         ];
 
-        return view('dashboard', compact('totalMembros', 'valorFinanceiro', 'totalFuncionarios', 'dadosGrafico'));
+        return view('dashboardUser', compact('totalMembros', 'valorFinanceiro', 'totalFuncionarios', 'dadosGrafico'));
     }
 }

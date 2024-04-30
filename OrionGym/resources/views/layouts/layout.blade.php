@@ -33,7 +33,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
 
-            <a href="" class="brand-link">
+            <a href="{{ route('dashboardUser.index') }}" class="brand-link">
                 <span class="brand-text font-weight-light">Academia Orion</span>
                 <img src="/img/logo.png" alt="OrionGym Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
             </a>

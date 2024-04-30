@@ -7,12 +7,12 @@ use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\PacoteController;
 use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\CompraController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\dashboardUserController;
 
 Route::get('/alunos', [AlunoController::class, 'index']);
 
 
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('/', [dashboardUserController::class, 'index'])->name('dashboardUser.index');
 
 
 Route::middleware([
@@ -20,9 +20,34 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboardUser', function () {
+        return view('dashboardUser');
+    })->name('dashboardUser');
+    
+});
+
+//Rotas protegidas que requerem autenticação
+Route::middleware('auth')->group(function () {
+    // dashboardUser
+    Route::get('/dashboardUser', [dashboardUserController::class, 'index'])->name('dashboardUser.index');
+
+    // Rotas para Alunos
+    Route::resource('alunos', AlunoController::class);
+
+    // Rotas para Professores
+    Route::resource('professores', ProfessorController::class);
+
+    // Rotas para Pacotes
+    Route::resource('pacotes', PacoteController::class);
+
+    // Rotas para Funcionários
+    Route::resource('funcionarios', FuncionarioController::class);
+
+    // Rotas para Compras
+    Route::get('/compra/create', [CompraController::class, 'create'])->name('compra.create');
+    Route::post('/compra', [CompraController::class, 'store'])->name('compra.store');
+    Route::get('/compras/historicoChart', 'CompraController@historicoCompras')->name('compras.historicoChart');
+    Route::get('compra/historico', [CompraController::class, 'index'])->name('compra.historico');
 });
 
 
@@ -76,5 +101,14 @@ Route::get('/compras/historicoChart', 'CompraController@historicoCompras')->name
 Route::get('compra/historico', [CompraController::class, 'index'])->name('compra.historico');
 
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('/dashboardUser', [dashboardUserController::class, 'index'])->name('dashboardUser.index');
+Route::get('/dashboardUser', [dashboardUserController::class, 'index'])->name('dashboardUser.index');
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
