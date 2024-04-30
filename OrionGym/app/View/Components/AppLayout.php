@@ -1,3 +1,5 @@
+arrume este codigo
+
 <?php
 
 namespace App\View\Components;

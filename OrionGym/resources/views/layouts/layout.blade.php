@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OrionGym</title>
+    <title>Academia Orion</title>
     <link rel="icon" href="/img/logo.png" type="image/x-icon">
 
     <!-- AdminLTE3 CSS -->
@@ -17,40 +16,39 @@
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <!-- Navbar -->
-<nav class="main-header navbar navbar-expand navbar-white navbar-light">
-    <!-- Left navbar links -->
-    <ul class="navbar-nav">
-        <li class="nav-item">
-            <button class="sidebar-toggle" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
-        </li>
-    </ul>
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <button class="sidebar-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </li>
+            </ul>
 
-    <!-- Right navbar links -->
-    <ul class="navbar-nav ml-auto">
-        <!-- User Icon -->
-        <li class="nav-item dropdown">
-            <a class="nav-link" data-toggle="dropdown" href="#">
-    
-            <i id="logoutIcon" class="fas fa-sign-out-alt"></i>
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <!-- User Icon -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
 
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <!-- Logout Link -->
-                <a href="{{ route('logout') }}" class="dropdown-item"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    Logout
-                </a>
-                <!-- Logout Form -->
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                    @csrf
-                </form>
-            </div>
-        </li>
-    </ul>
-</nav>
-<!-- /.navbar -->
+                        <i id="logoutIcon" class="fas fa-sign-out-alt"></i>
+
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <!-- Logout Link -->
+                        <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+                        <!-- Logout Form -->
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
 
 
 
@@ -124,31 +122,31 @@
     </script>
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Selecione o ícone de logout pelo ID
-        const logoutIcon = document.getElementById('logoutIcon');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selecione o ícone de logout pelo ID
+            const logoutIcon = document.getElementById('logoutIcon');
 
-        // Adicione um ouvinte de evento de clique ao ícone
-        logoutIcon.addEventListener('click', function() {
-            // Crie um formulário oculto
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = "{{ route('logout') }}";
+            // Adicione um ouvinte de evento de clique ao ícone
+            logoutIcon.addEventListener('click', function() {
+                // Crie um formulário oculto
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{{ route('logout') }}";
 
-            // Adicione um campo de token CSRF ao formulário
-            const token = document.createElement('input');
-            token.type = 'hidden';
-            token.name = '_token';
-            token.value = "{{ csrf_token() }}";
-            form.appendChild(token);
+                // Adicione um campo de token CSRF ao formulário
+                const token = document.createElement('input');
+                token.type = 'hidden';
+                token.name = '_token';
+                token.value = "{{ csrf_token() }}";
+                form.appendChild(token);
 
-            // Adicione o formulário à página e envie-o
-            document.body.appendChild(form);
-            form.submit();
+                // Adicione o formulário à página e envie-o
+                document.body.appendChild(form);
+                form.submit();
+            });
         });
-    });
-</script>
+    </script>
 
 
 

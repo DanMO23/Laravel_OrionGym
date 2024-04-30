@@ -1,5 +1,4 @@
 
-
 <x-guest-layout>
     <x-authentication-card>
     <x-slot name="logo">
@@ -42,6 +41,16 @@
                     {{ __('Log in') }}
                 </x-button>
             </div>
+            
         </form>
+        
     </x-authentication-card>
+    <div>
+        <footer class="main-footer">
+            <div class="float-right d-none d-sm-block">
+                <b>Version</b> 1.0.5
+            </div>
+            <strong>© 2024 <a href="https://github.com/DanMO23">Danilo Matos - Developer</a>.</strong> Todos os direitos reservados.
+        </footer>
+    </div>
 </x-guest-layout>
