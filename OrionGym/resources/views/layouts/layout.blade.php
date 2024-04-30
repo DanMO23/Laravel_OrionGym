@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -15,19 +16,43 @@
 
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-
         <!-- Navbar -->
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <!-- Left navbar links -->
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <button class="sidebar-toggle" onclick="toggleSidebar()">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </li>
-            </ul>
-        </nav>
-        <!-- /.navbar -->
+<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </li>
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+        <!-- User Icon -->
+        <li class="nav-item dropdown">
+            <a class="nav-link" data-toggle="dropdown" href="#">
+    
+            <i id="logoutIcon" class="fas fa-sign-out-alt"></i>
+
+            </a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                <!-- Logout Link -->
+                <a href="{{ route('logout') }}" class="dropdown-item"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    Logout
+                </a>
+                <!-- Logout Form -->
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
+            </div>
+        </li>
+    </ul>
+</nav>
+<!-- /.navbar -->
+
+
 
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -75,7 +100,7 @@
         <!-- Footer -->
         <footer class="main-footer">
             <div class="float-right d-none d-sm-block">
-                <b>Version</b> 1.0.3
+                <b>Version</b> 1.0.5
             </div>
             <strong>© 2024 <a href="https://github.com/DanMO23">Danilo Matos - Developer</a>.</strong> Todos os direitos reservados.
         </footer>
@@ -89,7 +114,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- AdminLTE3 JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/adminlte.min.js"></script>
-    
+
 
     <script>
         function toggleSidebar() {
@@ -98,6 +123,32 @@
         }
     </script>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Selecione o ícone de logout pelo ID
+        const logoutIcon = document.getElementById('logoutIcon');
+
+        // Adicione um ouvinte de evento de clique ao ícone
+        logoutIcon.addEventListener('click', function() {
+            // Crie um formulário oculto
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{{ route('logout') }}";
+
+            // Adicione um campo de token CSRF ao formulário
+            const token = document.createElement('input');
+            token.type = 'hidden';
+            token.name = '_token';
+            token.value = "{{ csrf_token() }}";
+            form.appendChild(token);
+
+            // Adicione o formulário à página e envie-o
+            document.body.appendChild(form);
+            form.submit();
+        });
+    });
+</script>
 
 
 

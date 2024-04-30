@@ -31,6 +31,8 @@ Route::middleware('auth')->group(function () {
 
 
 
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
     // Rotas para Alunos
     Route::get('/alunos', [AlunoController::class, 'index'])->name('alunos.index');
     Route::get('/alunos/create', [AlunoController::class, 'create'])->name('alunos.create');
