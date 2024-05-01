@@ -10,8 +10,7 @@ use App\Http\Controllers\PacoteController;
 use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\dashboardUserController;
-
-
+use App\Http\Controllers\HomeController;
 
 
 Route::middleware([
@@ -24,11 +23,9 @@ Route::middleware([
     })->name('dashboardUser.index');
 });
 
-
 //Rotas protegidas que requerem autenticação
 Route::middleware('auth')->group(function () {
-    Route::get('/', [dashboardUserController::class, 'index'])->name('dashboardUser.index');
-
+    
 
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -41,19 +38,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/alunos/{aluno}/edit', [AlunoController::class, 'edit'])->name('alunos.edit');
     Route::put('/alunos/{aluno}', [AlunoController::class, 'update'])->name('alunos.update');
     Route::delete('/alunos/{aluno}', [AlunoController::class, 'destroy'])->name('alunos.destroy');
-
+    
     Route::get('/alunos/search', [AlunoController::class, 'search'])->name('alunos.search');
-
+    
     // Rotas para Professores
     Route::get('/professores', [ProfessorController::class, 'index'])->name('professores.index');
-
+    
     Route::get('/professores/create', [ProfessorController::class, 'create'])->name('professores.create');
     Route::post('/professores', [ProfessorController::class, 'store'])->name('professores.store');
     Route::get('/professores/{professor}', [ProfessorController::class, 'show'])->name('professores.show');
     Route::get('/professores/{professor}/edit', [ProfessorController::class, 'edit'])->name('professores.edit');
     Route::put('/professores/{professor}', [ProfessorController::class, 'update'])->name('professores.update');
     Route::delete('/professores/{professor}', [ProfessorController::class, 'destroy'])->name('professores.destroy');
-
+    
     // Rotas para Pacotes
     Route::get('/pacotes', [PacoteController::class, 'index'])->name('pacotes.index');
     Route::get('/pacotes/create', [PacoteController::class, 'create'])->name('pacotes.create');
@@ -72,18 +69,19 @@ Route::middleware('auth')->group(function () {
     Route::put('/funcionarios/{funcionario}', [FuncionarioController::class, 'update'])->name('funcionarios.update');
     Route::delete('/funcionarios/{funcionario}', [FuncionarioController::class, 'destroy'])->name('funcionarios.destroy');
 
-
+    
     // Rotas para Compras
-
+    
     Route::get('/compra/create', [CompraController::class, 'create'])->name('compra.create');
-
+    
     Route::post('/compra', [CompraController::class, 'store'])->name('compra.store');
     Route::get('/compras/historicoChart', 'CompraController@historicoCompras')->name('compras.historicoChart');
-
+    
     Route::get('compra/historico', [CompraController::class, 'index'])->name('compra.historico');
-
-
+    
+    
     Route::get('/dashboardUser', [dashboardUserController::class, 'index'])->name('dashboardUser.index');
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboardUser', [dashboardUserController::class, 'index'])->name('dashboardUser.index');
 });
 
@@ -91,4 +89,25 @@ Route::middleware('auth')->group(function () {
 // Rotas de autenticação
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
+
+//Rotas do Home
+
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
+
+Route::get('/about-us', [HomeController::class, 'aboutUs'])->name('home.about-us');
+Route::get('/blog-details', [HomeController::class, 'blogDetails'])->name('home.blog-details');
+Route::get('/blog', [HomeController::class, 'blog'])->name('home.blog');
+Route::get('/bmi', [HomeController::class, 'bmi'])->name('home.bmi');
+Route::get('/class-details', [HomeController::class, 'classDetails'])->name('home.class-details');
+Route::get('/class-timetable', [HomeController::class, 'classTimetable'])->name('home.class-timetable');
+Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact');
+Route::get('/gallery', [HomeController::class, 'gallery'])->name('home.gallery');
+Route::get('/main', [HomeController::class, 'main'])->name('home.main');
+Route::get('/services', [HomeController::class, 'services'])->name('home.services');
+Route::get('/team', [HomeController::class, 'team'])->name('home.team');
+
+
+
+

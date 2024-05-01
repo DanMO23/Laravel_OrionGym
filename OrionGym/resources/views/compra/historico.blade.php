@@ -16,6 +16,7 @@
                     <th>Aluno</th>
                     <th>Pacote</th>
                     <th>Descrição</th>
+                    <th>Validade do Pacote</th>
                     <th>Data da Compra</th>
                 </tr>
             </thead>
@@ -25,6 +26,7 @@
                     <td>{{ $compra->aluno->nome }}</td>
                     <td>{{ $compra->pacote->nome_pacote }}</td>
                     <td>{{ $compra->descricao_pagamento }}</td>
+                    <td>{{ $compra->pacote->validade }} dias restantes</td>
                     <td>{{ $compra->created_at->format('d/m/Y H:i:s') }}</td>
                 </tr>
                 @endforeach
