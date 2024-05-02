@@ -22,7 +22,7 @@ Route::middleware([
         return view('dashboardUser');
     })->name('dashboardUser.index');
 });
-
+Route::get('/dashboard', [dashboardUserController::class, 'index'])->name('dashboard');
 //Rotas protegidas que requerem autenticação
 Route::middleware('auth')->group(function () {
     
@@ -83,6 +83,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboardUser', [dashboardUserController::class, 'index'])->name('dashboardUser.index');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboardUser', [dashboardUserController::class, 'index'])->name('dashboardUser.index');
+
+
+
+
+    //Rotas para trancar
+   // Rotas para trancar a matrícula do aluno
+   Route::post('/alunos/{aluno}/trancar', [AlunoController::class, 'trancarMatricula'])->name('alunos.trancarMatricula');
+   Route::post('/alunos/{id}/confirmar-trancamento', [AlunoController::class, 'confirmarTrancamento'])->name('alunos.confirmarTrancamento');
+
+Route::post('/alunos/destrancar/{id}', [AlunoController::class, 'destrancarMatricula'])->name('alunos.destrancarMatricula');
 });
 
 
@@ -109,5 +119,6 @@ Route::get('/services', [HomeController::class, 'services'])->name('home.service
 Route::get('/team', [HomeController::class, 'team'])->name('home.team');
 
 
+route::get('/instagram', [HomeController::class, 'instagram'])->name('home.instagram');
 
 

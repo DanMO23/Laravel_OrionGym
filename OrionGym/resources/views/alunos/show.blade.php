@@ -58,11 +58,16 @@
                             <p>{{ $aluno->endereco }}</p>
                         </div>
                     </div>
-
+                    <div class="form-group row">
+                        <label for="bairro" class="col-md-4 col-form-label text-md-right">Status da Matricula:</label>
+                        <div class="col-md-6">
+                            <p>{{ $aluno->matricula_ativa }}</p>
+                        </div>
+                    <br>
                     <!-- Adicione mais campos conforme necessário -->
 
-                    <div class="form-group mb-0">
-                        <div class="col-md-6 offset-md-10">
+                    <div class="form-group">
+                        <div class="col-md-6 offset-md-4">
                             <!-- Botão para Editar -->
                             <a href="{{ route('alunos.edit', $aluno->id) }}" class="btn btn-primary mr-2">Editar</a>
 

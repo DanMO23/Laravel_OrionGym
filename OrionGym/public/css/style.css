@@ -2765,12 +2765,15 @@ ol {
 	.nav-menu ul li {
 		margin-right: 60px;
 	}
+	
+	
 }
 
 @media only screen and (min-width: 1200px) {
 	.container {
 		max-width: 1170px;
 	}
+	
 }
 
 /* Medium Device = 1200px */
@@ -2792,11 +2795,21 @@ ol {
 	.blog-item .bi-pic img {
 		height: auto;
 	}
+	.header-section img{
+		display: none;
+	
+
+	}
 }
 
 /* Tablet Device = 768px */
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
+	.header-section img{
+		scale: 0.5;
+	
+		
+	}
 	.about-text {
 		height: auto;
 		padding: 120px 70px 60px 70px;
@@ -2997,8 +3010,8 @@ ol {
 
 	.header-section img{
 		
-		scale:0;
-	
+		
+		display: none;
 	}
 	.offcanvas-menu-overlay {
 		position: fixed;
@@ -3129,6 +3142,8 @@ ol {
 	.nav-menu {
 		display: none;
 	}
+
+	
 	.top-option {
 		display: none;
 	}

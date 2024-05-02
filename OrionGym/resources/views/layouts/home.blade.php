@@ -67,7 +67,7 @@
             <a href="#"><i class="fa fa-facebook"></i></a>
             <a href="#"><i class="fa fa-twitter"></i></a>
             <a href="#"><i class="fa fa-youtube-play"></i></a>
-            <a href="#"><i class="fa fa-instagram"></i></a>
+            <a href="https://www.instagram.com/academia.orion_"  target="_blank"><i class="fa fa-instagram"></i></a>
         </div>
     </div>
     <!-- Offcanvas Menu Section End -->
@@ -96,7 +96,7 @@
                             <li><a href="{{route('home.bmi')}}">Calculo IMC</a>
                                  </li>
                             <li><a href="{{route('home.contact')}}">Contato</a></li>
-                            <a href="{{ route('login') }}" class="primary-btn">Login</a>
+                            <a href="{{ route('login') }}" class="primary-btn" style="color:black ">Login</a>
                         </ul>
                     </nav>
                 </div>
@@ -109,7 +109,7 @@
                             <a href="#"><i class="fa fa-facebook"></i></a>
                             <a href="#"><i class="fa fa-twitter"></i></a>
                             <a href="#"><i class="fa fa-youtube-play"></i></a>
-                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="https://www.instagram.com/academia.orion_" target="_blank" class="fa fa-instagram"></i></a>
                         </div>
                     </div>
                 </div>
@@ -129,64 +129,45 @@
     <section class="footer-section">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4">
+                <div class="col-lg-6">
                     <div class="fs-about">
 
                         <div class="fa-logo ">
                             <a href="{{route('home.index')}}"><img src="img/AcademiaOrionAmarela.png" alt="" style="width: 50%; height: auto;"></a>
                         </div>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                            labore dolore magna aliqua endisse ultrices gravida lorem.</p>
+                        <p>Academia Orion - o melhor espaço para se treinar em Betim</p>
                         <div class="fa-social">
                             <a href="#"><i class="fa fa-facebook"></i></a>
                             <a href="#"><i class="fa fa-twitter"></i></a>
                             <a href="#"><i class="fa fa-youtube-play"></i></a>
-                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="https://www.instagram.com/academia.orion_"  target="_blank"><i class="fa fa-instagram"></i></a>
                             <a href="#"><i class="fa  fa-envelope-o"></i></a>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-6">
                     <div class="fs-widget">
-                        <h4>Useful links</h4>
+                        <h4>Links Uteis</h4>
                         <ul>
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Blog</a></li>
-                            <li><a href="#">Classes</a></li>
-                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Nosso espaço</a></li>
+                            <li><a href="#">Nosso Time</a></li>
+                            
+                            <li><a href="#">Contato</a></li>
                         </ul>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-3 col-sm-6">
+                <div class="col-lg-2 col-md-5 col-sm-6">
                     <div class="fs-widget">
-                        <h4>Support</h4>
+                        <h4>Suporte</h4>
                         <ul>
                             <li><a href="#">Login</a></li>
-                            <li><a href="#">My account</a></li>
-                            <li><a href="#">Subscribe</a></li>
-                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Minha conta</a></li>
+                            
+                            <li><a href="#">Contato</a></li>
                         </ul>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="fs-widget">
-                        <h4>Tips & Guides</h4>
-                        <div class="fw-recent">
-                            <h6><a href="#">Physical fitness may help prevent depression, anxiety</a></h6>
-                            <ul>
-                                <li>3 min read</li>
-                                <li>20 Comment</li>
-                            </ul>
-                        </div>
-                        <div class="fw-recent">
-                            <h6><a href="#">Fitness: The best exercise to lose belly fat and tone up...</a></h6>
-                            <ul>
-                                <li>3 min read</li>
-                                <li>20 Comment</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
             <div class="row">
                 <div class="col-lg-12 text-center">

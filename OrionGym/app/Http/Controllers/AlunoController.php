@@ -19,7 +19,7 @@ class AlunoController extends Controller
         } else {
             $alunos = Aluno::all();
         }
-        
+
         return view('alunos.index', ['alunos' => $alunos, 'search' => $search]);
     }
 
@@ -50,6 +50,8 @@ class AlunoController extends Controller
             'cpf' => $request->cpf,
             'sexo' => $request->sexo,
             'endereco' => $request->endereco,
+            'dias_restantes' => 0,
+            'matricula_ativa' => 'inativa',
         ]);
 
         // Redirecionar de volta para a página de listagem de alunos
@@ -61,11 +63,11 @@ class AlunoController extends Controller
 
         // Buscar alunos no banco de dados com base no termo de busca
         $alunos = Aluno::where('nome', 'LIKE', "%{$searchTerm}%")
-                       ->orWhere('email', 'LIKE', "%{$searchTerm}%")
-                       ->orWhere('telefone', 'LIKE', "%{$searchTerm}%")
-                       ->orWhere('cpf', 'LIKE', "%{$searchTerm}%")
-                       ->orWhere('endereco', 'LIKE', "%{$searchTerm}%")
-                       ->get();
+            ->orWhere('email', 'LIKE', "%{$searchTerm}%")
+            ->orWhere('telefone', 'LIKE', "%{$searchTerm}%")
+            ->orWhere('cpf', 'LIKE', "%{$searchTerm}%")
+            ->orWhere('endereco', 'LIKE', "%{$searchTerm}%")
+            ->get();
 
         // Retornar a view com os resultados da busca
         return view('alunos.index', ['alunos' => $alunos, 'searchTerm' => $searchTerm]);
@@ -73,6 +75,25 @@ class AlunoController extends Controller
     public function show(Aluno $aluno)
     {
         return view('alunos.show', compact('aluno'));
+    }
+
+    public function trancarMatricula(Aluno $aluno)
+    {
+        $aluno = Aluno::findOrFail($aluno->id);
+        $aluno->matricula_ativa = 'trancado';
+        $aluno->save();
+
+        return redirect()->route('alunos.index')->with('success', 'Matrícula do aluno trancada com sucesso.');
+    }
+    
+
+    public function destrancarMatricula($id)
+    {
+        $aluno = Aluno::findOrFail($id);
+        $aluno->matricula_ativa = 'ativa';
+        $aluno->save();
+
+        return redirect()->route('alunos.index')->with('success', 'Matrícula do aluno destrancada com sucesso.');
     }
 
     public function edit(Aluno $aluno)
