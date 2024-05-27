@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Funcionario;
+use Spatie\Permission\Traits\HasRoles;
 
 class FuncionarioController extends Controller
 {
@@ -16,11 +17,23 @@ class FuncionarioController extends Controller
 
     public function create()
     {
-        return view('funcionarios.create');
+        // Verifica se o usuário tem o papel 'admin'
+        if (auth()->user()->hasRole('admin')) {
+            return view('funcionarios.create');
+        }
+
+        // Redireciona para uma página de erro ou retorna um erro 403 se o usuário não for admin
+        abort(403, 'Unauthorized action.');
     }
 
     public function store(Request $request)
     {
+        // Verifica se o usuário tem o papel 'admin'
+        if (!auth()->user()->hasRole('admin')) {
+            // Redireciona para uma página de erro ou retorna um erro 403 se o usuário não for admin
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'nome' => 'required',
             'email' => 'required|email',
@@ -34,7 +47,6 @@ class FuncionarioController extends Controller
         $funcionario->cargo = $request->cargo;
         $funcionario->sexo = $request->sexo;
         $funcionario->endereco = $request->endereco;
-        
 
         // Upload da foto, se fornecida
         if ($request->hasFile('foto')) {

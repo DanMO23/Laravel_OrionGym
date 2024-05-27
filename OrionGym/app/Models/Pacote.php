@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Spatie\Permission\Traits\HasRoles;
 class Pacote extends Model
 {
     protected $fillable = ['nome_pacote', 'valor', 'validade'];

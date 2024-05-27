@@ -15,11 +15,23 @@ class PacoteController extends Controller
 
     public function create()
     {
-        return view('pacotes.create');
+        // Verifica se o usuário tem o papel 'admin'
+        if (auth()->user()->hasRole('admin')) {
+            return view('pacotes.create');
+        }
+
+        // Redireciona para uma página de erro ou retorna um erro 403 se o usuário não for admin
+        abort(403, 'Unauthorized action.');
     }
+
 
     public function store(Request $request)
     {
+
+        if (!auth()->user()->hasRole('admin')) {
+            // Redireciona para uma página de erro ou retorna um erro 403 se o usuário não for admin
+            abort(403, 'Unauthorized action.');
+        }
         // Validação dos dados do formulário
         $request->validate([
             'nome' => 'required|string|max:255',
@@ -48,11 +60,21 @@ class PacoteController extends Controller
 
     public function edit(Pacote $pacote)
     {
-        return view('pacotes.edit', compact('pacote'));
+        // Verifica se o usuário tem o papel 'admin'
+        if (auth()->user()->hasRole('admin')) {
+            return view('pacotes.edit', compact('pacote'));
+        }
+
+        // Redireciona para uma página de erro ou retorna um erro 403 se o usuário não for admin
+        abort(403, 'Unauthorized action.');
     }
 
     public function update(Request $request, Pacote $pacote)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            // Redireciona para uma página de erro ou retorna um erro 403 se o usuário não for admin
+            abort(403, 'Unauthorized action.');
+        }
         // Validação dos dados do formulário
         $request->validate([
             'nome' => 'required|string|max:255',

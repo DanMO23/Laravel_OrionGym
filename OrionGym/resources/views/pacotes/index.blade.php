@@ -16,12 +16,14 @@
                 <div class="card-header">Lista de Pacotes</div>
 
                 <div class="card-body">
+                    @if (auth->user()->hasRole('admin'))
                     <div class="row">
+
                         <div class="col-md-12">
                             <a href="{{ route('pacotes.create') }}" class="btn btn-primary mb-3">Criar Novo Pacote</a>
                         </div>
                     </div>
-
+                    @endif
                     @if ($pacotes->isEmpty())
                     <p>Nenhum pacote encontrado.</p>
                     @else

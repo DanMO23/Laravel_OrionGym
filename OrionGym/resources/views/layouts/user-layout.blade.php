@@ -61,12 +61,14 @@
                 </p>
             </a>
             <ul class="nav nav-treeview">
+                @if(auth()->user()->hasRole('admin'))
                 <li class="nav-item">
                     <a href="{{ route('funcionarios.create') }}" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Novo Funcionario</p>
                     </a>
                 </li>
+                @endif
                 <li class="nav-item">
                     <a href="{{ route('funcionarios.index') }}" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
@@ -87,10 +89,12 @@
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
+                    @if(auth()->user()->hasRole('admin'))
                     <a href="{{ route('professores.create') }}" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Adicionar Professor</p>
                     </a>
+                    @endif
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('professores.index') }}" class="nav-link">
@@ -112,10 +116,12 @@
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
+                    @if(auth()->user()->hasRole('admin'))
                     <a href="{{ route('pacotes.create') }}" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Novo Pacote</p>
                     </a>
+                    @endif
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('pacotes.index') }}" class="nav-link">

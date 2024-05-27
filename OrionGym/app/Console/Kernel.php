@@ -9,6 +9,9 @@ class Kernel extends ConsoleKernel
 {
     protected $commands = [
         Commands\CreateUser::class, // Adicione o nome completo do comando aqui
+        Commands\CreateRoles::class, // Adicione o nome completo do comando aqui
+        Commands\CreateAdmin::class,
+        Commands\UpdatePackageDaysRemaining::class,
     ];
 
     // app\Console\Kernel.php
@@ -25,4 +28,6 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+
+    
 }
