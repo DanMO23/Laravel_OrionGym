@@ -96,6 +96,8 @@ Route::post('/login', [LoginController::class, 'login']);
 
 
 
+Route::head('/home', [HomeController::class, 'index'])->name('home.index');
+
 //Rotas do Home
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');

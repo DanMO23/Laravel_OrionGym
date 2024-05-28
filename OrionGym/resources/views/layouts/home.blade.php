@@ -44,22 +44,12 @@
             <ul>
 
                 <li><a href="{{ route('home.index') }}">Home</a></li>
-                <li><a href="{{ route('home.about-us') }}">Abt Usaa</a></li>
-                <li><a href="{{ route('home.class-details') }}">Classes</a></li>
-                <li><a href="{{ route('home.services') }}">Services</a></li>
-                <li><a href="{{ route('home.team') }}">Our Team</a></li>
-                <li><a href="#">Pages</a>
-                    <ul class="dropdown">
-                        <li><a href="{{ route('home.about-us') }}">About us</a></li>
-                        <li><a href="{{ route('home.class-timetable') }}">Classes timetable</a></li>
-                        <li><a href="{{route('home.bmi')}}">Bmi calculate</a></li>
-                        <li><a href="{{route('home.team')}}">Our team</a></li>
-                        <li><a href="{{route('home.gallery')}}">Gallery</a></li>
-                        <li><a href="./blog.html">Our blog</a></li>
-
-                    </ul>
-                </li>
-                <li><a href="{{route('home.contact')}}">Contact</a></li>
+                <li><a href="{{ route('home.services') }}">Nosso Espaço</a></li>
+                <li><a href="{{ route('home.team') }}">Nosso Time</a></li>
+                <li><a href="{{ route('home.bmi') }}">Calculo IMC</a></li>
+                
+                
+                <li><a href="{{route('home.contact')}}">Contato</a></li>
             </ul>
         </nav>
         <div id="mobile-menu-wrap"></div>

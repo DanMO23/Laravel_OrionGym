@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academia Orion</title>
-    <link rel="icon" href="/img/logo copy.png" type="image/x-icon">
+    <link rel="icon" href="/img/logo.png" type="image/x-icon">
 
     <!-- AdminLTE3 CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/css/adminlte.min.css">

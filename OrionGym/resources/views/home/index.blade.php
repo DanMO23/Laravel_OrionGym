@@ -213,7 +213,7 @@
             <div class="col-md-4">
                 <div class="gt-text email">
                     <i class="fa fa-envelope"></i>
-                    <p>ademiaorion583@gmail.com</p>
+                    <p>contato@academiaorion.com.br</p>
                 </div>
             </div>
         </div>

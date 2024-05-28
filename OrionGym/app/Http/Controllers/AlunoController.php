@@ -33,12 +33,27 @@ class AlunoController extends Controller
         // Validar os dados do formulário
         $request->validate([
             'nome' => 'required|string|max:255',
-            'email' => 'required|email|unique:alunos',
+            'email' => 'required|email|unique:alunos,email',
             'telefone' => 'required|string|max:20',
             'data_nascimento' => 'required|date',
-            'cpf' => 'required|string|max:14|unique:alunos',
+            'cpf' => 'required|string|max:14|unique:alunos,cpf',
             'sexo' => 'required|in:M,F',
             'endereco' => 'required|string|max:255',
+        ], [
+            'nome.required' => 'O campo nome é obrigatório.',
+            'email.required' => 'O campo email é obrigatório.',
+            'email.email' => 'Por favor, forneça um endereço de email válido.',
+            'email.unique' => 'Este email já está em uso.',
+            'telefone.required' => 'O campo telefone é obrigatório.',
+            'data_nascimento.required' => 'O campo data de nascimento é obrigatório.',
+            'data_nascimento.date' => 'Por favor, forneça uma data de nascimento válida.',
+            'cpf.required' => 'O campo CPF é obrigatório.',
+            'cpf.max' => 'O CPF não pode ter mais de 14 caracteres.',
+            'cpf.unique' => 'Este CPF já está em uso.',
+            'sexo.required' => 'O campo sexo é obrigatório.',
+            'sexo.in' => 'Por favor, selecione um valor válido para o campo sexo.',
+            'endereco.required' => 'O campo endereço é obrigatório.',
+            'endereco.max' => 'O endereço não pode ter mais de 255 caracteres.',
         ]);
 
         // Criar um novo aluno com os dados fornecidos
