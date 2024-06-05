@@ -50,6 +50,14 @@
                 </li>
             </ul>
         </li>
+        
+        <!-- Pré-inscrições -->
+        <li class="nav-item">
+            <a href="{{ route('pre-registrations.index') }}" class="nav-link">
+                <i class="nav-icon fas fa-user-plus"></i>
+                <p>Pré-inscrições</p>
+            </a>
+        </li>
 
         <!-- Funcionarios -->
         <li class="nav-item has-treeview">
@@ -131,7 +139,8 @@
                 </li>
             </ul>
         </li>
-    
+        
+        
     
         <a href="{{ route('compra.create') }}" class="btn btn-block btn-outline-success">
             <i class="fas fa-plus-circle mr-2"></i>Nova Compra

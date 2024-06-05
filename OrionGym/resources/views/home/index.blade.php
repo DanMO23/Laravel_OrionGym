@@ -93,7 +93,43 @@
     </div>
 </section>
 <!-- Banner Section End -->
+<!-- Form Section Begin -->
+<section class="form-section spad preReg" style="">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="section-title">
+                    <h2>Faça agora sua Pré-Inscrição</h2>
+                    <p>Preencha o formulário abaixo para ficar por dentro das nossas novidades e ofertas exclusivas.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <form action="{{ route('subscribe') }}" method="POST" class="subscription-form">
+                    @csrf
+                    <div class="form-group">
+                        <input type="text" name="name" class="form-control" placeholder="Seu Nome" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" class="form-control" placeholder="Seu Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="tel" class="form-control" placeholder="Seu Telefone" required>
+                    </div>
+                    <button type="submit" class="primary-btn btn-normal">Inscrever-se</button>
+                </form>
+                @if(session('success'))
+                    <div class="alert alert-success mt-3">
+                        {{ session('success') }}
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</section>
 
+<!-- Form Section End -->
 
 <!-- Gallery Section Begin -->
 <div class="gallery-section">

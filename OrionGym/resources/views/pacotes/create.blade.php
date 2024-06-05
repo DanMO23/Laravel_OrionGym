@@ -29,7 +29,7 @@
                         <div class="form-group row">
                             <label for="valor" class="col-md-4 col-form-label text-md-right">Valor do Pacote:</label>
                             <div class="col-md-6">
-                                <input id="valor" type="number" class="form-control @error('valor') is-invalid @enderror" name="valor" value="{{ old('valor') }}" required autocomplete="valor">
+                                <input id="valor" type="number" step="0.01" class="form-control @error('valor') is-invalid @enderror" name="valor" value="{{ old('valor') }}" required autocomplete="valor">
 
                                 @error('valor')
                                     <span class="invalid-feedback" role="alert">

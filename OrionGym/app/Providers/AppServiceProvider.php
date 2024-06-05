@@ -1,23 +1,19 @@
 <?php
-
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Services\CatracaService;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
+    public function register()
     {
-        //
+        $this->app->singleton(CatracaService::class, function ($app) {
+            return new CatracaService(env('CATRACA_HOST'), env('CATRACA_PORT'));
+        });
     }
 
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
+    public function boot()
     {
         //
     }

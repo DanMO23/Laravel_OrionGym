@@ -35,7 +35,7 @@ class UpdatePackageDaysRemaining extends Command
             // Verificar se o pacote está ativo
             $alunoPacote->decrementDaysRemaining();
         }
-
+        \Log::info('A tarefa diária foi executada à meia-noite');
         $this->info('Dias dos pacotes decrementados com sucesso!');
     }
 }

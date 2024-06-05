@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\PreRegistrationController;
+
+use App\Http\Controllers\CatracaController;
 use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\Auth\LoginController;
@@ -83,6 +86,9 @@ use App\Http\Controllers\HomeController;
         Route::post('/alunos/{id}/confirmar-trancamento', [AlunoController::class, 'confirmarTrancamento'])->name('alunos.confirmarTrancamento');
 
         Route::post('/alunos/destrancar/{id}', [AlunoController::class, 'destrancarMatricula'])->name('alunos.destrancarMatricula');
+
+Route::get('/pre-registrations', [PreRegistrationController::class, 'index'])->name('pre-registrations.index');
+
     });
 
 
@@ -96,7 +102,7 @@ Route::post('/login', [LoginController::class, 'login']);
 
 
 
-Route::head('/home', [HomeController::class, 'index'])->name('home.index');
+Route::get('/home', [HomeController::class, 'index'])->name('home.index');
 
 //Rotas do Home
 
@@ -116,3 +122,18 @@ Route::get('/team', [HomeController::class, 'team'])->name('home.team');
 
 
 route::get('/instagram', [HomeController::class, 'instagram'])->name('home.instagram');
+
+
+//Rotas da Catraca
+
+Route::post('/catraca/abrir', [CatracaController::class, 'abrirCatraca']);
+Route::get('/catraca/logs', [CatracaController::class, 'consultarLogs']);
+
+
+
+Route::get('/catraca', [CatracaController::class, 'index'])->name('catraca.index');
+
+Route::post('/catraca/abrir', [CatracaController::class, 'abrirCatraca']);
+
+
+Route::post('/subscribe', [PreRegistrationController::class, 'store'])->name('subscribe');

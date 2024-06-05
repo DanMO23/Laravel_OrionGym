@@ -35,7 +35,9 @@ class PacoteController extends Controller
         // Validação dos dados do formulário
         $request->validate([
             'nome' => 'required|string|max:255',
+            'valor' => 'required|',
             'valor' => 'required|numeric',
+            
             'validade' => 'required|integer|min:1',
         ]);
 
