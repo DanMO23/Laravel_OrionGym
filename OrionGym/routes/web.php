@@ -77,6 +77,9 @@ use App\Http\Controllers\HomeController;
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
         Route::get('/dashboardUser', [dashboardUserController::class, 'index'])->name('dashboardUser.index');
 
+        Route::get('/compras/{compra}/edit', [CompraController::class, 'edit'])->name('compras.edit');
+    Route::put('/compras/{compra}', [CompraController::class, 'update'])->name('compra.update');
+    Route::delete('/compras/{id}', [CompraController::class, 'destroy'])->name('compras.destroy');
 
 
 
@@ -88,6 +91,7 @@ use App\Http\Controllers\HomeController;
         Route::post('/alunos/destrancar/{id}', [AlunoController::class, 'destrancarMatricula'])->name('alunos.destrancarMatricula');
 
 Route::get('/pre-registrations', [PreRegistrationController::class, 'index'])->name('pre-registrations.index');
+
 
     });
 

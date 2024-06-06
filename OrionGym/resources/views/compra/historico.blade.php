@@ -18,6 +18,7 @@
                     <th>Descrição</th>
                     <th>Validade do Pacote</th>
                     <th>Data da Compra</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,6 +29,14 @@
                     <td>{{ $compra->descricao_pagamento }}</td>
                     <td>{{ $compra->pacote->validade }} dias restantes</td>
                     <td>{{ $compra->created_at->format('d/m/Y H:i:s') }}</td>
+                    <td>
+                                            <a href="{{ route('compras.edit', $compra->id) }}" class="btn btn-primary btn-sm">Editar</a>
+                                            <form action="{{ route('compras.destroy', $compra->id) }}" method="POST" style="display:inline-block;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja deletar esta compra?')">Deletar</button>
+                                            </form>
+                                        </td>
                 </tr>
                 @endforeach
             </tbody>

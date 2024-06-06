@@ -2,7 +2,15 @@
 
 namespace App\Providers;
 
+use App\Events\CompraAtualizada;
+use App\Events\CompraDeletada;
+use App\Events\CompraExcluida;
+use App\Events\NovaCompra;
+use App\Listeners\AjustarDiasPlano;
+use App\Listeners\AtualizarDiasRestantes;
+use App\Listeners\SubstrairDiasAluno;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use App\Listeners\SubstrairDiasPlano;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -12,9 +20,14 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        // Aqui você pode registrar seus eventos e ouvintes
-        'App\Events\NovaCompra' => [
-            'App\Listeners\AtualizarDiasRestantes',
+        NovaCompra::class => [
+            AtualizarDiasRestantes::class,
+        ],
+        CompraAtualizada::class => [
+            AjustarDiasPlano::class,
+        ],
+        CompraExcluida::class => [
+            SubstrairDiasAluno::class,
         ],
     ];
 

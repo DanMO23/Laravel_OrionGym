@@ -15,11 +15,11 @@ class AlunoPacote extends Model
 
     public function aluno()
     {
-        return $this->belongsTo(Aluno::class);
+        return $this->belongsTo(Aluno::class, 'aluno_id');
     }
 
     public function pacote()
     {
-        return $this->belongsTo(Pacote::class);
+        return $this->belongsTo(Pacote::class, 'pacote_id');
     }
 }
