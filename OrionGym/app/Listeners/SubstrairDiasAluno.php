@@ -25,6 +25,12 @@ class SubstrairDiasAluno
         
         // Subtrair os dias do plano do aluno
         $aluno->dias_restantes -= $pacote->validade;
+       
+        if ($compra->dias_restantes == 0 && $compra->matricula_ativa == 'ativa') {
+                $compra->handlePackageDaysRemaining();
+                
+               
+            }
         
         // Salvar a atualização
         $aluno->save();

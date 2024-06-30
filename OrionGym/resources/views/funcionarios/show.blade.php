@@ -38,6 +38,15 @@
                     <div class="col-md-6">
                         <a href="{{ route('funcionarios.index') }}" class="btn btn-primary">Voltar</a>
                     </div>
+
+                    <!-- Formulário para deletar funcionário -->
+                    <div class="col-md-6 mt-3">
+                        <form action="{{ route('funcionarios.destroy', $funcionario->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja deletar este funcionário?')">Deletar</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

@@ -78,9 +78,17 @@ class FuncionarioController extends Controller
         return redirect()->route('funcionarios.index');
     }
 
-    public function destroy(Funcionario $funcionario)
+    public function destroy($id)
     {
+        $funcionario = Funcionario::findOrFail($id);
+
+        // Se o funcionário tiver uma foto, remova-a do servidor
+        if ($funcionario->foto && file_exists(public_path('uploads/' . $funcionario->foto))) {
+            unlink(public_path('uploads/' . $funcionario->foto));
+        }
+
         $funcionario->delete();
-        return redirect()->route('funcionarios.index');
+
+        return redirect()->route('funcionarios.index')->with('success', 'Funcionário deletado com sucesso!');
     }
 }

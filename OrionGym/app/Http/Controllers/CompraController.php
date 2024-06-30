@@ -118,12 +118,15 @@ class CompraController extends Controller
     {
         // Recuperar a compra a ser excluída
         $compra = AlunoPacote::findOrFail($id);
-
+        $aluno = Aluno::find($compra->aluno_id);
+        
         // Disparar o evento de exclusão da compra
         event(new CompraExcluida($compra));
-
+        
         // Excluir a compra
         $compra->delete();
-        return redirect()->route('compra.historico')->with('success', 'AlunoPacote deletado com sucesso.');
+       
+
+        return redirect()->route('compra.historico')->with('success', 'Compra deletado com sucesso.');
     }
 }
