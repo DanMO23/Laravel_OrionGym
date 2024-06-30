@@ -34,6 +34,12 @@ class UpdatePackageDaysRemaining extends Command
         foreach ($alunosAnalisados as $alunoPacote) {
             // Verificar se o pacote está ativo
             $alunoPacote->decrementDaysRemaining();
+
+            if ($alunoPacote->dias_restantes == 0 && $alunoPacote->matricula_ativa == 'ativa') {
+                $alunoPacote->handlePackageDaysRemaining();
+               
+            }
+
         }
         \Log::info('A tarefa diária foi executada à meia-noite');
         $this->info('Dias dos pacotes decrementados com sucesso!');

@@ -93,7 +93,9 @@ use App\Http\Controllers\HomeController;
 Route::get('/pre-registrations', [PreRegistrationController::class, 'index'])->name('pre-registrations.index');
 
 Route::delete('/pre-registrations/{pre_registration}', [PreRegistrationController::class, 'destroy'])->name('pre-registrations.destroy');
-
+        //Rotas Aunos Vencidos
+        Route::get('/alunos-vencidos', [App\Http\Controllers\AlunoController::class, 'alunosVencidos'])->name('alunos.vencidos');
+        Route::post('alunos/{id}/bloquear', [AlunoController::class, 'bloquear'])->name('alunos.bloquear');
 
     });
 

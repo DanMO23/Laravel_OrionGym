@@ -1,3 +1,4 @@
+
 @extends('layouts.layout')
 
 @section('header')
@@ -46,6 +47,12 @@
                     <a href="{{ route('alunos.index') }}" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Exibir Alunos</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('alunos.vencidos') }}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Alunos Vencidos</p>
                     </a>
                 </li>
             </ul>

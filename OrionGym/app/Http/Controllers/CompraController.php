@@ -38,6 +38,7 @@ class CompraController extends Controller
         if ($aluno) {
             $aluno->matricula_ativa = 'ativa';
             $aluno->save();
+            
         }
         $compra->save();
         event(new NovaCompra($compra));

@@ -24,6 +24,30 @@ class Aluno extends Model
             $this->save();
         }
         
+        
+    }
+
+    public function handlePackageDaysRemaining(){
+        $aluno = $this;
+        
+
+        if ($aluno->dias_restantes == 0 && $aluno->matricula_ativa == 'ativa') {
+            // Mover aluno para a tabela de alunos vencidos
+            AlunosVencidos::create([
+                'aluno_id' => $aluno->id,
+                'nome' => $aluno->nome,
+                'email' => $aluno->email,
+                'telefone' => $aluno->telefone,
+                'sexo' => $aluno->sexo,
+                'numero_matricula' => $aluno->numero_matricula,
+                'matricula_ativa' => $aluno->matricula_ativa,
+            ]);
+            $aluno->matricula_ativa = 'inativa';
+            $aluno->save();
+
+            // Opcional: Remover o aluno da tabela original, se necessário
+            // $aluno->delete();
+        }
     }
     protected static function boot()
     {

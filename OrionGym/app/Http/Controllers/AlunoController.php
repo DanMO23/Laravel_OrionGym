@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Aluno;
+use App\Models\AlunosVencidos;
 
 class AlunoController extends Controller
 {
@@ -121,4 +122,37 @@ class AlunoController extends Controller
         $aluno->delete();
         return redirect()->route('alunos.index');
     }
+
+
+
+   
+
+
+    public function alunosVencidos()
+    {
+        $alunosVencidos = AlunosVencidos::all();
+        return view('alunos.vencidos', compact('alunosVencidos'));
+    }
+
+    public function indexVencidos()
+    {
+        $alunosVencidos = AlunosVencidos::all();
+        return view('alunos.vencidos', compact('alunosVencidos'));
+    }
+
+    public function bloquear($id)
+    {
+        $alunoVencido = AlunosVencidos::findOrFail($id);
+        $aluno = Aluno::find($alunoVencido->aluno_id);
+        if ($aluno) {
+            $aluno->matricula_ativa = 'bloqueado';
+
+            $aluno->save();
+            $alunoVencido->matricula_ativa = 'bloqueado';
+            $alunoVencido->save();
+        }
+
+        return redirect()->route('alunos.vencidos')->with('success', 'Status do aluno atualizado com sucesso.');
+    }
+
 }
