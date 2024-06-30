@@ -16,6 +16,7 @@ class AjustarDiasPlano
     public function handle(CompraAtualizada $event)
     {
         $alunoPacote = $event->alunoPacote;
+        
         $aluno = $alunoPacote->aluno;
 
         // Subtrair os dias do pacote antigo
@@ -23,7 +24,7 @@ class AjustarDiasPlano
         if ($pacoteAntigo) {
             $aluno->dias_restantes -= $pacoteAntigo->validade;
         }
-
+        
         // Adicionar os dias do novo pacote
         $aluno->dias_restantes += $alunoPacote->pacote->validade;
         $aluno->save();

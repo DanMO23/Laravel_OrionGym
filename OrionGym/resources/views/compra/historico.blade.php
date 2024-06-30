@@ -16,7 +16,8 @@
                     <th>Aluno</th>
                     <th>Pacote</th>
                     <th>Descrição</th>
-                    <th>Validade do Pacote</th>
+                    <th>Valor</th>
+                    <th>Validade</th>
                     <th>Data da Compra</th>
                     <th>Ações</th>
                 </tr>
@@ -27,7 +28,8 @@
                     <td>{{ $compra->aluno->nome }}</td>
                     <td>{{ $compra->pacote->nome_pacote }}</td>
                     <td>{{ $compra->descricao_pagamento }}</td>
-                    <td>{{ $compra->pacote->validade }} dias restantes</td>
+                    <td>R$ {{ $compra->valor_pacote }}</td>
+                    <td>{{ $compra->pacote->validade }} dias</td>
                     <td>{{ $compra->created_at->format('d/m/Y H:i:s') }}</td>
                     <td>
                                             <a href="{{ route('compras.edit', $compra->id) }}" class="btn btn-primary btn-sm">Editar</a>

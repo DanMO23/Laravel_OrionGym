@@ -10,7 +10,8 @@ class AlunoPacote extends Model
     protected $fillable = [
         'aluno_id',
         'pacote_id',
-        'descricao_pagamento'
+        'descricao_pagamento',
+        'valor_pacote'
     ];
 
     public function aluno()
