@@ -31,8 +31,12 @@
                                 <td>{{ $preRegistration->tel}}</td>
                                 <td>{{ $preRegistration->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
-                                            <input type="checkbox" name="contacted" value="1"
-                                                {{ $preRegistration->contacted ? 'checked' : '' }}>
+                                    <form action="{{ route('pre-registrations.destroy', $preRegistration->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja deletar esta pré-inscrição?')">Deletar</button>
+                                        
+                                            </form>
                                         </td>
                             </tr>
                         @endforeach

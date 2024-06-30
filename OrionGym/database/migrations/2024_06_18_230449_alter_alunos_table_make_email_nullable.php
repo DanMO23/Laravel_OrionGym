@@ -4,20 +4,19 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNumeroMatriculaToAlunosTable extends Migration
+class AlterAlunosTableMakeEmailNullable extends Migration
 {
     public function up()
     {
         Schema::table('alunos', function (Blueprint $table) {
-            $table->integer('numero_matricula')->unique()->after('id');
+            $table->string('email')->nullable()->change();
         });
     }
 
     public function down()
     {
         Schema::table('alunos', function (Blueprint $table) {
-            $table->dropColumn('numero_matricula');
+            $table->string('email')->nullable(false)->change();
         });
     }
-};
-
+}

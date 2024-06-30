@@ -13,6 +13,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
+                
                 <div class="card-header ">
 
                     <div class="d-flex justify-content-between">
@@ -36,7 +37,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-
+                                <th>Matricula</th>
                                 <th>Nome</th>
                                 <th>Email</th>
                                 <th>Telefone</th>
@@ -51,7 +52,7 @@
                             @foreach ($alunos as $aluno)
 
                             <tr style="{{ $aluno->dias_restantes <= 5 ? 'color:red;' : '' }}">
-
+                                <td>{{ $aluno->numero_matricula }}</td>
                                 <td>{{ $aluno->nome }}</td>
                                 <td>{{ $aluno->email }}</td>
                                 <td>{{ $aluno->telefone }}</td>

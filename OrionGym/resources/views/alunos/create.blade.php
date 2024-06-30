@@ -8,6 +8,16 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">Criar Novo Aluno</div>
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('alunos.store') }}">
@@ -25,7 +35,7 @@
                             <label for="email" class="col-md-4 col-form-label text-md-right">Email</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" required>
+                                <input id="email" type="email" class="form-control" name="email">
                             </div>
                         </div>
 

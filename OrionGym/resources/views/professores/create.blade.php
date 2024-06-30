@@ -41,6 +41,7 @@
                                 <select name="tipo" id="tipo" class="form-control">
                                     <option value="integral">Professor Integral</option>
                                     <option value="personal">Personal Trainer</option>
+                                    <option value="teste">teste</option>
                                     <option value="ambos">Ambos</option>
                                 </select>
                             </div>

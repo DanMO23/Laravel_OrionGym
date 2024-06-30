@@ -92,6 +92,8 @@ use App\Http\Controllers\HomeController;
 
 Route::get('/pre-registrations', [PreRegistrationController::class, 'index'])->name('pre-registrations.index');
 
+Route::delete('/pre-registrations/{pre_registration}', [PreRegistrationController::class, 'destroy'])->name('pre-registrations.destroy');
+
 
     });
 

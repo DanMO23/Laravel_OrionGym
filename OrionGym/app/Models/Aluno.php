@@ -2,10 +2,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\DB;
 class Aluno extends Model
 {
-    protected $fillable = ['nome', 'email', 'telefone', 'data_nascimento', 'cpf', 'sexo', 'endereco', 'dias_restantes'];
+    protected $fillable = ['nome', 'email', 'telefone', 'data_nascimento', 'cpf', 'sexo', 'endereco', 'dias_restantes', 'numero_matricula'];
 
     public function pacotes()
     {
@@ -24,6 +24,18 @@ class Aluno extends Model
             $this->save();
         }
         
+    }
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            // Obter o último número de matrícula
+            $lastMatricula = DB::table('alunos')->max('numero_matricula');
+
+            // Definir o novo número de matrícula
+            $model->numero_matricula = $lastMatricula ? $lastMatricula + 1 : 2222;
+        });
     }
 }
 

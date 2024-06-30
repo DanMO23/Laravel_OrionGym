@@ -30,10 +30,14 @@ class AlunoController extends Controller
 
     public function store(Request $request)
     {
+        $data = $request->all();
+        if (!$request->filled('email')) {
+            $data['email'] = '';
+        }
         // Validar os dados do formulário
-        $request->validate([
+        $validatedData = $request->validate([
             'nome' => 'required|string|max:255',
-            'email' => 'required|email|unique:alunos,email',
+            'email' => 'nullable|email|unique:alunos,email', // email agora pode ser nullable
             'telefone' => 'required|string|max:20',
             'data_nascimento' => 'required|date',
             'cpf' => 'required|string|max:14|unique:alunos,cpf',
@@ -41,7 +45,6 @@ class AlunoController extends Controller
             'endereco' => 'required|string|max:255',
         ], [
             'nome.required' => 'O campo nome é obrigatório.',
-            'email.required' => 'O campo email é obrigatório.',
             'email.email' => 'Por favor, forneça um endereço de email válido.',
             'email.unique' => 'Este email já está em uso.',
             'telefone.required' => 'O campo telefone é obrigatório.',
@@ -57,21 +60,12 @@ class AlunoController extends Controller
         ]);
 
         // Criar um novo aluno com os dados fornecidos
-        Aluno::create([
-            'nome' => $request->nome,
-            'email' => $request->email,
-            'telefone' => $request->telefone,
-            'data_nascimento' => $request->data_nascimento,
-            'cpf' => $request->cpf,
-            'sexo' => $request->sexo,
-            'endereco' => $request->endereco,
-            'dias_restantes' => 0,
-            'matricula_ativa' => 'inativa',
-        ]);
+        Aluno::create($validatedData);
 
-        // Redirecionar de volta para a página de listagem de alunos
+        // Redirecionar de volta para a página de listagem de alunos com sucesso
         return redirect()->route('alunos.index')->with('success', 'Aluno criado com sucesso!');
     }
+
     public function search(Request $request)
     {
         $searchTerm = $request->input('search');
@@ -100,7 +94,7 @@ class AlunoController extends Controller
 
         return redirect()->route('alunos.index')->with('success', 'Matrícula do aluno trancada com sucesso.');
     }
-    
+
 
     public function destrancarMatricula($id)
     {

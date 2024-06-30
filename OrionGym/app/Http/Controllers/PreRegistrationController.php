@@ -35,4 +35,14 @@ class PreRegistrationController extends Controller
         $preRegistrations = PreRegistration::all();
         return view('pre-registrations.index', compact('preRegistrations'));
     }
+    public function update(){
+        $preRegistrations = PreRegistration::all();
+        return view('pre-registrations.index', compact('preRegistrations'));
+    }
+    
+    public function destroy(PreRegistration $preRegistration)
+    {
+        $preRegistration->delete();
+        return redirect()->back()->with('success', 'Pré-inscrição excluída com sucesso!');
+    }
 }
