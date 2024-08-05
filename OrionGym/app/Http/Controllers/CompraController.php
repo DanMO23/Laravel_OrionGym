@@ -9,6 +9,7 @@ use App\Models\Pacote;
 use App\Models\AlunoPacote;
 use App\Events\CompraAtualizada;
 use App\Events\CompraExcluida;
+use App\Models\AlunosVencidos;
 
 class CompraController extends Controller
 {
@@ -52,8 +53,15 @@ class CompraController extends Controller
         $aluno = Aluno::find($request->aluno);
         if ($aluno) {
             $aluno->matricula_ativa = 'ativa';
+
             $aluno->save();
         }
+        //se o aluno for encontrado em alunos_vencidos, findorfail ele de la
+        $alunoVencido = AlunosVencidos::where('aluno_id', $request->aluno)->first();
+        if ($alunoVencido) {
+            $alunoVencido->delete();
+        }
+       
 
         $compra->save();
         event(new NovaCompra($compra));

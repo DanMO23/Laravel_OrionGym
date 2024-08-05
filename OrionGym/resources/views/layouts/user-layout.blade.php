@@ -58,13 +58,13 @@
             </ul>
         </li>
         
-        <!-- Pré-inscrições -->
+        <!-- Pré-inscrições
         <li class="nav-item">
             <a href="{{ route('pre-registrations.index') }}" class="nav-link">
                 <i class="nav-icon fas fa-user-plus"></i>
                 <p>Pré-inscrições</p>
             </a>
-        </li>
+        </li> -->
 
         <!-- Funcionarios -->
         <li class="nav-item has-treeview">

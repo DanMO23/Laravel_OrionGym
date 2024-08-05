@@ -13,7 +13,9 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th>Matricula</th>
                     <th>Aluno</th>
+
                     <th>Pacote</th>
                     <th>Descrição</th>
                     <th>Valor</th>
@@ -25,6 +27,7 @@
             <tbody>
                 @foreach($compras as $compra)
                 <tr>
+                    <td>{{ $compra->aluno->numero_matricula }}</td>
                     <td>{{ $compra->aluno->nome }}</td>
                     <td>{{ $compra->pacote->nome_pacote }}</td>
                     <td>{{ $compra->descricao_pagamento }}</td>

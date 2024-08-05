@@ -88,7 +88,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @elseif($aluno->matricula_ativa == 'trancado')
+                                    @else
                                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmarDestrancamento{{$aluno->id}}">
                                     <i class="fas fa-unlock"></i>Destrancar Matrícula
                                     </button>
