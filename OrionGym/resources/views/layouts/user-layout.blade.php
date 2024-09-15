@@ -124,7 +124,7 @@
             <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-file-alt"></i>
                 <p>
-                    Ficha
+                    Fichas
                     <i class="fas fa-angle-left right"></i>
                 </p>
             </a>
@@ -142,7 +142,7 @@
                         <p>Exibir Avaliações</p>
                     </a>
                 </li>
-                
+
             </ul>
         </li>
         <!-- Pacotes -->

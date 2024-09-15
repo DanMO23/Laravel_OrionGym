@@ -5,78 +5,78 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pacote;
 use App\Models\AlunoPacote;
-use App\Models\Aluno;
+use App\Models\AlunoAvaliacao;
+
 
 class AvaliacaoController extends Controller
 {
-    
-    public function index()
-    {
-        return view('avaliacao.index');
-    }
-    
     public function create()
     {
+        // Busca todos os pacotes para filtrar a Avaliação Física
         $pacotes = Pacote::all();
         return view('avaliacao.create', compact('pacotes'));
     }
-    
+
     public function store(Request $request)
 {
-    // Validar os dados do formulário
-    $request->validate([
+    $validatedData = $request->validate([
         'nome' => 'required|string|max:255',
-        'cpf' => 'required|string|max:14', // Pode-se usar regex para CPF, se desejar
-        'descricao_pagamento' => 'required|string|max:255',
+        'cpf' => 'required|string|max:14',
+        'data_avaliacao' => 'required|date',
+        'horario_avaliacao' => 'required',
+        'descricao_pagamento' => 'nullable|string|max:255',
+        'telefone' => 'required|string|max:15',
+        'valor_avaliacao' => 'nullable|numeric|min:0',
     ]);
 
-    // Criar uma nova entrada para a Avaliação Física
-    $avaliacao = new AlunoPacote(); // Supondo que a tabela seja a mesma de pacotes comprados
-    $avaliacao->aluno_id = 9999; // Aluno fixo
-    
-    // Definindo os valores conforme solicitado
+    $valorAvaliacao = $request->has('alterar_valor') ? $request->valor_avaliacao : 50.00;
 
+    AlunoAvaliacao::create([
+        'nome' => $validatedData['nome'],
+        'cpf' => $validatedData['cpf'],
+        'data_avaliacao' => $validatedData['data_avaliacao'],
+        'horario_avaliacao' => $validatedData['horario_avaliacao'],
+        'descricao_pagamento' => $validatedData['descricao_pagamento'],
+        'telefone' => $validatedData['telefone'],
+        'valor_avaliacao' => $valorAvaliacao,
+    ]);
 
-    $avaliacao->nome = $request->nome; // Nome do aluno fixo
-    $avaliacao->pacote_id = $request->pacote; // Nome do pacote fixo
-   
-    $avaliacao->descricao_pagamento = $request->descricao_pagamento; // Descrição do pagamento fornecida
-
-    // Campos adicionais para nome e CPF
-    
-
-    $avaliacao->cpf = $request->cpf;
-
-    // Salvar a avaliação
-    $avaliacao->save();
-
-    // Redirecionar para alguma página após o sucesso
-    return redirect()->route('compra.historico')->with('success', 'Avaliação Física registrada com sucesso!');
+    return redirect()->route('avaliacao.index')->with('success', 'Avaliação criada com sucesso!');
 }
 
-    
-    public function show($avaliacao)
+    public function index()
     {
-        return view('avaliacao.show', compact('avaliacao'));
+        // Busca todas as avaliações
+        $avaliacoes = AlunoAvaliacao::all();
+
+        //retorte a data de avaliacao no formato brasileiro
+        foreach ($avaliacoes as $avaliacao) {
+            $avaliacao->data_avaliacao = date('d/m/Y', strtotime($avaliacao->data_avaliacao));
+        }
+        //retorna a view em ordem crescente, de acordo com a data de avaliacao
+        $avaliacoes = $avaliacoes->sortBy('data_avaliacao');
+
+        return view('avaliacao.index', compact('avaliacoes'));
     }
-    
-    public function edit($avaliacao)
+
+    public function confirmarAvaliacao($id)
     {
-        return view('avaliacao.edit', compact('avaliacao'));
+        $avaliacao = AlunoAvaliacao::find($id);
+        if ($avaliacao) {
+            $avaliacao->status = 'Finalizada';
+            $avaliacao->save();
+            return redirect()->route('avaliacao.index')->with('success', 'Avaliação finalizada com sucesso.');
+        }
+        return redirect()->route('avaliacao.index')->with('error', 'Avaliação não encontrada.');
     }
-    
-    public function update(Request $request, $avaliacao)
+
+    public function cancelarAvaliacao($id)
     {
-        return redirect()->route('avaliacao.index');
-    }
-    
-    public function destroy($avaliacao)
-    {
-        return redirect()->route('avaliacao.index');
-    }
-    
-    public function search(Request $request)
-    {
-        return view('avaliacao.index');
+        $avaliacao = AlunoAvaliacao::find($id);
+        if ($avaliacao) {
+            $avaliacao->delete();
+            return redirect()->route('avaliacao.index')->with('success', 'Avaliação cancelada e excluída com sucesso.');
+        }
+        return redirect()->route('avaliacao.index')->with('error', 'Avaliação não encontrada.');
     }
 }
