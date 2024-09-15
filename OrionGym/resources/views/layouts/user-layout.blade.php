@@ -119,7 +119,32 @@
                 </li>
             </ul>
         </li>
-
+         <!-- Ficha -->
+         <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-file-alt"></i>
+                <p>
+                    Ficha
+                    <i class="fas fa-angle-left right"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ route('avaliacao.create') }}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Nova Avaliação Física</p>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="{{ route('avaliacao.index') }}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Exibir Avaliações</p>
+                    </a>
+                </li>
+                
+            </ul>
+        </li>
         <!-- Pacotes -->
         <li class="nav-item has-treeview">
             <a href="#" class="nav-link">

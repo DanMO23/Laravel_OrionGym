@@ -15,7 +15,7 @@ class CompraController extends Controller
 {
     public function create()
     {
-        $alunos = Aluno::all();
+        $alunos = Aluno::orderBy('nome', 'asc')->get();
         $pacotes = Pacote::all();
 
         return view('compra.create', compact('alunos', 'pacotes'));

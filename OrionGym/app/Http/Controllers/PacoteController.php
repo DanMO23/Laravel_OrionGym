@@ -38,7 +38,7 @@ class PacoteController extends Controller
             'valor' => 'required|',
             'valor' => 'required|numeric',
             
-            'validade' => 'required|integer|min:1',
+            'validade' => 'required|integer|min:0',
         ]);
 
         // Criação de um novo pacote com base nos dados do formulário

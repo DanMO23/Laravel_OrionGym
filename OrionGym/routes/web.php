@@ -13,7 +13,8 @@ use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\dashboardUserController;
 use App\Http\Controllers\HomeController;
-
+use App\Http\Controllers\AvaliacaoController;
+use Illuminate\Database\Query\IndexHint;
 
 //Rotas protegidas que requerem autenticação
 
@@ -96,6 +97,13 @@ Route::delete('/pre-registrations/{pre_registration}', [PreRegistrationControlle
         //Rotas Aunos Vencidos
         Route::get('/alunos-vencidos', [App\Http\Controllers\AlunoController::class, 'alunosVencidos'])->name('alunos.vencidos');
         Route::post('alunos/{id}/bloquear', [AlunoController::class, 'bloquear'])->name('alunos.bloquear');
+
+        //Rota para Avaliação
+      //  Route::get('/avaliacao', [App\Http\Controllers\AvaliacaoController::class, 'index'])->name('avaliacao.index');
+        Route::get('/avaliacao/create', [App\Http\Controllers\AvaliacaoController::class, 'create'])->name('avaliacao.create');
+        Route::post('/avaliacao', [App\Http\Controllers\AvaliacaoController::class, 'store'])->name('avaliacao.store');
+        
+        Route::get('/avaliacao/index', [App\Http\Controllers\AvaliacaoController::class, 'index'])->name('avaliacao.index');        
 
     });
 
