@@ -5,18 +5,25 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pacote;
 use App\Models\AlunoPacote;
+use App\Models\Aluno;
 use App\Models\AlunoAvaliacao;
 
 
 class AvaliacaoController extends Controller
 {
-    public function create()
-    {
-        // Busca todos os pacotes para filtrar a Avaliação Física
-        $pacotes = Pacote::all();
-        return view('avaliacao.create', compact('pacotes'));
+    public function create(Request $request)
+{
+    // Verifica se o ID do aluno foi passado na requisição
+    $aluno = null;
+
+    if ($request->has('aluno_id')) {
+        // Busca o aluno pelo ID
+        $aluno = Aluno::find($request->input('aluno_id'));
     }
 
+    // Retorna a view 'create' com os dados do aluno, se existir
+    return view('avaliacao.create', compact('aluno'));
+}
     public function store(Request $request)
 {
     $validatedData = $request->validate([
@@ -53,7 +60,7 @@ class AvaliacaoController extends Controller
         foreach ($avaliacoes as $avaliacao) {
             $avaliacao->data_avaliacao = date('d/m/Y', strtotime($avaliacao->data_avaliacao));
         }
-        //retorna a view em ordem crescente, de acordo com a data de avaliacao
+        //retorna a view em ordem crescente, de acordo com a data, mes e 
         $avaliacoes = $avaliacoes->sortBy('data_avaliacao');
 
         return view('avaliacao.index', compact('avaliacoes'));

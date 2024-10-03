@@ -1,4 +1,3 @@
-
 @extends('layouts.layout')
 
 @section('header')
@@ -57,7 +56,7 @@
                 </li>
             </ul>
         </li>
-        
+
         <!-- Pré-inscrições
         <li class="nav-item">
             <a href="{{ route('pre-registrations.index') }}" class="nav-link">
@@ -119,8 +118,8 @@
                 </li>
             </ul>
         </li>
-         <!-- Ficha -->
-         <li class="nav-item has-treeview">
+        <!-- Ficha -->
+        <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-file-alt"></i>
                 <p>
@@ -135,7 +134,7 @@
                         <p>Nova Avaliação Física</p>
                     </a>
                 </li>
-                
+
                 <li class="nav-item">
                     <a href="{{ route('avaliacao.index') }}" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
@@ -145,6 +144,43 @@
 
             </ul>
         </li>
+        <!-- Produtos -->
+        <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-shopping-cart"></i>
+                <p>
+                    Produtos
+                    <i class="fas fa-angle-left right"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ route('produto.create') }}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Adicionar Produto</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('produto.index') }}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Exibir Produtos</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('compraProduto.create') }}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Realizar Compra</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('compraProduto.historico') }}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Histórico de Compras</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
         <!-- Pacotes -->
         <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
@@ -171,16 +207,16 @@
                 </li>
             </ul>
         </li>
-        
-        
-    
+
+
+
         <a href="{{ route('compra.create') }}" class="btn btn-block btn-outline-success">
             <i class="fas fa-plus-circle mr-2"></i>Nova Compra
         </a>
         <a href="{{ route('compra.historico') }}" class="btn btn-block btn-outline-info">
             <i class="fas fa-history mr-2"></i>Histórico de Compras
         </a>
-   </ul>
+    </ul>
 
 
 </nav>

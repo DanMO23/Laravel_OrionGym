@@ -13,6 +13,8 @@ use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\dashboardUserController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\CompraProdutoController;
 use App\Http\Controllers\AvaliacaoController;
 use Illuminate\Database\Query\IndexHint;
 
@@ -100,12 +102,14 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Rota para Avaliação
     //  Route::get('/avaliacao', [App\Http\Controllers\AvaliacaoController::class, 'index'])->name('avaliacao.index');
-    Route::get('/avaliacao/create', [App\Http\Controllers\AvaliacaoController::class, 'create'])->name('avaliacao.create');
+    Route::get('/avaliacao/create', [AvaliacaoController::class, 'create'])->name('avaliacao.create');
     Route::post('/avaliacao', [App\Http\Controllers\AvaliacaoController::class, 'store'])->name('avaliacao.store');
 
     Route::get('/avaliacao/index', [App\Http\Controllers\AvaliacaoController::class, 'index'])->name('avaliacao.index');
     Route::get('avaliacao/confirmar/{id}', [AvaliacaoController::class, 'confirmarAvaliacao'])->name('avaliacao.confirmar');
     Route::get('avaliacao/cancelar/{id}', [AvaliacaoController::class, 'cancelarAvaliacao'])->name('avaliacao.cancelar');
+
+
 });
 
 

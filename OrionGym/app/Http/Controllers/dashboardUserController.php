@@ -24,69 +24,84 @@ class dashboardUserController extends Controller
         $valorFinanceiro = Aluno::with('pacotes')->get()->sum(function ($aluno) {
             return $aluno->pacotes->sum('valor');
         });
-        // Dados para o gráfico de evolução
-        $dadosGrafico = [
-            'Janeiro' => 100,
-            'Fevereiro' => 120,
-            'Março' => 150,
-            // Adicione mais meses conforme necessário
+
+        // Vetores representando cada mês do ano
+        $faturamentoMensal = [
+            'January' => 0,
+            'February' => 0,
+            'March' => 0,
+            'April' => 0,
+            'May' => 0,
+            'June' => 0,
+            'July' => 0,
+            'August' => 0,
+            'September' => 0,
+            'October' => 0,
+            'November' => 0,
+            'December' => 0,
         ];
 
         // Recuperar todas as compras
         $compras = AlunoPacote::all();
 
-        // Inicializar variáveis para total mensal e total financeiro
-        $totalMensal = 0;
-        $totalQuadrimestral = 0;
-        $totalSemestral = 0;
-        $totalAnual = 0;
-
-        // Data atual e início do mês
-        $dataAtual = Carbon::now();
-        $inicioDoMes = $dataAtual->copy()->startOfMonth();
-        $fimDoMes = $dataAtual->copy()->endOfMonth();
-
         foreach ($compras as $compra) {
             $pacote = Pacote::find($compra->pacote_id);
-            
+
             if ($pacote) {
-                $nomePacote = $pacote->nome_pacote;
+                $diasValidade = $pacote->validade;
                 $valorPacote = $pacote->valor;
                 $dataCompra = Carbon::parse($compra->created_at);
+                $mesCompra = $dataCompra->month; // Mês da compra
+                $numMeses = 0;
 
-                // Verificar o tipo de pacote e calcular o valor
-                if (strpos($nomePacote, 'Mensal') !== false || strpos($nomePacote, 'Horário Especial') !== false || $nomePacote === 'Avaliação Física') {
-                    $diasValidos = 30;
-                } elseif (strpos($nomePacote, 'Quadrimestral') !== false) {
-                    $diasValidos = 120;
-                } elseif (strpos($nomePacote, 'Semestral') !== false) {
-                    $diasValidos = 180;
-                } elseif (strpos($nomePacote, 'Anual') !== false) {
-                    $diasValidos = 365;
+                // Determinar o número de meses com base nos dias de validade
+                if ($diasValidade == 30) {
+                    $numMeses = 1; // Mensal
+                } elseif ($diasValidade == 120) {
+                    $numMeses = 4; // Quadrimestral
+                } elseif ($diasValidade == 180) {
+                    $numMeses = 6; // Semestral
+                } elseif ($diasValidade == 365) {
+                    $numMeses = 12; // Anual
                 } else {
-                    continue; // Se não corresponder a nenhum tipo, pular
+                    continue; // Pula pacotes que não se encaixam
                 }
 
-                // Calcular a data final do pacote
-                $dataFinal = $dataCompra->copy()->addDays($diasValidos);
+                // Distribuir o valor pelos meses
+                for ($i = 0; $i < $numMeses; $i++) {
+                    // Calcula o mês para somar o valor
+                    $mesAtual = ($mesCompra + $i - 1) % 12 + 1;
 
-                // Verificar se o pacote está dentro do período atual
-                if ($dataFinal->greaterThanOrEqualTo($inicioDoMes) && $dataCompra->lessThanOrEqualTo($fimDoMes)) {
-                    $totalMensal += $valorPacote;
-                }
-                
-                // Acumular valores para outros períodos, se necessário
-                if (strpos($nomePacote, 'Quadrimestral') !== false) {
-                    $totalQuadrimestral += $valorPacote;
-                } elseif (strpos($nomePacote, 'Semestral') !== false) {
-                    $totalSemestral += $valorPacote;
-                } elseif (strpos($nomePacote, 'Anual') !== false) {
-                    $totalAnual += $valorPacote;
+                    // Distribuir o faturamento pelos meses em inglês
+                   
+                    switch($mesAtual){
+                        case 1: $faturamentoMensal['January'] += $valorPacote; break;
+                        case 2: $faturamentoMensal['February'] += $valorPacote; break;
+                        case 3: $faturamentoMensal['March'] += $valorPacote; break;
+                        case 4: $faturamentoMensal['April'] += $valorPacote; break;
+                        case 5: $faturamentoMensal['May'] += $valorPacote; break;
+                        case 6: $faturamentoMensal['June'] += $valorPacote; break;
+                        case 7: $faturamentoMensal['July'] += $valorPacote; break;
+                        case 8: $faturamentoMensal['August'] += $valorPacote; break;
+                        case 9: $faturamentoMensal['September'] += $valorPacote; break;
+                        case 10: $faturamentoMensal['October'] += $valorPacote; break;
+                        case 11: $faturamentoMensal['November'] += $valorPacote; break;
+                        case 12: $faturamentoMensal['December'] += $valorPacote; break;
+                    }
                 }
             }
         }
 
+        $faturamentoMensal['September'] +=1800;
+
         // Preparar dados para a view
-        return view('dashboardUser', compact('valorFinanceiro','membrosAtivos', 'membrosBloqueados', 'totalMembros', 'totalMensal', 'totalQuadrimestral', 'totalSemestral', 'totalAnual', 'totalFuncionarios', 'dadosGrafico'));
+        return view('dashboardUser', compact(
+            'valorFinanceiro',
+            'membrosAtivos',
+            'membrosBloqueados',
+            'totalMembros',
+            'totalFuncionarios',
+            'faturamentoMensal'
+        ));
     }
 }

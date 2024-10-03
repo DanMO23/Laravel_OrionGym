@@ -27,24 +27,21 @@
                 <div class="small-box bg-info">
                     <div class="inner">
                         <h3>{{ $totalMembros }}</h3>
-
                         <p>Total de Membros</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-person-add"></i>
                     </div>
-                    
                     <a href="{{ route('alunos.index') }}" class="small-box-footer">Mais Informações <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
-            
+
             <!-- Membros Ativos -->
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-success">
                     <div class="inner">
                         <h3>{{ $membrosAtivos }}</h3>
-
                         <p>Membros Ativos</p>
                     </div>
                     <div class="icon">
@@ -54,12 +51,12 @@
                 </div>
             </div>
             <!-- ./col -->
+
             <!-- Membros Bloqueados -->
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-danger">
                     <div class="inner">
                         <h3>{{ $membrosBloqueados }}</h3>
-
                         <p>Membros Bloqueados</p>
                     </div>
                     <div class="icon">
@@ -69,38 +66,23 @@
                 </div>
             </div>
             <!-- ./col -->
-            <!-- Total Mensal -->
+
+            <!-- Faturamento Mensal -->
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>R${{ $totalMensal }}</h3>
-
-                        <p>Faturamento Mensal</p>
+                        <h3>R${{ $faturamentoMensal[\Carbon\Carbon::now()->format('F')] }}</h3>
+                        <p>Faturamento do Mês Atual ({{ \Carbon\Carbon::now()->format('F') }})</p>
                     </div>
-                    <div class="icon">
-                        <i class="ion ion-calendar"></i>
-                    </div>
+                    
+                    
                     <a href="{{ route('compra.historico') }}" class="small-box-footer">Mais Informações <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
-            <!-- Total Revenue -->
-            <!-- <div class="col-lg-3 col-6">
-                <div class="small-box bg-success">
-                    <div class="inner">
-                        <h3>R${{ $valorFinanceiro }}</h3>
-
-                        <p>Faturamento Total</p>
-                    </div>
-                    <div class="icon">
-                        <i class="ion ion-stats-bars"></i>
-                    </div>
-                    <a href="{{ route('compra.historico') }}" class="small-box-footer">Mais Informações <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-            <!-- ./col -->           
         </div>
         <!-- /.row -->
+        
         <!-- Main row -->
         <div class="row">
             <!-- Left col -->
