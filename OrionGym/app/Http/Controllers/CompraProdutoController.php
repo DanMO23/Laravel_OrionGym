@@ -30,37 +30,44 @@ class CompraProdutoController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
-    {
-        // Validação dos dados de entrada
-        $request->validate([
-            'produto_id' => 'required|exists:produtos,id',
-            'nome_comprador' => 'required|string|max:255',
-            'quantidade' => 'required|integer|min:1',
-        ]);
+{
+    // Valida os dados da requisição
+    $validated = $request->validate([
+        'produto_id' => 'required|exists:produtos,id',
+        'nome_comprador' => 'required|string|max:255',
+        'quantidade' => 'required|integer|min:1',
+        'valor_produto' => 'required|numeric|min:0',
+    ]);
 
-        $produto = Produto::findOrFail($request->produto_id);
+    // Busca o produto
+    $produto = Produto::find($validated['produto_id']);
 
-        // Verifica se há estoque suficiente
-        if ($produto->estoque < $request->quantidade) {
-            return redirect()->back()->withErrors(['quantidade' => 'Estoque insuficiente para a compra.'])->withInput();
-        }
-
-        $valorTotal = $produto->valor * $request->quantidade;
-
-        // Criação da compra
-        CompraProduto::create([
-            'produto_id' => $request->produto_id,
-            'comprador' => $request->nome_comprador,
-            'quantidade' => $request->quantidade,
-            'valor_total' => $valorTotal,
-        ]);
-
-        // Atualiza o estoque do produto
-        $produto->estoque -= $request->quantidade;
-        $produto->save();
-
-        return redirect()->route('compraProduto.historico')->with('success', 'Compra realizada com sucesso.');
+    // Verifica se o valor foi alterado pelo usuário
+    if ($request->has('alterar_valor') && $request->alterar_valor) {
+        $valorFinal = $validated['valor_produto'];
+    } else {
+        // Se não foi alterado, usa o valor original do produto
+        $valorFinal = $produto->valor;
     }
+
+    //decrementa do estoque
+    $estoque = $produto->estoque;
+    $estoque -= $validated['quantidade'];
+    $produto->estoque = $estoque;
+    $produto->save();
+    
+    // Cria o registro da compra
+    CompraProduto::create([
+        'produto_id' => $produto->id,
+        'comprador' => $validated['nome_comprador'],
+        'quantidade' => $validated['quantidade'],
+        'valor_total' => $valorFinal * $validated['quantidade'], // Valor final multiplicado pela quantidade
+    ]);
+
+    // Redireciona com sucesso
+    return redirect()->route('compraProduto.historico')->with('success', 'Compra realizada com sucesso!');
+}
+
 
     /**
      * Exibe o histórico de compras.

@@ -36,15 +36,15 @@
                             </thead>
                             <tbody>
                                 @foreach ($compras as $compra)
+                               
                                 <tr>
                                     <td>{{ $compra->comprador }}</td>
                                     <td>{{ $compra->produto->nome }}</td>
-                                    <td>R$ {{ number_format($compra->produto->valor, 2, ',', '.') }}</td>
+                                    <td>R$ {{ number_format($compra->valor_total, 2, ',', '.') }}</td>
                                     <td>{{ $compra->quantidade }}</td>
-                                    <td>R$ {{ number_format($compra->produto->valor * $compra->quantidade, 2, ',', '.') }}</td>
+                                    <td>R$ {{ number_format($compra->valor_total * $compra->quantidade, 2, ',', '.') }}</td>
                                     <td>
                                         <div class="d-flex">
-                                            <a href="{{ route('compraProduto.edit', $compra->id) }}" class="btn btn-warning btn-sm mr-1">Editar</a>
                                             <form action="{{ route('compraProduto.destroy', $compra->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
