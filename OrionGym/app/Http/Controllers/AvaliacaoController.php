@@ -54,14 +54,14 @@ class AvaliacaoController extends Controller
     public function index()
     {
         // Busca todas as avaliações
-        $avaliacoes = AlunoAvaliacao::all();
+        $avaliacoes = AlunoAvaliacao::orderBy('created_at', 'asc')->get();
+        
 
         //retorte a data de avaliacao no formato brasileiro
         foreach ($avaliacoes as $avaliacao) {
             $avaliacao->data_avaliacao = date('d/m/Y', strtotime($avaliacao->data_avaliacao));
         }
-        //retorna a view em ordem crescente, de acordo com a data, mes e 
-        $avaliacoes = $avaliacoes->sortBy('data_avaliacao');
+       
 
         return view('avaliacao.index', compact('avaliacoes'));
     }

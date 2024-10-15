@@ -166,12 +166,7 @@
                         <p>Exibir Produtos</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('compraProduto.create') }}" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Realizar Compra</p>
-                    </a>
-                </li>
+                
                 <li class="nav-item">
                     <a href="{{ route('compraProduto.historico') }}" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>

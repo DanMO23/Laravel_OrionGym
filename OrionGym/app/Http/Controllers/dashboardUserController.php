@@ -8,6 +8,7 @@ use App\Models\AlunoPacote;
 use App\Models\Compra; // Certifique-se de incluir o modelo correto
 use App\Models\Pacote;
 use Illuminate\Http\Request;
+use App\Models\CompraProduto;
 use Carbon\Carbon;
 
 class dashboardUserController extends Controller
@@ -43,6 +44,9 @@ class dashboardUserController extends Controller
 
         // Recuperar todas as compras
         $compras = AlunoPacote::all();
+       
+
+
 
         foreach ($compras as $compra) {
             $pacote = Pacote::find($compra->pacote_id);
@@ -91,8 +95,35 @@ class dashboardUserController extends Controller
                 }
             }
         }
+        //para o valor dos produtos, separe o valor do mes atual, considerando as compras que foram executadas no mes
+        $valorVendas = CompraProduto::all();
 
-        $faturamentoMensal['September'] +=1800;
+        $mesAtual = date('m');
+        $valorVendasMesAtual = 0;
+        //faça agora o valorVendas para o mes atual
+        foreach ($valorVendas as $venda) {
+            if ($venda->created_at->format('m') == $mesAtual) {
+                $valorVendasMesAtual += $venda->valor_total;
+                }
+                }
+
+        //aggora, some o valorVendasMesAtual ao faturamentoMensal, no mes correto
+        switch($mesAtual){
+            case 1: $faturamentoMensal['January'] += $valorVendasMesAtual;
+            case 2: $faturamentoMensal['February'] += $valorVendasMesAtual;
+            case 3: $faturamentoMensal['March'] += $valorVendasMesAtual;
+            case 4: $faturamentoMensal['April'] += $valorVendasMesAtual;
+            case  5: $faturamentoMensal['May'] += $valorVendasMesAtual;
+            case 6: $faturamentoMensal['June'] += $valorVendasMesAtual;
+            case 7: $faturamentoMensal['July'] += $valorVendasMesAtual;
+            case 8: $faturamentoMensal['August'] += $valorVendasMesAtual;
+            case  9: $faturamentoMensal['September'] += $valorVendasMesAtual;
+            case 10: $faturamentoMensal['October'] += $valorVendasMesAtual;
+            case 11: $faturamentoMensal['November'] += $valorVendasMesAtual;
+            case 12: $faturamentoMensal['December'] += $valorVendasMesAtual;
+            }
+            
+       
 
         // Preparar dados para a view
         return view('dashboardUser', compact(

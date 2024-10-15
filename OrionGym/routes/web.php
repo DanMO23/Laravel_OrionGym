@@ -110,6 +110,26 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('avaliacao/cancelar/{id}', [AvaliacaoController::class, 'cancelarAvaliacao'])->name('avaliacao.cancelar');
 
 
+    // Rotas para produtos
+    Route::resource('produto', ProdutoController::class);
+    Route::post('produto/create', [ProdutoController::class, 'store'])->name('produto.store');
+
+    Route::get('produto/{produto}/edit', [ProdutoController::class, 'edit'])->name('produto.edit');
+    Route::delete('produto/{produto}', [ProdutoController::class, 'destroy'])->name('produto.destroy');
+    Route::post('produto', [ProdutoController::class, 'store'])->name('produto.store');
+
+
+  // Rotas para compras de produtos
+Route::get('/compraProduto/historico', [CompraProdutoController::class, 'historico'])->name('compraProduto.historico');
+Route::get('/compraProduto/{id}/edit', [CompraProdutoController::class, 'edit'])->name('compraProduto.edit');
+
+// Rotas mais genéricas devem vir depois
+Route::get('/compraProduto/{produto_id}', [CompraProdutoController::class, 'create'])->name('compraProduto.create');
+Route::post('/compraProduto', [CompraProdutoController::class, 'store'])->name('compraProduto.store');
+Route::put('/compraProduto/{id}', [CompraProdutoController::class, 'update'])->name('compraProduto.update');
+Route::delete('/compraProduto/{id}', [CompraProdutoController::class, 'destroy'])->name('compraProduto.destroy');
+
+    
 });
 
 
