@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CompraProduto;
 use App\Models\Produto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CompraProdutoController extends Controller
 {
@@ -30,43 +31,62 @@ class CompraProdutoController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
-{
-    // Valida os dados da requisição
-    $validated = $request->validate([
-        'produto_id' => 'required|exists:produtos,id',
-        'nome_comprador' => 'required|string|max:255',
-        'quantidade' => 'required|integer|min:1',
-        'valor_produto' => 'required|numeric|min:0',
-    ]);
+    {
+        Log::info('Iniciando o processo de armazenamento de compra.');
 
-    // Busca o produto
-    $produto = Produto::find($validated['produto_id']);
+        // Valida os dados da requisição
+        try {
+            $validated = $request->validate([
+                'produto_id' => 'required|exists:produtos,id',
+                'nome_comprador' => 'required|string|max:255',
+                'quantidade' => 'required|integer|min:1',
+                'valor_produto' => 'nullable|numeric|min:0|required_if:alterar_valor,1',
+            ]);
+            Log::info('Dados validados com sucesso.', $validated);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Erro na validação dos dados.', ['errors' => $e->errors()]);
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
 
-    // Verifica se o valor foi alterado pelo usuário
-    if ($request->has('alterar_valor') && $request->alterar_valor) {
-        $valorFinal = $validated['valor_produto'];
-    } else {
-        // Se não foi alterado, usa o valor original do produto
-        $valorFinal = $produto->valor;
+        // Busca o produto
+        $produto = Produto::find($validated['produto_id']);
+        Log::info('Produto encontrado.', ['produto' => $produto]);
+
+        // Verifica se o valor foi alterado pelo usuário
+        if ($request->has('alterar_valor') && $request->alterar_valor) {
+            $valorFinal = $validated['valor_produto'];
+            Log::info('Valor do produto alterado pelo usuário.', ['valor_final' => $valorFinal]);
+        } else {
+            // Se não foi alterado, usa o valor original do produto
+            $valorFinal = $produto->valor;
+            Log::info('Usando valor original do produto.', ['valor_final' => $valorFinal]);
+        }
+
+        Log::info('Criando compra...', [
+            'produto_id' => $produto->id,
+            'comprador' => $validated['nome_comprador'],
+            'quantidade' => $validated['quantidade'],
+            'valor_total' => $valorFinal * $validated['quantidade']
+        ]);
+
+        // Decrementa do estoque
+        $produto->estoque -= $validated['quantidade'];
+        $produto->save();
+        Log::info('Estoque do produto atualizado.', ['estoque' => $produto->estoque]);
+        
+        // Cria o registro da compra
+        CompraProduto::create([
+            'produto_id' => $produto->id,
+            'comprador' => $validated['nome_comprador'],
+            'valor_produto' => $valorFinal,
+            'quantidade' => $validated['quantidade'],
+            'valor_total' => $valorFinal * $validated['quantidade'], // Valor final multiplicado pela quantidade
+        ]);
+        Log::info('Registro da compra criado com sucesso.');
+
+        // Redireciona com sucesso
+        return redirect()->route('compraProduto.historico')->with('success', 'Compra realizada com sucesso!');
     }
-
-    //decrementa do estoque
-    $estoque = $produto->estoque;
-    $estoque -= $validated['quantidade'];
-    $produto->estoque = $estoque;
-    $produto->save();
-    
-    // Cria o registro da compra
-    CompraProduto::create([
-        'produto_id' => $produto->id,
-        'comprador' => $validated['nome_comprador'],
-        'quantidade' => $validated['quantidade'],
-        'valor_total' => $valorFinal * $validated['quantidade'], // Valor final multiplicado pela quantidade
-    ]);
-
-    // Redireciona com sucesso
-    return redirect()->route('compraProduto.historico')->with('success', 'Compra realizada com sucesso!');
-}
 
 
     /**
@@ -123,7 +143,7 @@ class CompraProdutoController extends Controller
         $compra->save();
 
         // Atualiza o estoque do produto
-        $produto->quantidade_estoque -= $diferenca;
+        $produto->estoque -= $diferenca;
         $produto->save();
 
         return redirect()->route('compraProduto.historico')->with('success', 'Compra atualizada com sucesso.');
@@ -136,18 +156,18 @@ class CompraProdutoController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
-{
-    // Tenta encontrar o produto relacionado à compra, se não encontrar, gera um 404
-    
-    $compra = CompraProduto::findOrFail($id);
-    $produto = Produto::findOrFail($compra->produto_id);
-    // Atualiza o estoque do produto com a quantidade da compra que será removida
-    $produto->estoque += $compra->quantidade;
-    $produto->save();
+    {
+        // Tenta encontrar o produto relacionado à compra, se não encontrar, gera um 404
+        
+        $compra = CompraProduto::findOrFail($id);
+        $produto = Produto::findOrFail($compra->produto_id);
+        // Atualiza o estoque do produto com a quantidade da compra que será removida
+        $produto->estoque += $compra->quantidade;
+        $produto->save();
 
-    // Deleta a compra
-    $compra->delete();
+        // Deleta a compra
+        $compra->delete();
 
-    return redirect()->route('compraProduto.historico')->with('success', 'Compra deletada com sucesso.');
-}
+        return redirect()->route('compraProduto.historico')->with('success', 'Compra deletada com sucesso.');
+    }
 }

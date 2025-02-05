@@ -10,7 +10,7 @@
                 <div class="card-header">Realizar Compra</div>
 
                 <div class="card-body">
-                    <form action="{{ route('compraProduto.store') }}" method="POST">
+                    <form action="{{ route('compraProduto.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <!-- Exibir informações do produto selecionado -->

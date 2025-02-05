@@ -40,9 +40,9 @@
                                 <tr>
                                     <td>{{ $compra->comprador }}</td>
                                     <td>{{ $compra->produto->nome }}</td>
-                                    <td>R$ {{ number_format($compra->valor_total, 2, ',', '.') }}</td>
+                                    <td>R$ {{ number_format($compra->valor_total / $compra->quantidade, 2, ',', '.') }}</td>
                                     <td>{{ $compra->quantidade }}</td>
-                                    <td>R$ {{ number_format($compra->valor_total * $compra->quantidade, 2, ',', '.') }}</td>
+                                    <td>R$ {{ number_format($compra->valor_total, 2, ',', '.') }}</td>
                                     <td>
                                         <div class="d-flex">
                                             <form action="{{ route('compraProduto.destroy', $compra->id) }}" method="POST">

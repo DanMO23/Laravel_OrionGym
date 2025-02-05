@@ -33,7 +33,7 @@
 
                         <div class="form-group">
                             <label for="quantidade_estoque">Quantidade em Estoque</label>
-                            <input type="number" name="quantidade_estoque" class="form-control" value="{{ old('quantidade_estoque', $produto->quantidade_estoque) }}" required min="0">
+                            <input type="number" name="quantidade_estoque" class="form-control" value="{{ old('quantidade_estoque', $produto->estoque) }}" required min="0">
                             @error('quantidade_estoque')
                             <small class="text-danger">{{ $message }}</small>
                             @enderror
