@@ -17,8 +17,12 @@
                 <div class="card-header ">
                     <div class="d-flex justify-content-between">
                         <h4>Lista de Alunos</h4>
-                        <a href="{{ route('alunos.create') }}" class="btn btn-primary btn-sm">Novo Aluno</a>
+                        <div>
+                            <a href="{{ route('alunos.create') }}" class="btn btn-primary btn-sm">Novo Aluno</a>
+                            <a href="{{ route('alunos.export') }}" class="btn btn-success btn-sm">Exportar para Excel</a>
+                        </div>
                     </div>
+
 
                     <br>
                     <form action="{{ route('alunos.index') }}" method="GET" class="form-inline">

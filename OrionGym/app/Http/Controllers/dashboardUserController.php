@@ -61,7 +61,13 @@ class dashboardUserController extends Controller
                 // Determinar o número de meses com base nos dias de validade
                 if ($diasValidade == 30) {
                     $numMeses = 1; // Mensal
-                } elseif ($diasValidade == 120) {
+                } elseif($diasValidade == 60) {
+                    $numMeses = 2; // Bimestral
+                }
+                elseif ($diasValidade == 90) {
+                    $numMeses = 3; // Trimestral
+                }
+                elseif ($diasValidade == 120) {
                     $numMeses = 4; // Quadrimestral
                 } elseif ($diasValidade == 180) {
                     $numMeses = 6; // Semestral

@@ -56,18 +56,15 @@ class ProdutoController extends Controller
 
     public function update(Request $request, Produto $produto)
     {
-        
         // Valida os dados
         $request->validate([
-            
+            'quantidade_estoque' => 'required|integer|min:0',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'valor' => 'required|numeric|min:0',
         ]);
 
-        //dd('aa');
         // Atualiza os dados do produto
-        
-        
+        $produto->estoque = $request->quantidade_estoque;
         $produto->valor = $request->valor;
 
         // Verifica se há uma nova foto para upload
@@ -87,7 +84,6 @@ class ProdutoController extends Controller
 
         return redirect()->route('produto.index')->with('success', 'Produto atualizado com sucesso.');
     }
-
 
     public function destroy(Produto $produto)
     {

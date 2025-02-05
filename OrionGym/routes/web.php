@@ -16,6 +16,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\CompraProdutoController;
 use App\Http\Controllers\AvaliacaoController;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\AlunosExport;
 use Illuminate\Database\Query\IndexHint;
 
 //Rotas protegidas que requerem autenticação
@@ -26,6 +28,9 @@ Route::group(['middleware' => 'auth'], function () {
 
   // Rotas para Alunos
   //Route::get('/alunos', [AlunoController::class, 'index'])->name('alunos.index');
+  Route::get('alunos/export', function () {
+    return Excel::download(new AlunosExport, 'alunos.xlsx');
+})->name('alunos.export');
   Route::get('/alunos/create', [AlunoController::class, 'create'])->name('alunos.create');
   Route::post('/alunos', [AlunoController::class, 'store'])->name('alunos.store');
   Route::get('/alunos', [AlunoController::class, 'index'])->name('alunos.index');
@@ -129,9 +134,13 @@ Route::group(['middleware' => 'auth'], function () {
   Route::post('/compraProduto', [CompraProdutoController::class, 'store'])->name('compraProduto.store');
   Route::put('/compraProduto/{id}', [CompraProdutoController::class, 'update'])->name('compraProduto.update');
   Route::delete('/compraProduto/{id}', [CompraProdutoController::class, 'destroy'])->name('compraProduto.destroy');
+
+
+
+
+
+ 
 });
-
-
 
 
 

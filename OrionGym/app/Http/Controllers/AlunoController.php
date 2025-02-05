@@ -131,6 +131,8 @@ class AlunoController extends Controller
     public function alunosVencidos()
     {
         $alunosVencidos = AlunosVencidos::all();
+        //Retorna os alunos vencidos em ordem descrecente de data de criacao
+        $alunosVencidos = AlunosVencidos::orderBy('created_at', 'desc')->get();
         return view('alunos.vencidos', compact('alunosVencidos'));
     }
 
