@@ -66,6 +66,7 @@ Follow the steps below to set up the development environment:
    ```bash
    git clone https://github.com/DanMO23/Laravel_OrionGym.git
    cd Laravel_OrionGym
+   cd OrionGym
    ```
 
 2. **Install Composer dependencies:**
