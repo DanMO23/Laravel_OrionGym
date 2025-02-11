@@ -7,7 +7,7 @@
 
 ## Project Description
 
-**Laravel_OrionGym** is a web application designed to assist in the comprehensive management of gyms. The platform offers functionalities such as member access control, product and service management, and monitoring of activities and payments. Built on the Laravel framework, the application utilizes the [Laravel Orion](https://orion.tailflow.org/) package to facilitate the creation of robust and scalable RESTful APIs.
+**Laravel_OrionGym** is a web application designed to assist in the comprehensive management of gyms. The platform offers functionalities such as member access control, product and service management, and monitoring of activities and payments.
 
 The system includes a **landing page** that serves as the main interface for users, providing an intuitive and user-friendly experience.
 
@@ -15,6 +15,7 @@ The system includes a **landing page** that serves as the main interface for use
 
 
 Additionally, the system features a **login mechanism**, allowing users to authenticate and access the application securely.
+![Login Page](OrionGym/Imagens-README/login.png)
 
 ## Table of Contents
 
@@ -41,7 +42,7 @@ Additionally, the system features a **login mechanism**, allowing users to authe
 ## Application Demo
 
 
-![Login Page](OrionGym/Imagens-README/login.png)
+
 ![Initial Page](OrionGym/Imagens-README/Inicial.png)
 
 
