@@ -101,7 +101,7 @@ Follow the steps below to set up the development environment:
    php artisan create:roles
    ```
 
-7. **Install NPM dependencies (if applicable):**
+7. **Install NPM dependencies:**
 
    ```bash
    npm install
@@ -116,7 +116,7 @@ After completing the installation, start the development server:
 php artisan serve
 ```
 
-The application will be available at `http://localhost:8000`.
+The application will be available at `http://localhost:8000` for default, or any port that you wanna set in .env file
 
 ### Creating a User
 
