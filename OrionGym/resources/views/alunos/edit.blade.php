@@ -43,7 +43,7 @@
                         <div class="form-group row">
                             <label for="telefone" class="col-md-4 col-form-label text-md-right">Telefone:</label>
                             <div class="col-md-6">
-                                <input id="telefone" type="text" class="form-control @error('telefone') is-invalid @enderror" name="telefone" value="{{ $aluno->telefone }}" required autocomplete="telefone">
+                                <input id="telefone" type="text" class="form-control @error('telefone') is-invalid @enderror" name="telefone" value="{{ $aluno->telefone }}"autocomplete="telefone">
 
                                 @error('telefone')
                                     <span class="invalid-feedback" role="alert">

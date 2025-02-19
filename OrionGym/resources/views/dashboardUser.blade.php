@@ -68,17 +68,17 @@
             <!-- ./col -->
 
             <!-- Faturamento Mensal -->
+            @if(Auth::user()->hasRole('admin'))
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-warning">
                     <div class="inner">
                         <h3>R${{ $faturamentoMensal[\Carbon\Carbon::now()->format('F')] }}</h3>
                         <p>Faturamento do Mês Atual ({{ \Carbon\Carbon::now()->format('F') }})</p>
                     </div>
-                    
-                    
                     <a href="{{ route('compra.historico') }}" class="small-box-footer">Mais Informações <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
+            @endif
             <!-- ./col -->
         </div>
         <!-- /.row -->

@@ -79,6 +79,7 @@ Route::group(['middleware' => 'auth'], function () {
   Route::get('/compras/historicoChart', 'CompraController@historicoCompras')->name('compras.historicoChart');
 
   Route::get('compra/historico', [CompraController::class, 'index'])->name('compra.historico');
+  Route::get('compra/historico/search', [CompraController::class, 'search'])->name('compra.search');
 
 
   Route::get('/dashboardUser', [dashboardUserController::class, 'index'])->name('dashboardUser.index');

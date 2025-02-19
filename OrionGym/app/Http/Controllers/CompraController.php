@@ -70,10 +70,19 @@ class CompraController extends Controller
         return redirect()->route('compra.historico')->with('success', 'Compra de pacote realizada com sucesso!');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $compras = AlunoPacote::orderBy('created_at', 'desc')->get();
-        
+        $search = $request->input('search');
+        $compras = AlunoPacote::with('aluno', 'pacote')
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('aluno', function ($query) use ($search) {
+                    $query->where('nome', 'like', "%{$search}%")
+                          ->orWhere('numero_matricula', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('compra.historico', compact('compras'));
     }
 

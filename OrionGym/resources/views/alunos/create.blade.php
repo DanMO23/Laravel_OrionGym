@@ -43,7 +43,7 @@
                             <label for="telefone" class="col-md-4 col-form-label text-md-right">Telefone</label>
 
                             <div class="col-md-6">
-                                <input id="telefone" type="tel" class="form-control" name="telefone" required>
+                                <input id="telefone" type="tel" class="form-control" name="telefone">
                             </div>
                         </div>
 
