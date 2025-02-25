@@ -70,3 +70,7 @@ jobs:
       run: |
         cd OrionGym
         php artisan test
+    - name: Update Composer Dependencies
+      run: |
+        cd OrionGym
+        composer update
