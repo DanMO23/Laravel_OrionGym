@@ -22,7 +22,6 @@ jobs:
     - name: Install Dependencies
       run: |
         cd OrionGym
-        composer update
         composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
     - name: Generate key
       run: |
