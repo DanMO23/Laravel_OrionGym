@@ -20,6 +20,9 @@ jobs:
     - name: Change to OrionGym directory
       run: cd OrionGym
 
+    - name: List Archives
+      run: ls
+
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
