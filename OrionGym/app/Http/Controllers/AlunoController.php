@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Aluno;
 use App\Models\AlunosVencidos;
+use App\Models\AlunosResgate;
 
 class AlunoController extends Controller
 {
@@ -124,9 +125,41 @@ class AlunoController extends Controller
     }
 
 
+    public function resgateIndex()
+    {
+        $alunosResgate = AlunosResgate::all();
+        $alunosVencidos = AlunosVencidos::all();
+        return view('alunos.resgate', compact('alunosResgate', 'alunosVencidos'));
+    }
 
-   
+    public function resgatarAlunos(Request $request)
+    {
+        $matriculas = explode(',', $request->input('numero_matricula'));
+        $matriculas = array_map('trim', $matriculas);
 
+        $alunosVencidos = AlunosVencidos::whereIn('numero_matricula', $matriculas)->get();
+
+        foreach ($alunosVencidos as $alunoVencido) {
+            $alunoResgate = new AlunosResgate();
+            $alunoResgate->nome = $alunoVencido->nome;
+            $alunoResgate->telefone = $alunoVencido->telefone;
+            $alunoResgate->numero_matricula = $alunoVencido->numero_matricula;
+            $alunoResgate->save();
+
+            // Remove o aluno da tabela de AlunosVencidos
+            $alunoVencido->delete();
+        }
+
+        return redirect()->route('alunos.resgate')->with('success', 'Alunos resgatados com sucesso!');
+    }
+
+    public function removerResgate($id)
+    {
+        $alunoResgate = AlunosResgate::findOrFail($id);
+        $alunoResgate->delete();
+
+        return redirect()->route('alunos.resgate')->with('success', 'Aluno removido da lista de resgate.');
+    }
 
     public function alunosVencidos()
     {

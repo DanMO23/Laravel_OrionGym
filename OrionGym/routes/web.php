@@ -31,16 +31,20 @@ Route::group(['middleware' => 'auth'], function () {
   Route::get('alunos/export', function () {
     return Excel::download(new AlunosExport, 'alunos.xlsx');
 })->name('alunos.export');
-  Route::get('/alunos/create', [AlunoController::class, 'create'])->name('alunos.create');
-  Route::post('/alunos', [AlunoController::class, 'store'])->name('alunos.store');
-  Route::get('/alunos', [AlunoController::class, 'index'])->name('alunos.index');
+Route::get('/alunos/create', [AlunoController::class, 'create'])->name('alunos.create');
+Route::post('/alunos', [AlunoController::class, 'store'])->name('alunos.store');
+Route::get('/alunos', [AlunoController::class, 'index'])->name('alunos.index');
 
+Route::get('/alunos/resgate', [AlunoController::class, 'resgateIndex'])->name('alunos.resgate');
   Route::get('/alunos/{aluno}', [AlunoController::class, 'show'])->name('alunos.show');
   Route::get('/alunos/{aluno}/edit', [AlunoController::class, 'edit'])->name('alunos.edit');
   Route::put('/alunos/{aluno}', [AlunoController::class, 'update'])->name('alunos.update');
   Route::delete('/alunos/{aluno}', [AlunoController::class, 'destroy'])->name('alunos.destroy');
 
   Route::get('/alunos/search', [AlunoController::class, 'search'])->name('alunos.search');
+
+Route::post('/alunos/resgate', [AlunoController::class, 'resgatarAlunos'])->name('alunos.resgatar');
+Route::post('/alunos/resgate/remover/{id}', [AlunoController::class, 'removerResgate'])->name('alunos.resgate.remover');
 
   // Rotas para Professores
   Route::get('/professores', [ProfessorController::class, 'index'])->name('professores.index');

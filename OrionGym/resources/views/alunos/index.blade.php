@@ -20,6 +20,8 @@
                         <div>
                             <a href="{{ route('alunos.create') }}" class="btn btn-primary btn-sm">Novo Aluno</a>
                             <a href="{{ route('alunos.export') }}" class="btn btn-success btn-sm">Exportar para Excel</a>
+                            <a href="{{ route('alunos.resgate') }}" class="btn btn-warning btn-sm">Alunos Resgate</a>
+
                         </div>
                     </div>
 
