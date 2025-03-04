@@ -19,6 +19,7 @@ use App\Http\Controllers\AvaliacaoController;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AlunosExport;
 use Illuminate\Database\Query\IndexHint;
+use App\Http\Controllers\FichaTreinoController;
 
 //Rotas protegidas que requerem autenticação
 
@@ -140,9 +141,17 @@ Route::post('/alunos/resgate/remover/{id}', [AlunoController::class, 'removerRes
   Route::put('/compraProduto/{id}', [CompraProdutoController::class, 'update'])->name('compraProduto.update');
   Route::delete('/compraProduto/{id}', [CompraProdutoController::class, 'destroy'])->name('compraProduto.destroy');
 
-
-
-
+  // Rotas para fichas de treino
+  Route::group(['prefix' => 'fichas'], function () {
+    Route::get('/', [FichaTreinoController::class, 'index'])->name('fichas.index');
+    Route::get('/create', [FichaTreinoController::class, 'create'])->name('fichas.create');
+    Route::post('/', [FichaTreinoController::class, 'store'])->name('fichas.store');
+    Route::get('/{ficha}', [FichaTreinoController::class, 'show'])->name('fichas.show');
+    Route::get('/{ficha}/edit', [FichaTreinoController::class, 'edit'])->name('fichas.edit');
+    Route::put('/{ficha}', [FichaTreinoController::class, 'update'])->name('fichas.update');
+    Route::delete('/{ficha}', [FichaTreinoController::class, 'destroy'])->name('fichas.destroy');
+    Route::get('/{id}/imprimir', [FichaTreinoController::class, 'imprimir'])->name('fichas.imprimir');
+  });
 
  
 });
