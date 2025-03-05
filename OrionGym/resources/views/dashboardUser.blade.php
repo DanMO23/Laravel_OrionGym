@@ -1,4 +1,5 @@
 @extends('layouts.user-layout')
+@inject('auth', 'Illuminate\Support\Facades\Auth')
 
 @section('title', 'DashboardUser')
 
@@ -68,7 +69,7 @@
             <!-- ./col -->
 
             <!-- Faturamento Mensal -->
-            @if(Auth::user()->hasRole('admin'))
+            @if($auth::user()->hasRole('admin'))
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-warning">
                     <div class="inner">
