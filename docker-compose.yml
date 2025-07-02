@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: laravel-orion-app
+    container_name: laravel_orion_app
+    restart: unless-stopped
+    working_dir: /var/www/OrionGym
+    volumes:
+      - ./OrionGym:/var/www/OrionGym
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_DATABASE=OrionGym
+      - DB_USERNAME=root
+      - DB_PASSWORD=Admin23#
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    
+
+  db:
+    image: mysql:8.0
+    container_name: laravel_orion_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: OrionGym
+      MYSQL_ROOT_PASSWORD: Admin23#
+      MYSQL_PASSWORD: Admin23#
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:
+    driver: local
