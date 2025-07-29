@@ -20,7 +20,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AlunosExport;
 use Illuminate\Database\Query\IndexHint;
 use App\Http\Controllers\FichaTreinoController;
-use App\Http\Controllers\PesquisaFichaController;
 
 //Rotas protegidas que requerem autenticação
 
@@ -151,17 +150,13 @@ Route::post('/alunos/resgate/remover/{id}', [AlunoController::class, 'removerRes
     Route::get('/{ficha}/edit', [FichaTreinoController::class, 'edit'])->name('fichas.edit');
     Route::put('/{ficha}', [FichaTreinoController::class, 'update'])->name('fichas.update');
     Route::delete('/{ficha}', [FichaTreinoController::class, 'destroy'])->name('fichas.destroy');
-    
+    Route::get('/{id}/imprimir', [FichaTreinoController::class, 'imprimir'])->name('fichas.imprimir');
   });
 
  
 });
 
-//Rotas de PesquisaFicha
-Route::get('/pesquisaFicha', [PesquisaFichaController::class, 'index'])->name('pesquisaFicha.index');
-Route::get('/pesquisaFicha/buscar', [PesquisaFichaController::class, 'buscar']);
-Route::get('/pesquisaFicha/{id}', [PesquisaFichaController::class, 'mostrar']);
-Route::get('/{id}/imprimir', [FichaTreinoController::class, 'imprimir'])->name('fichas.imprimir');
+
 
 
 // Rotas de autenticação
