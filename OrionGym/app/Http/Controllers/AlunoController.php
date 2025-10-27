@@ -6,23 +6,45 @@ use Illuminate\Http\Request;
 use App\Models\Aluno;
 use App\Models\AlunosVencidos;
 use App\Models\AlunosResgate;
+use App\Models\AlunoPacote;
+use App\Events\NovaCompra;
+use Illuminate\Support\Facades\DB;
 
 class AlunoController extends Controller
 {
     public function index()
     {
-
         $search = request('search');
+        $perPage = request('per_page', 10); // Padrão: 10 itens por página
+        $sortBy = request('sort_by', 'numero_matricula'); // Coluna de ordenação padrão
+        $sortOrder = request('sort_order', 'asc'); // Ordem padrão: ascendente
+
+        $query = Aluno::query();
 
         if ($search) {
-            $alunos = Aluno::where([
-                ['nome', 'like', '%' . $search . '%']
-            ])->get();
-        } else {
-            $alunos = Aluno::all();
+            $query->where('nome', 'LIKE', "%{$search}%")
+                ->orWhere('cpf', 'LIKE', "%{$search}%")
+                ->orWhere('numero_matricula', 'LIKE', "%{$search}%");
         }
 
-        return view('alunos.index', ['alunos' => $alunos, 'search' => $search]);
+        // Aplicar ordenação
+        $query->orderBy($sortBy, $sortOrder);
+
+        // Aplicar paginação
+        $alunos = $query->paginate($perPage)->appends([
+            'search' => $search,
+            'per_page' => $perPage,
+            'sort_by' => $sortBy,
+            'sort_order' => $sortOrder
+        ]);
+
+        return view('alunos.index', [
+            'alunos' => $alunos, 
+            'search' => $search,
+            'perPage' => $perPage,
+            'sortBy' => $sortBy,
+            'sortOrder' => $sortOrder
+        ]);
     }
 
     public function create()
@@ -70,19 +92,10 @@ class AlunoController extends Controller
 
     public function search(Request $request)
     {
-        $searchTerm = $request->input('search');
-
-        // Buscar alunos no banco de dados com base no termo de busca
-        $alunos = Aluno::where('nome', 'LIKE', "%{$searchTerm}%")
-            ->orWhere('email', 'LIKE', "%{$searchTerm}%")
-            ->orWhere('telefone', 'LIKE', "%{$searchTerm}%")
-            ->orWhere('cpf', 'LIKE', "%{$searchTerm}%")
-            ->orWhere('endereco', 'LIKE', "%{$searchTerm}%")
-            ->get();
-
-        // Retornar a view com os resultados da busca
-        return view('alunos.index', ['alunos' => $alunos, 'searchTerm' => $searchTerm]);
+        // Este método pode ser removido, pois a busca agora está no index
+        return $this->index();
     }
+
     public function show(Aluno $aluno)
     {
         return view('alunos.show', compact('aluno'));
@@ -124,6 +137,60 @@ class AlunoController extends Controller
         return redirect()->route('alunos.index');
     }
 
+    public function showTransferForm(Aluno $aluno)
+    {
+        $outrosAlunos = Aluno::where('id', '!=', $aluno->id)->get();
+        return view('alunos.transferir', compact('aluno', 'outrosAlunos'));
+    }
+
+    public function transferirDias(Request $request, Aluno $aluno)
+    {
+        $request->validate([
+            'aluno_destino_id' => 'required|exists:alunos,id',
+            'dias' => 'required|integer|min:1',
+        ]);
+
+        $diasParaTransferir = (int)$request->input('dias');
+        $alunoDestino = Aluno::findOrFail($request->input('aluno_destino_id'));
+
+        if ($diasParaTransferir > $aluno->dias_restantes) {
+            return redirect()->back()->with('error', 'Não é possível transferir mais dias do que o aluno possui.');
+        }
+
+        // Transação para garantir a consistência dos dados
+        DB::transaction(function () use ($aluno, $alunoDestino, $diasParaTransferir) {
+            $aluno->dias_restantes -= $diasParaTransferir;
+            $aluno->save();
+
+            $alunoDestino->dias_restantes += $diasParaTransferir;
+
+            if ($alunoDestino->dias_restantes > 0) {
+                $alunoDestino->matricula_ativa = 'ativa';
+            }
+
+            $alunoDestino->save();
+
+            // Registra a transferência para o aluno de origem
+            $transferenciaOrigem = AlunoPacote::create([
+                'aluno_id' => $aluno->id,
+                'pacote_id' => null,
+                'descricao_pagamento' => "Transferência de {$diasParaTransferir} dias para {$alunoDestino->nome}",
+                'valor_pacote' => 0,
+            ]);
+            event(new NovaCompra($transferenciaOrigem));
+
+            // Registra a transferência para o aluno de destino
+            $transferenciaDestino = AlunoPacote::create([
+                'aluno_id' => $alunoDestino->id,
+                'pacote_id' => null,
+                'descricao_pagamento' => "Recebimento de {$diasParaTransferir} dias de {$aluno->nome}",
+                'valor_pacote' => 0,
+            ]);
+            event(new NovaCompra($transferenciaDestino));
+        });
+
+        return redirect()->route('alunos.show', $aluno->id)->with('success', 'Dias transferidos com sucesso!');
+    }
 
     public function resgateIndex()
     {

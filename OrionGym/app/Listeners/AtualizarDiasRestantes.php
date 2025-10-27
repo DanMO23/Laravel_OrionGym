@@ -19,9 +19,14 @@ class AtualizarDiasRestantes
         $alunoPacote = $event->alunoPacote;
         $aluno = $alunoPacote->aluno;
 
-        // Adicione os dias da validade do pacote aos dias restantes do plano do aluno
-        $aluno->dias_restantes += $alunoPacote->pacote->validade;
-        $aluno->save();
+        // Verifica se existe um pacote associado antes de adicionar os dias
+        if ($alunoPacote->pacote) {
+            // Adicione os dias da validade do pacote aos dias restantes do plano do aluno
+            $aluno->dias_restantes += $alunoPacote->pacote->validade;
+            $aluno->save();
+        }
+
+        // Remove o aluno da lista de vencidos se ele estiver lá
         $alunoVencido = AlunosVencidos::where('aluno_id', $aluno->id)->first();
         if ($alunoVencido) {
             $alunoVencido->delete();

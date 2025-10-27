@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\AlunoPacote;
 use App\Models\Aluno;
+use Illuminate\Support\Facades\Log; 
+
 
 class UpdatePackageDaysRemaining extends Command
 {
@@ -41,7 +43,7 @@ class UpdatePackageDaysRemaining extends Command
             }
 
         }
-        \Log::info('A tarefa diária foi executada à meia-noite');
+        Log::info('A tarefa diária foi executada à meia-noite');
         $this->info('Dias dos pacotes decrementados com sucesso!');
     }
 }

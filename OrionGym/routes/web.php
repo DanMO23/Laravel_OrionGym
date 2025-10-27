@@ -43,6 +43,9 @@ Route::get('/alunos/resgate', [AlunoController::class, 'resgateIndex'])->name('a
   Route::put('/alunos/{aluno}', [AlunoController::class, 'update'])->name('alunos.update');
   Route::delete('/alunos/{aluno}', [AlunoController::class, 'destroy'])->name('alunos.destroy');
 
+  Route::get('/alunos/{aluno}/transferir-dias', [AlunoController::class, 'showTransferForm'])->name('alunos.transferir.dias.form');
+  Route::post('/alunos/{aluno}/transferir-dias', [AlunoController::class, 'transferirDias'])->name('alunos.transferir.dias');
+
   Route::get('/alunos/search', [AlunoController::class, 'search'])->name('alunos.search');
 
 Route::post('/alunos/resgate', [AlunoController::class, 'resgatarAlunos'])->name('alunos.resgatar');
