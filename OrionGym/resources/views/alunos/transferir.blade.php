@@ -27,7 +27,7 @@
 
                     <p>Dias restantes de {{ $aluno->nome }}: <strong>{{ $aluno->dias_restantes }}</strong></p>
 
-                    <form action="{{ route('alunos.transferir.dias', $aluno->id) }}" method="POST">
+                    <form action="{{ route('alunos.transferir.dias', $aluno->id) }}" method="POST" id="formTransferir">
                         @csrf
                         <div class="form-group">
                             <label for="aluno_destino_id">Transferir para:</label>
@@ -52,4 +52,37 @@
         </div>
     </div>
 </div>
+
+<script>
+document.getElementById('formTransferir').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const diasInput = document.getElementById('dias');
+    const alunoDestinoSelect = document.getElementById('aluno_destino_id');
+    const alunoDestinoNome = alunoDestinoSelect.options[alunoDestinoSelect.selectedIndex].text;
+    const diasQuantidade = diasInput.value;
+    
+    if (!alunoDestinoSelect.value) {
+        alert('Por favor, selecione um aluno de destino.');
+        return;
+    }
+    
+    if (!diasQuantidade || diasQuantidade <= 0) {
+        alert('Por favor, informe uma quantidade válida de dias.');
+        return;
+    }
+    
+    const confirmacao = confirm(
+        `Você tem certeza que deseja transferir ${diasQuantidade} dia(s) para ${alunoDestinoNome}?\n\n` +
+        `De: {{ $aluno->nome }}\n` +
+        `Para: ${alunoDestinoNome}\n` +
+        `Dias: ${diasQuantidade}\n\n` +
+        `Esta ação não pode ser desfeita.`
+    );
+    
+    if (confirmacao) {
+        this.submit();
+    }
+});
+</script>
 @endsection
