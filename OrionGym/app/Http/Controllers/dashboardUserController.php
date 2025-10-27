@@ -43,90 +43,63 @@ class dashboardUserController extends Controller
         ];
 
         // Recuperar todas as compras
-        $compras = AlunoPacote::all();
+        $compras = AlunoPacote::whereYear('created_at', date('Y'))->get();
        
-
-
-
         foreach ($compras as $compra) {
             $pacote = Pacote::find($compra->pacote_id);
 
             if ($pacote) {
                 $diasValidade = $pacote->validade;
                 $valorPacote = $pacote->valor;
+
+                if ($diasValidade > 30) {
+                    $numMeses = intdiv($diasValidade, 30);
+                    $valorPacote *= $numMeses;
+                }
+
                 $dataCompra = Carbon::parse($compra->created_at);
                 $mesCompra = $dataCompra->month; // Mês da compra
-                $numMeses = 0;
-
-                // Determinar o número de meses com base nos dias de validade
-                if ($diasValidade == 30) {
-                    $numMeses = 1; // Mensal
-                } elseif($diasValidade == 60) {
-                    $numMeses = 2; // Bimestral
-                }
-                elseif ($diasValidade == 90) {
-                    $numMeses = 3; // Trimestral
-                }
-                elseif ($diasValidade == 120) {
-                    $numMeses = 4; // Quadrimestral
-                } elseif ($diasValidade == 180) {
-                    $numMeses = 6; // Semestral
-                } elseif ($diasValidade == 365) {
-                    $numMeses = 12; // Anual
-                } else {
-                    continue; // Pula pacotes que não se encaixam
-                }
-
-                // Distribuir o valor pelos meses
-                for ($i = 0; $i < $numMeses; $i++) {
-                    // Calcula o mês para somar o valor
-                    $mesAtual = ($mesCompra + $i - 1) % 12 + 1;
-
-                    // Distribuir o faturamento pelos meses em inglês
-                   
-                    switch($mesAtual){
-                        case 1: $faturamentoMensal['January'] += $valorPacote; break;
-                        case 2: $faturamentoMensal['February'] += $valorPacote; break;
-                        case 3: $faturamentoMensal['March'] += $valorPacote; break;
-                        case 4: $faturamentoMensal['April'] += $valorPacote; break;
-                        case 5: $faturamentoMensal['May'] += $valorPacote; break;
-                        case 6: $faturamentoMensal['June'] += $valorPacote; break;
-                        case 7: $faturamentoMensal['July'] += $valorPacote; break;
-                        case 8: $faturamentoMensal['August'] += $valorPacote; break;
-                        case 9: $faturamentoMensal['September'] += $valorPacote; break;
-                        case 10: $faturamentoMensal['October'] += $valorPacote; break;
-                        case 11: $faturamentoMensal['November'] += $valorPacote; break;
-                        case 12: $faturamentoMensal['December'] += $valorPacote; break;
-                    }
+                
+                // Adicionar o valor do pacote ao mês da compra
+                switch($mesCompra){
+                    case 1: $faturamentoMensal['January'] += $valorPacote; break;
+                    case 2: $faturamentoMensal['February'] += $valorPacote; break;
+                    case 3: $faturamentoMensal['March'] += $valorPacote; break;
+                    case 4: $faturamentoMensal['April'] += $valorPacote; break;
+                    case 5: $faturamentoMensal['May'] += $valorPacote; break;
+                    case 6: $faturamentoMensal['June'] += $valorPacote; break;
+                    case 7: $faturamentoMensal['July'] += $valorPacote; break;
+                    case 8: $faturamentoMensal['August'] += $valorPacote; break;
+                    case 9: $faturamentoMensal['September'] += $valorPacote; break;
+                    case 10: $faturamentoMensal['October'] += $valorPacote; break;
+                    case 11: $faturamentoMensal['November'] += $valorPacote; break;
+                    case 12: $faturamentoMensal['December'] += $valorPacote; break;
                 }
             }
         }
-        //para o valor dos produtos, separe o valor do mes atual, considerando as compras que foram executadas no mes
-        $valorVendas = CompraProduto::all();
 
+        //para o valor dos produtos, separe o valor do mes atual, considerando as compras que foram executadas no mes
         $mesAtual = date('m');
-        $valorVendasMesAtual = 0;
-        //faça agora o valorVendas para o mes atual
-        foreach ($valorVendas as $venda) {
-            if ($venda->created_at->format('m') == $mesAtual) {
-                $valorVendasMesAtual += $venda->valor_total;
-                }
-                }
+        $anoAtual = date('Y');
+
+        $valorVendasMesAtual = CompraProduto::whereYear('created_at', $anoAtual)
+                                             ->whereMonth('created_at', $mesAtual)
+                                             ->sum('valor_total');
 
         //aggora, some o valorVendasMesAtual ao faturamentoMensal, no mes correto
         switch($mesAtual){
-            case 1: $faturamentoMensal['January'] += $valorVendasMesAtual;
-            case 2: $faturamentoMensal['February'] += $valorVendasMesAtual;
-            case 3: $faturamentoMensal['March'] += $valorVendasMesAtual;
-            case 4: $faturamentoMensal['April'] += $valorVendasMesAtual;
-            case  5: $faturamentoMensal['May'] += $valorVendasMesAtual;
-            case 6: $faturamentoMensal['June'] += $valorVendasMesAtual;
-            case 7: $faturamentoMensal['July'] += $valorVendasMesAtual;
-            case 8: $faturamentoMensal['August'] += $valorVendasMesAtual;
-            case  9: $faturamentoMensal['September'] += $valorVendasMesAtual;
-            case 10: $faturamentoMensal['October'] += $valorVendasMesAtual;
-            case 11: $faturamentoMensal['November'] += $valorVendasMesAtual;
-            case 12: $faturamentoMensal['December'] += $valorVendasMesAtual;
+            case '01': $faturamentoMensal['January'] += $valorVendasMesAtual; break;
+            case '02': $faturamentoMensal['February'] += $valorVendasMesAtual; break;
+            case '03': $faturamentoMensal['March'] += $valorVendasMesAtual; break;
+            case '04': $faturamentoMensal['April'] += $valorVendasMesAtual; break;
+            case '05': $faturamentoMensal['May'] += $valorVendasMesAtual; break;
+            case '06': $faturamentoMensal['June'] += $valorVendasMesAtual; break;
+            case '07': $faturamentoMensal['July'] += $valorVendasMesAtual; break;
+            case '08': $faturamentoMensal['August'] += $valorVendasMesAtual; break;
+            case '09': $faturamentoMensal['September'] += $valorVendasMesAtual; break;
+            case '10': $faturamentoMensal['October'] += $valorVendasMesAtual; break;
+            case '11': $faturamentoMensal['November'] += $valorVendasMesAtual; break;
+            case '12': $faturamentoMensal['December'] += $valorVendasMesAtual; break;
             }
             
        
