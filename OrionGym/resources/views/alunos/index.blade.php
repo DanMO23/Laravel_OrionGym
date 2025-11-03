@@ -3,6 +3,9 @@
 @section('title', 'Lista de Alunos')
 
 @section('content')
+<!-- Adicionar o CSS customizado -->
+<link rel="stylesheet" href="{{ asset('css/custom-pagination.css') }}">
+
 <div class="container py-4">
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -218,6 +221,73 @@
                     </table>
                 </div>
 
+                <!-- Modals (Fora da tabela) -->
+                @foreach ($alunos as $aluno)
+                    <!-- Modal Trancar -->
+                    <div class="modal fade" id="confirmarTrancamento{{$aluno->id}}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-danger text-white">
+                                    <h5 class="modal-title">
+                                        <i class="fas fa-lock"></i> Confirmar Trancamento
+                                    </h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                                    <p>Tem certeza de que deseja trancar a matrícula de:</p>
+                                    <p class="font-weight-bold">{{$aluno->nome}}?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                        <i class="fas fa-times"></i> Cancelar
+                                    </button>
+                                    <form action="{{ route('alunos.trancarMatricula', $aluno->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="fas fa-lock"></i> Confirmar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Destrancar -->
+                    <div class="modal fade" id="confirmarDestrancamento{{$aluno->id}}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-success text-white">
+                                    <h5 class="modal-title">
+                                        <i class="fas fa-unlock"></i> Confirmar Destrancamento
+                                    </h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <i class="fas fa-question-circle fa-3x text-info mb-3"></i>
+                                    <p>Tem certeza de que deseja destrancar a matrícula de:</p>
+                                    <p class="font-weight-bold">{{$aluno->nome}}?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                        <i class="fas fa-times"></i> Cancelar
+                                    </button>
+                                    <form action="{{ route('alunos.destrancarMatricula', $aluno->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fas fa-unlock"></i> Confirmar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+
                 <!-- Paginação -->
                 <div class="d-flex justify-content-between align-items-center mt-4">
                     <div>
@@ -226,7 +296,7 @@
                         </p>
                     </div>
                     <div>
-                        {{ $alunos->links() }}
+                    {{ $alunos->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
 
@@ -300,6 +370,83 @@
         border-radius: 10px;
     }
 
+    /* Corrigir estilo da paginação */
+    .pagination {
+        margin-bottom: 0;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .pagination .page-item {
+        margin: 0 2px;
+    }
+
+    /* Esconder botões Previous e Next */
+    /* .pagination .page-item:first-child,
+    .pagination .page-item:last-child {
+        display: none;
+    } */
+
+    .pagination .page-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        line-height: 1.25;
+        color: #007bff;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        display: inline-block;
+        min-width: 40px;
+        text-align: center;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #fff;
+        z-index: 1;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d;
+        pointer-events: none;
+        cursor: not-allowed;
+        background-color: #fff;
+        border-color: #dee2e6;
+        opacity: 0.6;
+    }
+
+    .pagination .page-link:hover:not(.disabled) {
+        color: #0056b3;
+        text-decoration: none;
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+    }
+
+    .pagination .page-link:focus {
+        z-index: 2;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    /* Remover estilos conflitantes do SVG */
+    /* .pagination svg {
+        width: 1em;
+        height: 1em;
+        vertical-align: middle;
+        fill: currentColor;
+    } */
+
+    /* Garantir que modais fiquem no lugar certo */
+    .modal {
+        z-index: 1050;
+    }
+
+    .modal-backdrop {
+        z-index: 1040;
+    }
+
     @media (max-width: 768px) {
         .btn-group-actions {
             width: 100%;
@@ -308,6 +455,14 @@
         .btn-group-actions .btn {
             width: 100%;
             margin: 0.25rem 0 !important;
+        }
+
+        .pagination {
+            font-size: 0.75rem;
+        }
+
+        .pagination .page-link {
+            padding: 0.25rem 0.5rem;
         }
     }
 </style>

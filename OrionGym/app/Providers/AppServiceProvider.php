@@ -3,6 +3,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Services\CatracaService;
+use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,6 +16,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        //
+        // Configurar Carbon para usar português brasileiro
+        Carbon::setLocale('pt_BR');
     }
 }
