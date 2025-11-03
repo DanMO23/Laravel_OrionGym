@@ -145,6 +145,11 @@ class AlunoController extends Controller
 
     public function transferirDias(Request $request, Aluno $aluno)
     {
+        // Verificar se o usuário é admin
+        if (auth()->user()->hasRole('admin')) {
+            return redirect()->route('alunos.show', $aluno->id)->with('error', 'Você não tem permissão para transferir dias.');
+        }
+
         $request->validate([
             'aluno_destino_id' => 'required|exists:alunos,id',
             'dias' => 'required|integer|min:1',

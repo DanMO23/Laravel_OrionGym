@@ -128,9 +128,11 @@
                             <i class="fas fa-edit"></i> Editar
                         </a>
 
+                        @if(auth()->user()->hasRole('admin'))
                         <a href="{{ route('alunos.transferir.dias.form', $aluno->id) }}" class="btn btn-info m-1">
                             <i class="fas fa-exchange-alt"></i> Transferir Dias
                         </a>
+                        @endif
 
                         <form action="{{ route('alunos.destroy', $aluno->id) }}" method="POST" 
                               onsubmit="return confirm('Tem certeza que deseja excluir este aluno?')" 

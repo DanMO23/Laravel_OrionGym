@@ -57,7 +57,10 @@
                                     <select name="pacote" id="pacote" class="form-control @error('pacote') is-invalid @enderror" required>
                                         <option value="">Escolha um pacote...</option>
                                         @foreach($pacotes as $pacote)
-                                            <option value="{{ $pacote->id }}" data-valor="{{ $pacote->valor }}" {{ old('pacote') == $pacote->id ? 'selected' : '' }}>
+                                            <option value="{{ $pacote->id }}" 
+                                                    data-valor="{{ $pacote->valor }}" 
+                                                    data-nome="{{ strtolower($pacote->nome_pacote) }}"
+                                                    {{ old('pacote') == $pacote->id ? 'selected' : '' }}>
                                                 {{ $pacote->nome_pacote }} - R$ {{ number_format($pacote->valor, 2, ',', '.') }}
                                             </option>
                                         @endforeach
@@ -65,6 +68,77 @@
                                     @error('pacote')
                                         <span class="invalid-feedback">{{ $message }}</span>
                                     @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dias Extras (Apenas para pacotes mensais) -->
+                        <div id="dias-extras-section" style="display: none;">
+                            <div class="section-title mb-3 mt-4">
+                                <h5 class="text-success"><i class="fas fa-calendar-plus"></i> Dias Extras</h5>
+                                <hr>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="custom-control custom-checkbox mb-3">
+                                            <input type="checkbox" class="custom-control-input" id="adicionar_dias_extras" name="adicionar_dias_extras" value="1" {{ old('adicionar_dias_extras') ? 'checked' : '' }}>
+                                            <label class="custom-control-label font-weight-bold" for="adicionar_dias_extras">
+                                                <i class="fas fa-plus-circle"></i> Adicionar Dias Extras ao Pacote Mensal
+                                            </label>
+                                        </div>
+                                        <small class="form-text text-muted">
+                                            <i class="fas fa-info-circle"></i> Disponível apenas para pacotes mensais. Os dias extras serão somados ao período do pacote.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" id="input-dias-extras" style="display: none;">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="quantidade_dias_extras" class="font-weight-bold">Quantidade de Dias Extras</label>
+                                        <div class="input-group">
+                                            <input type="number" 
+                                                   name="quantidade_dias_extras" 
+                                                   id="quantidade_dias_extras" 
+                                                   class="form-control @error('quantidade_dias_extras') is-invalid @enderror" 
+                                                   min="1" 
+                                                   max="365"
+                                                   value="{{ old('quantidade_dias_extras') }}"
+                                                   placeholder="Ex: 5">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">dias</span>
+                                            </div>
+                                            @error('quantidade_dias_extras')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <small class="form-text text-muted">Digite o número de dias extras (1 a 365 dias).</small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="valor_dias_extras" class="font-weight-bold">Valor dos Dias Extras (R$)</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">R$</span>
+                                            </div>
+                                            <input type="number" 
+                                                   step="0.01" 
+                                                   name="valor_dias_extras" 
+                                                   id="valor_dias_extras" 
+                                                   class="form-control @error('valor_dias_extras') is-invalid @enderror" 
+                                                   value="{{ old('valor_dias_extras', '0.00') }}"
+                                                   placeholder="0.00">
+                                            @error('valor_dias_extras')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <small class="form-text text-muted">Valor adicional pelos dias extras.</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -98,12 +172,26 @@
                                         </div>
                                         <input type="number" step="0.01" name="valor_pacote" id="valor_pacote" 
                                                class="form-control @error('valor_pacote') is-invalid @enderror" 
-                                               value="{{ old('valor_pacote') }}" required disabled>
+                                               value="{{ old('valor_pacote') }}" required readonly>
                                         @error('valor_pacote')
                                             <span class="invalid-feedback">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <small class="form-text text-muted">Marque a opção acima para alterar o valor padrão do pacote.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Valor Total (se houver dias extras) -->
+                        <div class="row" id="valor-total-section" style="display: none;">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    <strong><i class="fas fa-calculator"></i> Valor Total:</strong>
+                                    <span class="float-right">
+                                        <span id="valor-total-display">R$ 0,00</span>
+                                    </span>
+                                    <br>
+                                    <small>Pacote + Dias Extras</small>
                                 </div>
                             </div>
                         </div>
@@ -192,33 +280,93 @@
         background-color: #e9ecef;
         border: 1px solid #ced4da;
     }
+
+    #dias-extras-section {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
 </style>
 
 <script>
-    // Atualizar o campo de valor automaticamente ao selecionar um pacote
+    // Verificar se o pacote é mensal e mostrar opção de dias extras
     document.getElementById('pacote').addEventListener('change', function() {
         var selectedOption = this.options[this.selectedIndex];
         var valor = selectedOption.getAttribute('data-valor');
+        var nomePacote = selectedOption.getAttribute('data-nome');
         var valorPacoteInput = document.getElementById('valor_pacote');
+        var diasExtrasSection = document.getElementById('dias-extras-section');
         
-        if (valor && !document.getElementById('alterar_valor').checked) {
+        // Atualizar valor do pacote
+        if (valor) {
             valorPacoteInput.value = parseFloat(valor).toFixed(2);
         }
+
+        // Mostrar seção de dias extras se for pacote mensal
+        if (nomePacote && nomePacote.includes('mensal')) {
+            diasExtrasSection.style.display = 'block';
+        } else {
+            diasExtrasSection.style.display = 'none';
+            document.getElementById('adicionar_dias_extras').checked = false;
+            document.getElementById('input-dias-extras').style.display = 'none';
+        }
+
+        calcularValorTotal();
     });
 
-    // Habilitar ou desabilitar o campo de valor do pacote baseado no checkbox
+    // Habilitar ou desabilitar o campo de valor do pacote
     document.getElementById('alterar_valor').addEventListener('change', function() {
         var valorPacoteInput = document.getElementById('valor_pacote');
-        valorPacoteInput.disabled = !this.checked;
         
-        if (!this.checked) {
-            // Restaurar o valor padrão do pacote selecionado
+        if (this.checked) {
+            valorPacoteInput.removeAttribute('readonly');
+            valorPacoteInput.focus();
+        } else {
+            valorPacoteInput.setAttribute('readonly', 'readonly');
             var selectedOption = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex];
             var valor = selectedOption.getAttribute('data-valor');
             if (valor) {
                 valorPacoteInput.value = parseFloat(valor).toFixed(2);
             }
         }
+        calcularValorTotal();
     });
+
+    // Mostrar campo de dias extras quando checkbox for marcado
+    document.getElementById('adicionar_dias_extras').addEventListener('change', function() {
+        var inputDiasExtras = document.getElementById('input-dias-extras');
+        if (this.checked) {
+            inputDiasExtras.style.display = 'flex';
+            inputDiasExtras.style.flexDirection = 'row';
+        } else {
+            inputDiasExtras.style.display = 'none';
+            document.getElementById('quantidade_dias_extras').value = '';
+            document.getElementById('valor_dias_extras').value = '0.00';
+        }
+        calcularValorTotal();
+    });
+
+    // Calcular valor total quando houver alteração
+    document.getElementById('valor_pacote').addEventListener('input', calcularValorTotal);
+    document.getElementById('valor_dias_extras').addEventListener('input', calcularValorTotal);
+    document.getElementById('quantidade_dias_extras').addEventListener('input', calcularValorTotal);
+
+    function calcularValorTotal() {
+        var valorPacote = parseFloat(document.getElementById('valor_pacote').value) || 0;
+        var valorDiasExtras = parseFloat(document.getElementById('valor_dias_extras').value) || 0;
+        var adicionarDias = document.getElementById('adicionar_dias_extras').checked;
+        
+        var valorTotalSection = document.getElementById('valor-total-section');
+        var valorTotalDisplay = document.getElementById('valor-total-display');
+        
+        if (adicionarDias && valorDiasExtras > 0) {
+            var valorTotal = valorPacote + valorDiasExtras;
+            valorTotalDisplay.textContent = 'R$ ' + valorTotal.toFixed(2).replace('.', ',');
+            valorTotalSection.style.display = 'block';
+        } else {
+            valorTotalSection.style.display = 'none';
+        }
+    }
 </script>
 @endsection
