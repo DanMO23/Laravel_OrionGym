@@ -24,50 +24,64 @@ class CompraController extends Controller
 
     public function store(Request $request)
     {
-        // Validar os dados do formulário, se necessário
         $request->validate([
             'aluno' => 'required|exists:alunos,id',
             'pacote' => 'required|exists:pacotes,id',
-            'descricao_pagamento' => 'required',
-            'valor_pacote' => 'nullable|numeric',
+            'valor_pacote' => 'required|numeric|min:0',
+            'descricao_pagamento' => 'required|string',
+            'adicionar_dias_extras' => 'nullable|in:0,1',
+            'quantidade_dias_extras' => 'nullable|required_if:adicionar_dias_extras,1|integer|min:1|max:365',
+            'valor_dias_extras' => 'nullable|required_if:adicionar_dias_extras,1|numeric|min:0'
         ]);
 
-        // Criar uma nova compra de pacote
-        $compra = new AlunoPacote();
-        $compra->aluno_id = $request->aluno;
-        $compra->pacote_id = $request->pacote;
-        $compra->descricao_pagamento = $request->descricao_pagamento;
+        $aluno = Aluno::findOrFail($request->aluno);
+        $pacote = Pacote::findOrFail($request->pacote);
 
-        // Verificar se o campo para alterar o valor do pacote foi marcado
-        if ($request->has('alterar_valor') && $request->input('alterar_valor') == 'on' && $request->filled('valor_pacote')) {
-            // Se sim, usar o valor preenchido pelo usuário
-            $compra->valor_pacote = $request->input('valor_pacote');
-        } else {
-            // Caso contrário, usar o valor padrão do pacote selecionado
-            $pacoteSelecionado = Pacote::find($request->pacote);
-            if ($pacoteSelecionado) {
-                $compra->valor_pacote = $pacoteSelecionado->valor;
+        // Verificar se é para adicionar dias extras
+        $diasExtras = 0;
+        $valorTotal = $request->valor_pacote;
+        $descricaoCompleta = $request->descricao_pagamento;
+
+        if ($request->adicionar_dias_extras == '1') {
+            $diasExtras = $request->quantidade_dias_extras ?? 0;
+            $valorDiasExtras = $request->valor_dias_extras ?? 0;
+            $valorTotal += $valorDiasExtras;
+
+            if ($diasExtras > 0) {
+                $descricaoCompleta .= " | Dias extras: {$diasExtras} dia(s) por R$ " . number_format($valorDiasExtras, 2, ',', '.');
             }
         }
 
-        $aluno = Aluno::find($request->aluno);
-        if ($aluno) {
-            $aluno->matricula_ativa = 'ativa';
+        // Calcular dias totais do pacote
+        $diasTotais = $pacote->validade + $diasExtras;
 
-            $aluno->save();
+        // Criar registro da compra
+        $alunoPacote = AlunoPacote::create([
+            'aluno_id' => $aluno->id,
+            'pacote_id' => $pacote->id,
+            'descricao_pagamento' => $descricaoCompleta,
+            'valor_pacote' => $valorTotal,
+        ]);
+
+        // Atualizar dias restantes do aluno
+        $aluno->dias_restantes += $diasTotais;
+
+        if ($aluno->dias_restantes > 0) {
+            $aluno->matricula_ativa = 'ativa';
         }
-        //se o aluno for encontrado em alunos_vencidos, findorfail ele de la
+
+        $aluno->save();
+
+        // Remover aluno da lista de vencidos se estiver lá
         $alunoVencido = AlunosVencidos::where('aluno_id', $request->aluno)->first();
         if ($alunoVencido) {
             $alunoVencido->delete();
         }
-       
 
-        $compra->save();
-        event(new NovaCompra($compra));
+        // Disparar evento de nova compra
+        event(new NovaCompra($alunoPacote));
 
-        // Redirecionar para alguma página após a compra ser feita
-        return redirect()->route('compra.historico')->with('success', 'Compra de pacote realizada com sucesso!');
+        return redirect()->route('compra.historico')->with('success', 'Compra realizada com sucesso!');
     }
 
     public function index(Request $request)
