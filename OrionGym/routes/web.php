@@ -21,6 +21,7 @@ use App\Exports\AlunosExport;
 use Illuminate\Database\Query\IndexHint;
 use App\Http\Controllers\FichaTreinoController;
 use App\Http\Controllers\PesquisaFichaController;
+use App\Http\Controllers\AlunoPersonalController;
 
 //Rotas protegidas que requerem autenticação
 
@@ -29,10 +30,9 @@ Route::group(['middleware' => 'auth'], function () {
   Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
   // Rotas para Alunos
-  //Route::get('/alunos', [AlunoController::class, 'index'])->name('alunos.index');
   Route::get('alunos/export', function () {
     return Excel::download(new AlunosExport, 'alunos.xlsx');
-})->name('alunos.export');
+  })->name('alunos.export');
 Route::get('/alunos/create', [AlunoController::class, 'create'])->name('alunos.create');
 Route::post('/alunos', [AlunoController::class, 'store'])->name('alunos.store');
 Route::get('/alunos', [AlunoController::class, 'index'])->name('alunos.index');
@@ -157,6 +157,7 @@ Route::post('/alunos/resgate/remover/{id}', [AlunoController::class, 'removerRes
     
   });
 
+  Route::resource('alunos-personal', AlunoPersonalController::class);
  
 });
 

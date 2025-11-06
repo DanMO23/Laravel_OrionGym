@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Funcionario;
 use App\Models\Aluno;
 use App\Models\AlunoPacote;
-use App\Models\Compra;
+use App\Models\Compra; // Certifique-se de incluir o modelo correto
 use App\Models\Pacote;
 use Illuminate\Http\Request;
 use App\Models\CompraProduto;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class dashboardUserController extends Controller
 {
@@ -27,155 +26,6 @@ class dashboardUserController extends Controller
             return $aluno->pacotes->sum('valor');
         });
 
-        // === NOVAS ESTATÍSTICAS DE ALUNOS ===
-        
-        // Distribuição por Gênero
-        $distribuicaoGenero = [
-            'masculino' => Aluno::where('sexo', 'M')->count(),
-            'feminino' => Aluno::where('sexo', 'F')->count()
-        ];
-
-        // Distribuição por Faixa Etária
-        $hoje = Carbon::now();
-        $distribuicaoIdade = [
-            '18-25' => Aluno::whereBetween('data_nascimento', [
-                $hoje->copy()->subYears(25)->format('Y-m-d'),
-                $hoje->copy()->subYears(18)->format('Y-m-d')
-            ])->count(),
-            '26-35' => Aluno::whereBetween('data_nascimento', [
-                $hoje->copy()->subYears(35)->format('Y-m-d'),
-                $hoje->copy()->subYears(26)->format('Y-m-d')
-            ])->count(),
-            '36-45' => Aluno::whereBetween('data_nascimento', [
-                $hoje->copy()->subYears(45)->format('Y-m-d'),
-                $hoje->copy()->subYears(36)->format('Y-m-d')
-            ])->count(),
-            '46-60' => Aluno::whereBetween('data_nascimento', [
-                $hoje->copy()->subYears(60)->format('Y-m-d'),
-                $hoje->copy()->subYears(46)->format('Y-m-d')
-            ])->count(),
-            '60+' => Aluno::where('data_nascimento', '<', $hoje->copy()->subYears(60)->format('Y-m-d'))->count()
-        ];
-
-        // Distribuição de Dias Restantes
-        $distribuicaoDias = [
-            '0' => Aluno::where('dias_restantes', 0)->count(),
-            '1-5' => Aluno::whereBetween('dias_restantes', [1, 5])->count(),
-            '6-15' => Aluno::whereBetween('dias_restantes', [6, 15])->count(),
-            '16-30' => Aluno::whereBetween('dias_restantes', [16, 30])->count(),
-            '30+' => Aluno::where('dias_restantes', '>', 30)->count()
-        ];
-
-        // Novos Alunos por Mês (últimos 12 meses)
-        $novosAlunosMes = [];
-        $mesesNomes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-        
-        for ($i = 11; $i >= 0; $i--) {
-            $data = Carbon::now()->subMonths($i);
-            $mes = $mesesNomes[$data->month - 1];
-            $count = Aluno::whereYear('created_at', $data->year)
-                          ->whereMonth('created_at', $data->month)
-                          ->count();
-            $novosAlunosMes[$mes] = $count;
-        }
-
-        // Taxa de Renovação/Retenção (alunos que compraram mais de um pacote)
-        $alunosComMultiplaCompra = AlunoPacote::select('aluno_id')
-            ->groupBy('aluno_id')
-            ->havingRaw('COUNT(*) > 1')
-            ->count();
-        
-        $taxaRetencao = $totalMembros > 0 ? round(($alunosComMultiplaCompra / $totalMembros) * 100, 1) : 0;
-
-        // Pacotes Mais Populares
-        $pacotesMaisVendidos = AlunoPacote::select('pacote_id', DB::raw('COUNT(*) as total'))
-            ->whereNotNull('pacote_id')
-            ->groupBy('pacote_id')
-            ->orderByDesc('total')
-            ->limit(5)
-            ->get()
-            ->map(function($item) {
-                $pacote = Pacote::find($item->pacote_id);
-                return [
-                    'nome' => $pacote ? $pacote->nome_pacote : 'Desconhecido',
-                    'total' => $item->total
-                ];
-            });
-
-        // Status de Matrícula Detalhado
-        $statusMatricula = [
-            'ativa' => Aluno::where('matricula_ativa', 'ativa')->count(),
-            'inativa' => Aluno::where('matricula_ativa', 'inativa')->count(),
-            'trancado' => Aluno::where('matricula_ativa', 'trancado')->count(),
-            'bloqueado' => Aluno::where('matricula_ativa', 'bloqueado')->count()
-        ];
-
-        // Média de Dias Restantes
-        $mediaDiasRestantes = round(Aluno::avg('dias_restantes'), 1);
-
-        // === NOVAS ESTATÍSTICAS DE DESEMPENHO ===
-        
-        // Taxa de Crescimento Mensal (últimos 6 meses)
-        $crescimentoMensal = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $data = Carbon::now()->subMonths($i);
-            $mes = $mesesNomes[$data->month - 1];
-            $count = Aluno::where('created_at', '<=', $data->endOfMonth())->count();
-            $crescimentoMensal[$mes] = $count;
-        }
-
-        // Renovações vs Novos Alunos (últimos 6 meses)
-        $renovacoesVsNovos = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $data = Carbon::now()->subMonths($i);
-            $mes = $mesesNomes[$data->month - 1];
-            
-            $novosAlunos = Aluno::whereYear('created_at', $data->year)
-                               ->whereMonth('created_at', $data->month)
-                               ->count();
-            
-            $renovacoes = AlunoPacote::whereYear('created_at', $data->year)
-                                    ->whereMonth('created_at', $data->month)
-                                    ->whereHas('aluno', function($query) use ($data) {
-                                        $query->where('created_at', '<', $data->startOfMonth());
-                                    })
-                                    ->count();
-            
-            $renovacoesVsNovos[$mes] = [
-                'novos' => $novosAlunos,
-                'renovacoes' => $renovacoes
-            ];
-        }
-
-        // Alunos Por Status ao Longo do Tempo (últimos 6 meses)
-        $statusTemporal = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $data = Carbon::now()->subMonths($i);
-            $mes = $mesesNomes[$data->month - 1];
-            
-            // Simular snapshot do status naquele mês
-            $statusTemporal[$mes] = [
-                'ativos' => $membrosAtivos,
-                'bloqueados' => $membrosBloqueados,
-                'inativos' => $totalMembros - $membrosAtivos - $membrosBloqueados
-            ];
-        }
-
-        // Média de Compras por Aluno
-        $mediaComprasPorAluno = $totalMembros > 0 ? round(AlunoPacote::count() / $totalMembros, 2) : 0;
-
-        // Churn Rate (alunos que saíram nos últimos 3 meses)
-        $alunosInativos3Meses = Aluno::where('matricula_ativa', 'inativa')
-                                     ->where('updated_at', '>=', Carbon::now()->subMonths(3))
-                                     ->count();
-        $churnRate = $totalMembros > 0 ? round(($alunosInativos3Meses / $totalMembros) * 100, 1) : 0;
-
-        // Ticket Médio
-        $ticketMedio = AlunoPacote::whereNotNull('valor_pacote')->avg('valor_pacote');
-        $ticketMedio = $ticketMedio ? round($ticketMedio, 2) : 0;
-
-        // === FATURAMENTO (ADMIN APENAS) ===
-        
         // Vetores representando cada mês do ano
         $faturamentoMensal = [
             'January' => 0,
@@ -208,8 +58,9 @@ class dashboardUserController extends Controller
                 }
 
                 $dataCompra = Carbon::parse($compra->created_at);
-                $mesCompra = $dataCompra->month;
+                $mesCompra = $dataCompra->month; // Mês da compra
                 
+                // Adicionar o valor do pacote ao mês da compra
                 switch($mesCompra){
                     case 1: $faturamentoMensal['January'] += $valorPacote; break;
                     case 2: $faturamentoMensal['February'] += $valorPacote; break;
@@ -227,6 +78,7 @@ class dashboardUserController extends Controller
             }
         }
 
+        //para o valor dos produtos, separe o valor do mes atual, considerando as compras que foram executadas no mes
         $mesAtual = date('m');
         $anoAtual = date('Y');
 
@@ -234,6 +86,7 @@ class dashboardUserController extends Controller
                                              ->whereMonth('created_at', $mesAtual)
                                              ->sum('valor_total');
 
+        //aggora, some o valorVendasMesAtual ao faturamentoMensal, no mes correto
         switch($mesAtual){
             case '01': $faturamentoMensal['January'] += $valorVendasMesAtual; break;
             case '02': $faturamentoMensal['February'] += $valorVendasMesAtual; break;
@@ -249,6 +102,116 @@ class dashboardUserController extends Controller
             case '12': $faturamentoMensal['December'] += $valorVendasMesAtual; break;
         }
 
+        // Novos alunos por mês (últimos 12 meses)
+        $novosAlunosMes = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $mes = Carbon::now()->subMonths($i)->format('M/Y');
+            $novosAlunosMes[$mes] = Aluno::whereYear('created_at', Carbon::now()->subMonths($i)->year)
+                                         ->whereMonth('created_at', Carbon::now()->subMonths($i)->month)
+                                         ->count();
+        }
+
+        // Garantir que novosAlunosMes sempre seja um array
+        if (empty($novosAlunosMes)) {
+            $novosAlunosMes = ['Sem dados' => 0];
+        }
+
+        // Outras métricas necessárias para a dashboard
+        $distribuicaoGenero = [
+            'masculino' => Aluno::where('sexo', 'M')->count(),
+            'feminino' => Aluno::where('sexo', 'F')->count()
+        ];
+
+        $distribuicaoIdade = [
+            '18-25' => Aluno::whereBetween('data_nascimento', [Carbon::now()->subYears(25), Carbon::now()->subYears(18)])->count(),
+            '26-35' => Aluno::whereBetween('data_nascimento', [Carbon::now()->subYears(35), Carbon::now()->subYears(26)])->count(),
+            '36-50' => Aluno::whereBetween('data_nascimento', [Carbon::now()->subYears(50), Carbon::now()->subYears(36)])->count(),
+            '50+' => Aluno::where('data_nascimento', '<', Carbon::now()->subYears(50))->count(),
+        ];
+
+        $distribuicaoDias = [
+            '0 dias' => Aluno::where('dias_restantes', 0)->count(),
+            '1-7 dias' => Aluno::whereBetween('dias_restantes', [1, 7])->count(),
+            '8-15 dias' => Aluno::whereBetween('dias_restantes', [8, 15])->count(),
+            '16-30 dias' => Aluno::whereBetween('dias_restantes', [16, 30])->count(),
+            '30+ dias' => Aluno::where('dias_restantes', '>', 30)->count(),
+        ];
+
+        $pacotesMaisVendidos = Pacote::withCount('alunos')
+            ->orderBy('alunos_count', 'desc')
+            ->take(5)
+            ->get()
+            ->map(function($pacote) {
+                return [
+                    'nome' => $pacote->nome_pacote,
+                    'total' => $pacote->alunos_count
+                ];
+            });
+
+        $statusMatricula = [
+            'ativa' => Aluno::where('matricula_ativa', 'ativa')->count(),
+            'inativa' => Aluno::where('matricula_ativa', 'inativa')->count(),
+            'trancado' => Aluno::where('matricula_ativa', 'trancado')->count(),
+            'bloqueado' => Aluno::where('matricula_ativa', 'bloqueado')->count(),
+        ];
+
+        $taxaRetencao = $totalMembros > 0 
+            ? round((Aluno::has('pacotes', '>=', 2)->count() / $totalMembros) * 100, 1) 
+            : 0;
+
+        $mediaDiasRestantes = $totalMembros > 0 
+            ? round(Aluno::avg('dias_restantes'), 0) 
+            : 0;
+
+        $crescimentoMensal = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $mes = Carbon::now()->subMonths($i)->format('M/Y');
+            $crescimentoMensal[$mes] = Aluno::where('created_at', '<=', Carbon::now()->subMonths($i)->endOfMonth())->count();
+        }
+
+        $renovacoesVsNovos = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $mes = Carbon::now()->subMonths($i)->format('M/Y');
+            $renovacoesVsNovos[$mes] = [
+                'novos' => Aluno::whereYear('created_at', Carbon::now()->subMonths($i)->year)
+                               ->whereMonth('created_at', Carbon::now()->subMonths($i)->month)
+                               ->count(),
+                'renovacoes' => AlunoPacote::whereYear('created_at', Carbon::now()->subMonths($i)->year)
+                                          ->whereMonth('created_at', Carbon::now()->subMonths($i)->month)
+                                          ->whereHas('aluno', function($q) use ($i) {
+                                              $q->where('created_at', '<', Carbon::now()->subMonths($i)->startOfMonth());
+                                          })
+                                          ->count()
+            ];
+        }
+
+        $statusTemporal = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $mes = Carbon::now()->subMonths($i)->format('M/Y');
+            $statusTemporal[$mes] = [
+                'ativos' => Aluno::where('matricula_ativa', 'ativa')
+                                ->where('created_at', '<=', Carbon::now()->subMonths($i)->endOfMonth())
+                                ->count(),
+                'bloqueados' => Aluno::where('matricula_ativa', 'bloqueado')
+                                    ->where('created_at', '<=', Carbon::now()->subMonths($i)->endOfMonth())
+                                    ->count(),
+                'inativos' => Aluno::where('matricula_ativa', 'inativa')
+                                  ->where('created_at', '<=', Carbon::now()->subMonths($i)->endOfMonth())
+                                  ->count(),
+            ];
+        }
+
+        $ticketMedio = AlunoPacote::avg('valor_pacote') ?? 0;
+        $mediaComprasPorAluno = $totalMembros > 0 
+            ? round(AlunoPacote::count() / $totalMembros, 1) 
+            : 0;
+
+        $churnRate = $totalMembros > 0 
+            ? round((Aluno::where('matricula_ativa', 'inativa')
+                         ->where('updated_at', '>=', Carbon::now()->subMonths(3))
+                         ->count() / $totalMembros) * 100, 1) 
+            : 0;
+
         // Preparar dados para a view
         return view('dashboardUser', compact(
             'valorFinanceiro',
@@ -257,20 +220,20 @@ class dashboardUserController extends Controller
             'totalMembros',
             'totalFuncionarios',
             'faturamentoMensal',
+            'novosAlunosMes',
             'distribuicaoGenero',
             'distribuicaoIdade',
             'distribuicaoDias',
-            'novosAlunosMes',
-            'taxaRetencao',
             'pacotesMaisVendidos',
             'statusMatricula',
+            'taxaRetencao',
             'mediaDiasRestantes',
             'crescimentoMensal',
             'renovacoesVsNovos',
             'statusTemporal',
+            'ticketMedio',
             'mediaComprasPorAluno',
-            'churnRate',
-            'ticketMedio'
+            'churnRate'
         ));
     }
 }

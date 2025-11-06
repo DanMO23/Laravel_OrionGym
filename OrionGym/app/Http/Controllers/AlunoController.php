@@ -98,7 +98,13 @@ class AlunoController extends Controller
 
     public function show(Aluno $aluno)
     {
-        return view('alunos.show', compact('aluno'));
+        // Buscar a última compra do aluno com os dados corretos da tabela aluno_pacote
+        $ultimaCompra = AlunoPacote::where('aluno_id', $aluno->id)
+            ->with('pacote')
+            ->orderBy('created_at', 'desc')
+            ->first();
+        
+        return view('alunos.show', compact('aluno', 'ultimaCompra'));
     }
 
     public function trancarMatricula(Aluno $aluno)

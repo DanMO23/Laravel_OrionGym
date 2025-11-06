@@ -72,12 +72,6 @@ class CompraController extends Controller
 
         $aluno->save();
 
-        // Remover aluno da lista de vencidos se estiver lá
-        $alunoVencido = AlunosVencidos::where('aluno_id', $request->aluno)->first();
-        if ($alunoVencido) {
-            $alunoVencido->delete();
-        }
-
         // Disparar evento de nova compra
         event(new NovaCompra($alunoPacote));
 

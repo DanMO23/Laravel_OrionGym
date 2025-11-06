@@ -21,7 +21,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         NovaCompra::class => [
-            AtualizarDiasRestantes::class,
+            // AtualizarDiasRestantes::class, // Remover ou comentar a linha para evitar duplicação
         ],
         CompraAtualizada::class => [
             AjustarDiasPlano::class,
