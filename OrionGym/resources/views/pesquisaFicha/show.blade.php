@@ -1,298 +1,292 @@
+@extends('layouts.impr-layout')
+
+@section('content')
 <!DOCTYPE html>
- <html lang="pt-BR">
- 
+<html lang="pt-BR">
 
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ficha de Treino</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
-  crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <style>
-  /* Custom CSS for Neumorphism and Dark Mode */
-  body {
-  background-color: #F7FAFC;
-  color: #4A5568;
-  transition: background-color 0.3s, color 0.3s;
-  }
- 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Treino - {{ $ficha->nome_aluno }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
 
-  .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  }
- 
+        .ficha-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
 
-  .neumorphic-card {
-  background-color: #FFFFFF;
-  border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 6px 6px 12px #c5c5c5,
-  -6px -6px 12px #ffffff;
-  transition: box-shadow 0.3s;
-  }
- 
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
 
-  .neumorphic-card:hover {
-  box-shadow: 3px 3px 6px #c5c5c5,
-  -3px -3px 6px #ffffff;
-  }
- 
+        .bg-treino-0 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
 
-  .table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-  }
- 
+        .bg-treino-1 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
 
-  .table th,
-  .table td {
-  padding: 1rem;
-  text-align: center;
-  border-bottom: 1px solid #e2e8f0;
-  }
- 
+        .bg-treino-2 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
 
-  .table thead th {
-  background-color: #edf2f7;
-  color: #4A5568;
-  font-weight: 600;
-  }
- 
+        .bg-treino-3 {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
 
-  .btn {
-  border-radius: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  text-decoration: none;
-  color: white;
-  transition: transform 0.2s;
-  }
- 
+        .bg-treino-4 {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        }
 
-  .btn:hover {
-  transform: scale(1.05);
-  }
- 
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            background: white;
+            margin-bottom: 2rem;
+        }
 
-  .btn-success {
-  background-color: #38a169;
-  }
- 
+        .card-header {
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.5rem;
+        }
 
-  /* Dark Mode Styles */
-  body.dark-mode {
-  background-color: #1A202C;
-  color: #CBD5E0;
-  }
- 
+        .treino-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
 
-  .dark-mode .neumorphic-card {
-  background-color: #2D3748;
-  box-shadow: 6px 6px 12px #1A202C,
-  -6px -6px 12px #3D485E;
-  }
- 
+        .treino-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
 
-  .dark-mode .neumorphic-card:hover {
-  box-shadow: 3px 3px 6px #1A202C,
-  -3px -3px 6px #3D485E;
-  }
- 
+        .badge-lg {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+        }
 
-  .dark-mode .table thead th {
-  background-color: #2D3748;
-  color: #CBD5E0;
-  }
- 
+        .list-group-item {
+            border-left: none;
+            border-right: none;
+            background: transparent;
+        }
 
-  .dark-mode .table td {
-  border-bottom: 1px solid #4A5568;
-  }
- 
+        .list-group-item:first-child {
+            border-top: none;
+        }
 
-  /* Dark Mode Toggle Button */
-  .dark-mode-toggle {
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
-  background-color: #4A5568;
-  color: #F7FAFC;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-  z-index: 1000;
-  }
- 
+        .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+        }
 
-  .dark-mode-toggle:hover {
-  background-color: #2D3748;
-  color: #CBD5E0;
-  }
- 
+        .table thead th {
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+        }
 
-  .dark-mode .dark-mode-toggle {
-  background-color: #CBD5E0;
-  color: #2D3748;
-  }
- 
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
 
-  .dark-mode .dark-mode-toggle:hover {
-  background-color: #F7FAFC;
-  color: #4A5568;
-  }
- 
+        .btn-action {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s;
+        }
 
-  /* Custom Styles */
-  .ficha-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  }
- 
+        .btn-voltar {
+            background: #6c757d;
+            color: white;
+            border: none;
+        }
 
-  .ficha-title {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #3182ce;
-  }
- 
+        .btn-voltar:hover {
+            background: #5a6268;
+            transform: scale(1.05);
+            color: white;
+        }
 
-  .aluno-info {
-  font-size: 1.25rem;
-  color: #4A5568;
-  }
- 
+        .btn-imprimir {
+            background: #28a745;
+            color: white;
+            border: none;
+        }
 
-  .treino-card {
-  background-color: #FFFFFF;
-  border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 6px 6px 12px #c5c5c5,
-  -6px -6px 12px #ffffff;
-  margin-bottom: 2rem;
-  transition: box-shadow 0.3s;
-  }
- 
+        .btn-imprimir:hover {
+            background: #218838;
+            transform: scale(1.05);
+            color: white;
+        }
 
-  .treino-card:hover {
-  box-shadow: 3px 3px 6px #c5c5c5,
-  -3px -3px 6px #ffffff;
-  }
- 
+        @media (max-width: 768px) {
+            .ficha-container {
+                padding: 0 0.5rem;
+            }
+            
+            .btn-action {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
 
-  .treino-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #3182ce;
-  margin-bottom: 1rem;
-  }
- 
+<body>
+    <div class="ficha-container">
+        <!-- Cabeçalho da Ficha -->
+        <div class="card shadow">
+            <div class="card-header bg-gradient-primary text-white">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="mb-0"><i class="fas fa-clipboard-list"></i> {{ $ficha->nome_ficha }}</h3>
+                        <p class="mb-0 mt-2"><i class="fas fa-user"></i> Aluno: <strong>{{ $ficha->nome_aluno }}</strong></p>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <span class="badge badge-light badge-lg">
+                            <i class="fas fa-calendar-alt"></i> {{ $ficha->created_at->format('d/m/Y') }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between flex-wrap">
+                    <a href="{{ route('pesquisaFicha.index') }}" class="btn btn-action btn-voltar">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </a>
+                    <a href="{{ route('fichas.imprimir', $ficha->id) }}" target="_blank" class="btn btn-action btn-imprimir">
+                        <i class="fas fa-print"></i> Imprimir Ficha
+                    </a>
+                </div>
+            </div>
+        </div>
 
-  .no-exercicios {
-  color: #718096;
-  font-style: italic;
-  }
- 
+        <!-- Cards de Treinos -->
+        @if($treinos->isEmpty())
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    <p class="lead">Nenhum treino cadastrado para esta ficha.</p>
+                </div>
+            </div>
+        @else
+            <div class="row">
+                @foreach($treinos as $index => $treino)
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card treino-card shadow h-100" data-toggle="modal" data-target="#treinoModal{{ $treino->id }}">
+                            <div class="card-header bg-treino-{{ $index % 5 }} text-white text-center">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-dumbbell"></i> Treino {{ $treino->nome_treino }}
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                @if($treino->exercicios->count() > 0)
+                                    <p class="text-center mb-3">
+                                        <span class="badge badge-primary badge-pill badge-lg">
+                                            {{ $treino->exercicios->count() }} exercício(s)
+                                        </span>
+                                    </p>
+                                    <ul class="list-group list-group-flush">
+                                        @foreach($treino->exercicios->take(3) as $exercicio)
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span><i class="fas fa-check-circle text-success"></i> {{ $exercicio->nome_exercicio }}</span>
+                                                <span class="badge badge-secondary">{{ $exercicio->series }}x{{ $exercicio->repeticoes_tempo }}</span>
+                                            </li>
+                                        @endforeach
+                                        @if($treino->exercicios->count() > 3)
+                                            <li class="list-group-item text-center text-muted">
+                                                <small>+ {{ $treino->exercicios->count() - 3 }} exercício(s)</small>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                @else
+                                    <p class="text-muted text-center">Nenhum exercício cadastrado</p>
+                                @endif
+                            </div>
+                            <div class="card-footer text-center bg-white">
+                                <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#treinoModal{{ $treino->id }}">
+                                    <i class="fas fa-eye"></i> Ver Detalhes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-  .action-buttons {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 2rem;
-  }
+                    <!-- Modal com detalhes do treino -->
+                    <div class="modal fade" id="treinoModal{{ $treino->id }}" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header bg-treino-{{ $index % 5 }} text-white">
+                                    <h5 class="modal-title">
+                                        <i class="fas fa-dumbbell"></i> Treino {{ $treino->nome_treino }} - Detalhes
+                                    </h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    @if($treino->exercicios->count() > 0)
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th><i class="fas fa-hashtag"></i></th>
+                                                        <th><i class="fas fa-running"></i> Exercício</th>
+                                                        <th class="text-center"><i class="fas fa-layer-group"></i> Séries</th>
+                                                        <th class="text-center"><i class="fas fa-redo"></i> Rep/Tempo</th>
+                                                        <th class="text-center"><i class="fas fa-pause-circle"></i> Descanso</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($treino->exercicios as $key => $exercicio)
+                                                        <tr>
+                                                            <td class="font-weight-bold">{{ $key + 1 }}</td>
+                                                            <td class="font-weight-bold">{{ $exercicio->nome_exercicio }}</td>
+                                                            <td class="text-center">
+                                                                <span class="badge badge-primary">{{ $exercicio->series }}</span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <span class="badge badge-info">{{ $exercicio->repeticoes_tempo }}</span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <span class="badge badge-warning">{{ $exercicio->descanso }}</span>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @else
+                                        <p class="text-muted text-center">Nenhum exercício cadastrado para este treino.</p>
+                                    @endif
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                        <i class="fas fa-times"></i> Fechar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
 
-    .btn-secondary {
-    background-color: #2c5282; /* Azul */
-    color: #ffffff; /* Texto branco */
-}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 
-.btn-secondary:hover {
-    background-color: #2c5282; /* Azul mais escuro no hover */
-}
-
-.mr-2 {
-    margin-right: 0.5rem;
-}
-  </style>
- </head>
- 
-
- <body class="bg-gray-100">
-  
-  <button id="darkModeToggle" class="dark-mode-toggle">
-  <i class="fas fa-moon"></i>
-  </button>
- 
-
-  <div class="container mt-5">
-  <div class="neumorphic-card">
-  <div class="ficha-header">
-  <h1 class="ficha-title">Ficha de Treino - {{ $ficha->nome_ficha }}</h1>
-  <p class="aluno-info">Aluno: {{ $ficha->nome_aluno }}</p>
-  </div>
- 
-
-  <!-- Exibição dos Treinos -->
-  @foreach ($treinos as $treino)
-  <div class="treino-card">
-  <h2 class="treino-title">Treino {{ $treino->nome_treino }}</h2>
-  @if ($treino->exercicios->count() > 0)
-  <table class="table table-striped text-center">
-  <thead>
-  <tr>
-  <th>Exercício</th>
-  <th>Séries</th>
-  <th>Repetições/Tempo</th>
-  <th>Descanso</th>
-  </tr>
-  </thead>
-  <tbody>
-  @foreach ($treino->exercicios as $exercicio)
-  <tr>
-  <td>{{ $exercicio->nome_exercicio }}</td>
-  <td>{{ $exercicio->series }}</td>
-  <td>{{ $exercicio->repeticoes_tempo }}</td>
-  <td>{{ $exercicio->descanso }}</td>
-  </tr>
-  @endforeach
-  </tbody>
-  </table>
-  @else
-  <p class="no-exercicios">Nenhum exercício cadastrado para este treino.</p>
-  @endif
-  </div>
-  @endforeach
- 
-
-  <!-- Botões de Ação -->
-  <div class="action-buttons">
-    <a href="{{ route('pesquisaFicha.index') }}" class="btn btn-secondary mr-2">
-      <i class="fas fa-arrow-left"></i> Voltar
-    </a>
-    <a href="{{ route('fichas.imprimir', $ficha->id) }}" class="btn btn-success" target="_blank">
-      <i class="fas fa-print"></i> Imprimir Ficha
-    </a>
-  </div>
-  </div>
-  </div>
- 
-
-  <script>
-  const darkModeToggle = document.getElementById('darkModeToggle');
-  const body = document.body;
- 
-
-  darkModeToggle.addEventListener('click', () => {
-  body.classList.toggle('dark-mode');
-  });
-  </script>
- </body>
- 
-
- </html>
+</html>
+@endsection

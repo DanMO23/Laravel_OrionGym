@@ -8,298 +8,214 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesquisa de Ficha de Treino</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Custom CSS for Neumorphism and Dark Mode */
         body {
-            background-color: #F7FAFC;
-            color: #4A5568;
-            transition: background-color 0.3s, color 0.3s;
-            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
         }
 
-        .container {
-            max-width: 1200px;
+        .search-container {
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .search-card {
+            background: white;
+            border-radius: 20px;
             padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
         }
 
-        .neumorphic-card {
-            background-color: #FFFFFF;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 6px 6px 12px #c5c5c5,
-                -6px -6px 12px #ffffff;
-            transition: box-shadow 0.3s;
-        }
-
-        .neumorphic-card:hover {
-            box-shadow: 3px 3px 6px #c5c5c5,
-                -3px -3px 6px #ffffff;
-        }
-
-        .form-control {
-            border-radius: 0.75rem;
-            padding: 1rem;
-            border: none;
-            box-shadow: inset 2px 2px 5px #c5c5c5,
-                inset -2px -2px 5px #ffffff;
-            background-color: #F7FAFC;
-            color: #4A5568;
-            transition: box-shadow 0.3s;
-        }
-
-        .form-control:focus {
-            outline: none;
-            box-shadow: inset 3px 3px 6px #c5c5c5,
-                inset -3px -3px 6px #ffffff;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .table th,
-        .table td {
-            padding: 1rem;
+        .search-title {
+            color: #667eea;
+            font-size: 2rem;
+            font-weight: bold;
             text-align: center;
-            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 1.5rem;
         }
 
-        .table thead th {
-            background-color: #edf2f7;
-            color: #4A5568;
-            font-weight: 600;
+        .search-input {
+            border-radius: 50px;
+            padding: 1rem 2rem;
+            border: 2px solid #e0e0e0;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
-        .btn {
-            border-radius: 0.5rem;
-            padding: 0.75rem 1.25rem;
-            text-decoration: none;
-            color: white;
-            transition: transform 0.2s;
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
         }
 
-        .btn:hover {
-            transform: scale(1.05);
+        .ficha-card {
+            transition: all 0.3s ease;
         }
 
-        .btn-info {
-            background-color: #3182ce;
-        }
-
-        .btn-success {
-            background-color: #38a169;
-        }
-
-        /* Dark Mode Styles */
-        body.dark-mode {
-            background-color: #1A202C;
-            color: #CBD5E0;
-        }
-
-        .dark-mode .neumorphic-card {
-            background-color: #2D3748;
-            box-shadow: 6px 6px 12px #1A202C,
-                -6px -6px 12px #3D485E;
-        }
-
-        .dark-mode .neumorphic-card:hover {
-            box-shadow: 3px 3px 6px #1A202C,
-                -3px -3px 6px #3D485E;
-        }
-
-        .dark-mode .form-control {
-            background-color: #2D3748;
-            color: #CBD5E0;
-            box-shadow: inset 2px 2px 5px #1A202C,
-                inset -2px -2px 5px #3D485E;
-        }
-
-        .dark-mode .form-control:focus {
-            box-shadow: inset 3px 3px 6px #1A202C,
-                inset -3px -3px 6px #3D485E;
-        }
-
-        .dark-mode .table thead th {
-            background-color: #2D3748;
-            color: #CBD5E0;
-        }
-
-        .dark-mode .table td {
-            border-bottom: 1px solid #4A5568;
-        }
-
-        /* Dark Mode Toggle Button */
-        .dark-mode-toggle {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            background-color: #4A5568;
-            color: #F7FAFC;
+        .hover-card {
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-            z-index: 1000;
+            border-radius: 15px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
-        .dark-mode-toggle:hover {
-            background-color: #2D3748;
-            color: #CBD5E0;
+        .hover-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
 
-        .dark-mode .dark-mode-toggle {
-            background-color: #CBD5E0;
-            color: #2D3748;
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
         }
 
-        .dark-mode .dark-mode-toggle:hover {
-            background-color: #F7FAFC;
-            color: #4A5568;
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            margin: 0 auto 1rem;
         }
 
-        /* Responsive Styles */
+        .card-body {
+            background: #f8f9fa;
+            padding: 1.5rem;
+        }
+
+        .btn-view {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .btn-view:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: white;
+        }
+
+        .no-results i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
         @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
+            .search-title {
+                font-size: 1.5rem;
             }
-
-            .neumorphic-card {
-                border-radius: 0.75rem;
-                padding: 1rem;
-                box-shadow: none;
-            }
-
-            .form-control {
-                border-radius: 0.5rem;
-                padding: 0.75rem;
-                font-size: 0.875rem;
-            }
-
-            .table th,
-            .table td {
-                padding: 0.75rem;
-                font-size: 0.875rem;
-            }
-
-            .btn {
-                padding: 0.5rem 1rem;
-                font-size: 0.875rem;
-            }
-        }
-
-        /* Additional Mobile Styles */
-        @media (max-width: 576px) {
-            .table th,
-            .table td {
-                padding: 0.5rem;
-                font-size: 0.75rem;
-            }
-
-            .btn {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.75rem;
-            }
-
-            .table thead {
-                display: none;
-            }
-
-            .table tr {
-                display: block;
-                margin-bottom: 0.75rem;
-            }
-
-            .table td {
-                display: block;
-                text-align: right;
-                padding-left: 50%;
-                position: relative;
-            }
-
-            .table td:before {
-                content: attr(data-label);
-                position: absolute;
-                left: 0;
-                width: 50%;
-                padding-left: 0.75rem;
-                font-weight: bold;
-                text-align: left;
+            
+            .search-input {
+                font-size: 1rem;
+                padding: 0.75rem 1.5rem;
             }
         }
     </style>
 </head>
 
-<body class="bg-gray-100">
-
-    <button id="darkModeToggle" class="dark-mode-toggle">
-        <i class="fas fa-moon"></i>
-    </button>
-
-    <div class="container mt-5">
-        <div class="neumorphic-card">
-            <h2 class="text-center mb-4 text-2xl font-semibold">🔍 Pesquise Sua Ficha de Treino</h2>
-
+<body>
+    <div class="search-container">
+        <div class="search-card">
+            <h2 class="search-title">
+                <i class="fas fa-search"></i> Pesquise Sua Ficha de Treino
+            </h2>
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <input type="text" id="search" class="form-control form-control-lg text-center"
+                    <input type="text" id="search" class="form-control search-input text-center"
                         placeholder="Digite seu nome..." onkeyup="buscarFicha()">
                 </div>
             </div>
         </div>
 
-        <div class="mt-4">
-            <div class="neumorphic-card">
-                <table class="table table-striped text-center">
-                    <thead>
-                        <tr>
-                            <th>Nome do Aluno</th>
-                            <th>Ficha</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="resultados">
-                        <!-- Resultados aparecerão aqui -->
-                    </tbody>
-                </table>
+        <div id="resultadosContainer">
+            <div class="no-results">
+                <i class="fas fa-clipboard-list"></i>
+                <p class="lead">Digite seu nome para encontrar sua ficha de treino</p>
             </div>
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const darkModeToggle = document.getElementById('darkModeToggle');
-        const body = document.body;
-
-        darkModeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-        });
-
         function buscarFicha() {
             let nome = document.getElementById('search').value;
+            
+            if (nome.length < 2) {
+                document.getElementById('resultadosContainer').innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p class="lead">Digite pelo menos 2 caracteres para pesquisar</p>
+                    </div>
+                `;
+                return;
+            }
+
             fetch(`/pesquisaFicha/buscar?nome=${nome}`)
                 .then(response => response.json())
                 .then(data => {
-                    let tabela = document.getElementById('resultados');
-                    tabela.innerHTML = "";
+                    let container = document.getElementById('resultadosContainer');
+                    
+                    if (data.length === 0) {
+                        container.innerHTML = `
+                            <div class="no-results">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <p class="lead">Nenhuma ficha encontrada para "${nome}"</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    let html = '<div class="row">';
                     data.forEach(ficha => {
-                        tabela.innerHTML += `
-                            <tr>
-                                <td data-label="Nome do Aluno">${ficha.nome_aluno}</td>
-                                <td data-label="Ficha">${ficha.nome_ficha}</td>
-                                <td data-label="Ações">
-                                    <a href="/pesquisaFicha/${ficha.id}" class="btn btn-info">
-                                        <i class="fas fa-eye"></i> Ver Treinos
-                                    </a>
-                                </td>
-                            </tr>`;
+                        html += `
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-4 ficha-card">
+                                <div class="card hover-card h-100">
+                                    <div class="card-header">
+                                        <div class="avatar-circle">
+                                            <i class="fas fa-user fa-2x"></i>
+                                        </div>
+                                        <h5 class="mb-0">${ficha.nome_aluno}</h5>
+                                    </div>
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="mb-3">
+                                            <p class="text-muted mb-1"><i class="fas fa-bullseye"></i> Objetivo:</p>
+                                            <p class="font-weight-bold">${ficha.nome_ficha}</p>
+                                        </div>
+                                        <div class="mt-auto">
+                                            <a href="/pesquisaFicha/${ficha.id}" class="btn btn-view btn-block">
+                                                <i class="fas fa-eye"></i> Ver Treinos
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
                     });
+                    html += '</div>';
+                    container.innerHTML = html;
                 });
         }
     </script>

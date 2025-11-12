@@ -122,6 +122,71 @@
                         </div>
                     </div>
 
+                    <!-- Última Compra -->
+                    @if($ultimaCompra)
+                    <div class="card bg-light mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-shopping-cart"></i> Última Compra
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="info-group mb-3">
+                                        <label class="text-muted small">Pacote</label>
+                                        <p class="font-weight-bold mb-0">
+                                            @if($ultimaCompra->pacote)
+                                                {{ $ultimaCompra->pacote->nome_pacote }}
+                                            @else
+                                                <span class="badge badge-info">Transferência</span>
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="info-group mb-3">
+                                        <label class="text-muted small">Valor Pago</label>
+                                        <p class="font-weight-bold mb-0 text-success">
+                                            R$ {{ number_format($ultimaCompra->valor_pacote, 2, ',', '.') }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="info-group mb-3">
+                                        <label class="text-muted small">Data da Compra</label>
+                                        <p class="font-weight-bold mb-0">
+                                            <i class="fas fa-calendar-alt text-primary"></i>
+                                            {{ \Carbon\Carbon::parse($ultimaCompra->created_at)->format('d/m/Y H:i') }}
+                                            <small class="text-muted d-block">
+                                                ({{ \Carbon\Carbon::parse($ultimaCompra->created_at)->diffForHumans() }})
+                                            </small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            @if($ultimaCompra->descricao_pagamento)
+                            <hr>
+                            <div class="info-group">
+                                <label class="text-muted small">Descrição</label>
+                                <p class="mb-0">{{ $ultimaCompra->descricao_pagamento }}</p>
+                            </div>
+                            @endif
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a href="{{ route('compra.historico', ['search' => $aluno->numero_matricula]) }}" class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-history"></i> Ver Histórico Completo
+                            </a>
+                        </div>
+                    </div>
+                    @else
+                    <div class="alert alert-warning mb-4">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Atenção:</strong> Este aluno ainda não possui nenhuma compra registrada.
+                        <a href="{{ route('compra.create') }}" class="alert-link">Realizar primeira compra</a>
+                    </div>
+                    @endif
+
                     <!-- Botões de Ação -->
                     <div class="d-flex flex-wrap justify-content-center gap-2">
                         <a href="{{ route('alunos.edit', $aluno->id) }}" class="btn btn-primary m-1">

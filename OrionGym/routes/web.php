@@ -158,6 +158,10 @@ Route::post('/alunos/resgate/remover/{id}', [AlunoController::class, 'removerRes
   });
 
   Route::resource('alunos-personal', AlunoPersonalController::class);
+  Route::post('alunos-personal/{id}/registrar-pagamento', [AlunoPersonalController::class, 'registrarPagamento'])
+      ->name('alunos-personal.registrar-pagamento');
+  Route::get('alunos-personal-pagamentos', [AlunoPersonalController::class, 'painelPagamentos'])
+      ->name('alunos-personal.painel-pagamentos');
  
 });
 

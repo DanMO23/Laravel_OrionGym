@@ -184,14 +184,17 @@ class FichaTreinoController extends Controller
 
     public function index()
     {
-        $fichas = FichaTreino::all();
+        // Paginar as fichas - 12 por página para ficar bonito no grid
+        $fichas = FichaTreino::with('treinos')->orderBy('created_at', 'desc')->paginate(12);
+        
         return view('fichas.index', compact('fichas'));
-
     }
+
     public function show($id)
     {
         $ficha = FichaTreino::findOrFail($id);
-        $treinos = Treino::where('ficha_treino_id', $id)->get();
+        $treinos = $ficha->treinos()->with('exercicios')->get();
+        
         return view('fichas.show', compact('ficha', 'treinos'));
     }
 

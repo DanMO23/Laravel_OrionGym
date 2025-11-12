@@ -3,6 +3,48 @@
 @section('title', 'Dashboard')
 
 @section('content')
+<!-- Botão Modo Standby -->
+<button id="standbyToggle" class="btn btn-standby" onclick="toggleStandby()">
+    <i class="fas fa-moon"></i> Modo Standby
+</button>
+
+<!-- Tela de Standby -->
+<div id="standbyScreen" class="standby-screen">
+    <div class="standby-content">
+        <div class="standby-logo">
+            <img src="/img/logo copy.png" alt="Academia Orion" class="logo-standby">
+        </div>
+        <h1 class="standby-title">Academia Orion</h1>
+        <p class="standby-subtitle">Sistema em Modo Standby</p>
+        
+        <div class="standby-clock">
+            <div class="time" id="standbyTime"></div>
+            <div class="date" id="standbyDate"></div>
+        </div>
+
+        <div class="standby-stats">
+            <div class="stat-item">
+                <i class="fas fa-user-check"></i>
+                <span class="stat-value">{{ $membrosAtivos }}</span>
+                <span class="stat-label">Membros Ativos</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-user-plus"></i>
+                <span class="stat-value">{{ end($novosAlunosMes) }}</span>
+                <span class="stat-label">Novos Este Mês</span>
+            </div>
+        </div>
+
+        <button class="btn-exit-standby" onclick="toggleStandby()">
+            <i class="fas fa-power-off"></i> Sair do Modo Standby
+        </button>
+        
+        <div class="standby-footer">
+            <small>Clique em qualquer lugar ou pressione qualquer tecla para sair</small>
+        </div>
+    </div>
+</div>
+
 <div class="container-fluid py-4">
     <!-- Cards de Estatísticas Principais -->
     <div class="row mb-4">
@@ -535,6 +577,240 @@
 
     .tab-content {
         padding-top: 1.5rem;
+    }
+
+    /* === ESTILOS DO MODO STANDBY === */
+    .btn-standby {
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        z-index: 1000;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .btn-standby:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .standby-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        z-index: 9999;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .standby-screen.active {
+        display: flex;
+        opacity: 1;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .standby-content {
+        text-align: center;
+        color: white;
+        animation: fadeInUp 1s ease;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .standby-logo {
+        margin-bottom: 2rem;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    .logo-standby {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 5px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .standby-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: glow 2s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+        0%, 100% {
+            filter: brightness(1);
+        }
+        50% {
+            filter: brightness(1.2);
+        }
+    }
+
+    .standby-subtitle {
+        font-size: 1.5rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 3rem;
+        font-weight: 300;
+    }
+
+    .standby-clock {
+        margin: 3rem 0;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .standby-clock .time {
+        font-size: 5rem;
+        font-weight: 700;
+        color: #fff;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 5px;
+        text-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+    }
+
+    .standby-clock .date {
+        font-size: 1.5rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 1rem;
+        font-weight: 300;
+    }
+
+    .standby-stats {
+        display: flex;
+        justify-content: center;
+        gap: 4rem;
+        margin: 3rem 0;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        min-width: 150px;
+        transition: transform 0.3s;
+    }
+
+    .stat-item:hover {
+        transform: translateY(-10px);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-item i {
+        font-size: 2.5rem;
+        color: #667eea;
+        margin-bottom: 1rem;
+    }
+
+    .stat-value {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-exit-standby {
+        margin-top: 3rem;
+        padding: 15px 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-exit-standby:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+    }
+
+    .standby-footer {
+        margin-top: 2rem;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.85rem;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.5;
+        }
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .standby-title {
+            font-size: 2.5rem;
+        }
+        
+        .standby-clock .time {
+            font-size: 3rem;
+        }
+        
+        .standby-stats {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            min-width: 200px;
+        }
     }
 </style>
 
@@ -1188,6 +1464,100 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+});
+
+// === MODO STANDBY ===
+let standbyInterval;
+let inactivityTimer;
+const INACTIVITY_TIME = 10 * 60 * 1000; // 10 minutos em milissegundos
+
+function toggleStandby() {
+    const standbyScreen = document.getElementById('standbyScreen');
+    const isActive = standbyScreen.classList.contains('active');
+    
+    if (!isActive) {
+        // Ativar modo standby
+        standbyScreen.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        updateStandbyClock();
+        standbyInterval = setInterval(updateStandbyClock, 1000);
+        
+        // Parar o timer de inatividade quando em standby
+        clearTimeout(inactivityTimer);
+    } else {
+        // Desativar modo standby
+        standbyScreen.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        clearInterval(standbyInterval);
+        
+        // Reiniciar o timer de inatividade
+        resetInactivityTimer();
+    }
+}
+
+function updateStandbyClock() {
+    const now = new Date();
+    
+    // Atualizar hora
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('standbyTime').textContent = `${hours}:${minutes}:${seconds}`;
+    
+    // Atualizar data
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const dateStr = now.toLocaleDateString('pt-BR', options);
+    document.getElementById('standbyDate').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+}
+
+// Função para resetar o timer de inatividade
+function resetInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    
+    // Só ativar o timer se não estiver em modo standby
+    const standbyScreen = document.getElementById('standbyScreen');
+    if (!standbyScreen.classList.contains('active')) {
+        inactivityTimer = setTimeout(() => {
+            toggleStandby();
+        }, INACTIVITY_TIME);
+    }
+}
+
+// Eventos que detectam atividade do usuário
+const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+
+activityEvents.forEach(event => {
+    document.addEventListener(event, () => {
+        // Não resetar o timer se estiver em modo standby
+        const standbyScreen = document.getElementById('standbyScreen');
+        if (!standbyScreen.classList.contains('active')) {
+            resetInactivityTimer();
+        }
+    }, true);
+});
+
+// Sair do standby com qualquer tecla
+document.addEventListener('keydown', function(e) {
+    const standbyScreen = document.getElementById('standbyScreen');
+    if (standbyScreen.classList.contains('active')) {
+        toggleStandby();
+    }
+});
+
+// Sair do standby clicando na tela (exceto no botão)
+document.getElementById('standbyScreen').addEventListener('click', function(e) {
+    if (e.target.id === 'standbyScreen' || e.target.closest('.btn-exit-standby')) {
+        toggleStandby();
+    }
+});
+
+// Inicializar ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    updateStandbyClock();
+    resetInactivityTimer(); // Iniciar o timer de inatividade
+    
+    // Adicionar indicador visual do tempo restante (opcional)
+    console.log('Timer de inatividade iniciado. Standby será ativado após 10 minutos sem atividade.');
 });
 </script>
 @endsection
