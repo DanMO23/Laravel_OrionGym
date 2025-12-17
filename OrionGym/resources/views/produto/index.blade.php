@@ -18,9 +18,11 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap">
                 <h4 class="mb-0"><i class="fas fa-shopping-bag"></i> Galeria de Produtos</h4>
                 <div class="btn-group-actions mt-2 mt-md-0">
-                    <a href="{{ route('produto.create') }}" class="btn btn-light btn-sm m-1">
-                        <i class="fas fa-plus"></i> Adicionar Produto
-                    </a>
+                    @if(auth()->user()->hasRole('admin'))
+                        <a href="{{ route('produto.create') }}" class="btn btn-light btn-sm m-1">
+                            <i class="fas fa-plus"></i> Adicionar Produto
+                        </a>
+                    @endif
                     <a href="{{ route('compraProduto.historico') }}" class="btn btn-info btn-sm m-1">
                         <i class="fas fa-history"></i> Histórico de Vendas
                     </a>
@@ -29,15 +31,73 @@
         </div>
 
         <div class="card-body">
+            <!-- Barra de Pesquisa -->
+            <div class="search-bar mb-4">
+                <form action="{{ route('produto.index') }}" method="GET">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-white border-right-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                        </div>
+                        <input type="text" 
+                               name="search" 
+                               id="searchInput"
+                               class="form-control border-left-0" 
+                               placeholder="Pesquisar produtos por nome..."
+                               value="{{ request('search') }}"
+                               autofocus>
+                        @if(request('search'))
+                            <div class="input-group-append">
+                                <a href="{{ route('produto.index') }}" class="btn btn-outline-secondary" title="Limpar busca">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                </form>
+                @if(request('search'))
+                    <small class="text-muted mt-2 d-block">
+                        <i class="fas fa-info-circle"></i> 
+                        Mostrando resultados para: <strong>"{{ request('search') }}"</strong>
+                    </small>
+                @endif
+            </div>
+
             @if ($produtos->isEmpty())
                 <div class="alert alert-info text-center">
                     <i class="fas fa-info-circle fa-2x mb-2"></i>
-                    <p class="mb-0">Não há produtos cadastrados.</p>
+                    @if(request('search'))
+                        <p class="mb-0">Nenhum produto encontrado para "{{ request('search') }}".</p>
+                        <a href="{{ route('produto.index') }}" class="btn btn-sm btn-primary mt-2">
+                            <i class="fas fa-arrow-left"></i> Ver todos os produtos
+                        </a>
+                    @else
+                        <p class="mb-0">Não há produtos cadastrados.</p>
+                    @endif
                 </div>
             @else
+                <!-- Informação de ordenação -->
+                <div class="alert alert-light border d-flex justify-content-between align-items-center mb-3">
+                    <span>
+                        <i class="fas fa-sort-amount-down text-primary"></i> 
+                        <strong>{{ $produtos->count() }}</strong> produto(s) encontrado(s) - Ordenados por quantidade em estoque
+                    </span>
+                    <div class="badge-group">
+                        <span class="badge badge-success">
+                            <i class="fas fa-check-circle"></i> 
+                            Disponíveis: {{ $produtos->where('estoque', '>', 0)->count() }}
+                        </span>
+                        <span class="badge badge-danger ml-1">
+                            <i class="fas fa-times-circle"></i> 
+                            Esgotados: {{ $produtos->where('estoque', 0)->count() }}
+                        </span>
+                    </div>
+                </div>
+
                 <div class="row">
                     @foreach ($produtos as $produto)
-                    <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="col-md-4 col-lg-3 mb-4 produto-card" data-nome="{{ strtolower($produto->nome) }}">
                         <div class="card h-100 product-card">
                             <div class="product-image-container">
                                 @if($produto->foto)
@@ -60,6 +120,10 @@
                                     <span class="badge badge-danger stock-badge">
                                         <i class="fas fa-times-circle"></i> Sem estoque
                                     </span>
+                                @else
+                                    <span class="badge badge-success stock-badge">
+                                        <i class="fas fa-check-circle"></i> Disponível
+                                    </span>
                                 @endif
                             </div>
                             
@@ -79,35 +143,40 @@
                                             <strong class="{{ $produto->estoque <= 5 ? 'text-danger' : 'text-success' }}">
                                                 {{ $produto->estoque }}
                                             </strong>
+                                            {{ $produto->estoque == 1 ? 'unidade' : 'unidades' }}
                                         </span>
                                     </div>
                                 </div>
                                 
                                 <div class="mt-auto">
                                     <div class="btn-group btn-group-sm d-flex" role="group">
-                                        <a href="{{ route('produto.edit', $produto->id) }}" 
-                                           class="btn btn-outline-primary flex-fill"
-                                           title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        
-                                        <button type="button" 
-                                                class="btn btn-outline-danger flex-fill" 
-                                                data-toggle="modal" 
-                                                data-target="#confirmarDelecao{{$produto->id}}"
-                                                title="Excluir">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        @if(auth()->user()->hasRole('admin'))
+                                            <a href="{{ route('produto.edit', $produto->id) }}" 
+                                               class="btn btn-outline-primary flex-fill"
+                                               title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            
+                                            <button type="button" 
+                                                    class="btn btn-outline-danger flex-fill" 
+                                                    data-toggle="modal" 
+                                                    data-target="#confirmarDelecao{{$produto->id}}"
+                                                    title="Excluir">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        @endif
                                         
                                         @if($produto->estoque > 0)
                                             <a href="{{ route('compraProduto.create', ['produto_id' => $produto->id]) }}" 
-                                               class="btn btn-outline-success flex-fill"
+                                               class="btn btn-outline-success {{ auth()->user()->hasRole('admin') ? 'flex-fill' : 'btn-block' }}"
                                                title="Vender">
-                                                <i class="fas fa-shopping-cart"></i>
+                                                <i class="fas fa-shopping-cart"></i> Vender
                                             </a>
                                         @else
-                                            <button class="btn btn-outline-secondary flex-fill" disabled title="Sem estoque">
-                                                <i class="fas fa-shopping-cart"></i>
+                                            <button class="btn btn-outline-secondary {{ auth()->user()->hasRole('admin') ? 'flex-fill' : 'btn-block' }}" 
+                                                    disabled 
+                                                    title="Sem estoque">
+                                                <i class="fas fa-shopping-cart"></i> Sem estoque
                                             </button>
                                         @endif
                                     </div>
@@ -116,6 +185,7 @@
                         </div>
 
                         <!-- Modal de Confirmação de Exclusão -->
+                        @if(auth()->user()->hasRole('admin'))
                         <div class="modal fade" id="confirmarDelecao{{$produto->id}}" tabindex="-1">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
@@ -131,6 +201,12 @@
                                         <i class="fas fa-trash fa-3x text-danger mb-3"></i>
                                         <p>Tem certeza que deseja excluir este produto?</p>
                                         <p class="font-weight-bold">{{ $produto->nome }}</p>
+                                        @if($produto->estoque > 0)
+                                            <div class="alert alert-warning">
+                                                <i class="fas fa-exclamation-circle"></i>
+                                                Este produto ainda tem {{ $produto->estoque }} unidade(s) em estoque!
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -147,6 +223,7 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
                     </div>
                     @endforeach
                 </div>
@@ -156,6 +233,33 @@
 </div>
 
 <style>
+    .search-bar .input-group-text {
+        border-radius: 50px 0 0 50px;
+    }
+
+    .search-bar .form-control {
+        border-radius: 0 50px 50px 0;
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+        border: 2px solid #e0e0e0;
+    }
+
+    .search-bar .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    .search-bar .input-group-prepend .input-group-text {
+        border: 2px solid #e0e0e0;
+        border-right: none;
+    }
+
+    .badge-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
     .card {
         border-radius: 10px;
         border: none;
@@ -250,10 +354,34 @@
             width: 100%;
             margin: 0.25rem 0 !important;
         }
+
+        .badge-group {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .badge-group .badge {
+            width: 100%;
+        }
     }
 </style>
 
 <!-- Scripts do Bootstrap -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // Busca em tempo real (opcional - complementa a busca por submit)
+    let searchTimeout;
+    document.getElementById('searchInput').addEventListener('keyup', function(e) {
+        clearTimeout(searchTimeout);
+        
+        // Submete o formulário após 500ms de inatividade
+        if (e.key !== 'Enter') {
+            searchTimeout = setTimeout(() => {
+                this.form.submit();
+            }, 500);
+        }
+    });
+</script>
 @endsection

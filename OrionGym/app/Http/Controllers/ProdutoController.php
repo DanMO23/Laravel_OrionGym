@@ -43,9 +43,18 @@ class ProdutoController extends Controller
         return redirect()->route('produto.index')->with('success', 'Produto criado com sucesso.');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $produtos = Produto::all();
+        $query = Produto::query();
+
+        // Busca por nome
+        if ($request->filled('search')) {
+            $query->where('nome', 'like', '%' . $request->search . '%');
+        }
+
+        // Ordenar por quantidade em estoque (decrescente)
+        $produtos = $query->orderBy('estoque', 'desc')->get();
+
         return view('produto.index', compact('produtos'));
     }
 

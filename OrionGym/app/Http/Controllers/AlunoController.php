@@ -151,21 +151,34 @@ class AlunoController extends Controller
 
     public function transferirDias(Request $request, Aluno $aluno)
     {
-        // Verificar se o usuário é admin
-        if (auth()->user()->hasRole('admin')) {
+        // Verificar se o usuário NÃO é admin (corrigido)
+        if (!auth()->user()->hasRole('admin')) {
             return redirect()->route('alunos.show', $aluno->id)->with('error', 'Você não tem permissão para transferir dias.');
         }
 
         $request->validate([
             'aluno_destino_id' => 'required|exists:alunos,id',
             'dias' => 'required|integer|min:1',
+        ], [
+            'aluno_destino_id.required' => 'Selecione o aluno de destino.',
+            'aluno_destino_id.exists' => 'Aluno de destino não encontrado.',
+            'dias.required' => 'Informe a quantidade de dias.',
+            'dias.integer' => 'A quantidade de dias deve ser um número inteiro.',
+            'dias.min' => 'A quantidade de dias deve ser no mínimo 1.',
         ]);
 
         $diasParaTransferir = (int)$request->input('dias');
         $alunoDestino = Aluno::findOrFail($request->input('aluno_destino_id'));
 
+        // Validações adicionais
+        if ($aluno->id == $alunoDestino->id) {
+            return redirect()->back()->with('error', 'Não é possível transferir dias para o mesmo aluno.');
+        }
+
         if ($diasParaTransferir > $aluno->dias_restantes) {
-            return redirect()->back()->with('error', 'Não é possível transferir mais dias do que o aluno possui.');
+            return redirect()->back()
+                ->with('error', "Não é possível transferir {$diasParaTransferir} dias. O aluno possui apenas {$aluno->dias_restantes} dia(s).")
+                ->withInput();
         }
 
         // Transação para garantir a consistência dos dados
@@ -239,12 +252,25 @@ class AlunoController extends Controller
         return redirect()->route('alunos.resgate')->with('success', 'Aluno removido da lista de resgate.');
     }
 
-    public function alunosVencidos()
+    public function alunosVencidos(Request $request)
     {
-        $alunosVencidos = AlunosVencidos::all();
-        //Retorna os alunos vencidos em ordem descrecente de data de criacao
-        $alunosVencidos = AlunosVencidos::orderBy('created_at', 'desc')->get();
-        return view('alunos.vencidos', compact('alunosVencidos'));
+        $search = $request->input('search');
+        
+        $query = AlunosVencidos::query();
+        
+        // Aplicar busca
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nome', 'LIKE', "%{$search}%")
+                  ->orWhere('numero_matricula', 'LIKE', "%{$search}%")
+                  ->orWhere('telefone', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        // Ordenar por data de criação em ordem decrescente
+        $alunosVencidos = $query->orderBy('created_at', 'desc')->get();
+        
+        return view('alunos.vencidos', compact('alunosVencidos', 'search'));
     }
 
     public function indexVencidos()

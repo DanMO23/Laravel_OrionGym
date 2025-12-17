@@ -184,12 +184,14 @@
                 </p>
             </a>
             <ul class="nav nav-treeview">
+                @if(auth()->user()->hasRole('admin'))
                 <li class="nav-item">
                     <a href="{{ route('produto.create') }}" class="nav-link {{ request()->routeIs('produto.create') ? 'active' : '' }}">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Adicionar Produto</p>
                     </a>
                 </li>
+                @endif
                 <li class="nav-item">
                     <a href="{{ route('produto.index') }}" class="nav-link {{ request()->routeIs('produto.index') ? 'active' : '' }}">
                         <i class="far fa-circle nav-icon"></i>
