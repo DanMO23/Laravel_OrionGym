@@ -23,6 +23,7 @@ use App\Http\Controllers\FichaTreinoController;
 use App\Http\Controllers\PesquisaFichaController;
 use App\Http\Controllers\AlunoPersonalController;
 use App\Http\Controllers\GympassWebController;
+use App\Http\Controllers\TurnstileWebController;
 
 //Rotas protegidas que requerem autenticação
 
@@ -166,7 +167,11 @@ Route::post('/alunos/resgate/remover/{id}', [AlunoController::class, 'removerRes
 
   // Rota Gympass
   Route::get('/gympass', [GympassWebController::class, 'index'])->name('gympass.index');
-  Route::post('/gympass', [GympassWebController::class, 'store'])->name('gympass.store');
+Route::post('/gympass', [GympassWebController::class, 'store'])->name('gympass.store');
+
+// Rota Catraca
+Route::get('/turnstile', [TurnstileWebController::class, 'index'])->name('turnstile.index');
+Route::post('/turnstile/open', [TurnstileWebController::class, 'openTurnstile'])->name('turnstile.open');
  
 });
 

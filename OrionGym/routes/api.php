@@ -9,4 +9,15 @@ Route::get('/user', function (Request $request) {
 
 use App\Http\Controllers\Api\GympassController;
 
+// Rotas Gympass
 Route::post('/gympass/webhook', [GympassController::class, 'webhook']);
+
+// Rotas Integração Catraca
+Route::prefix('turnstile')->group(function () {
+    Route::get('/ping', [TurnstileController::class, 'ping']);
+    Route::get('/commands/pending', [TurnstileController::class, 'pendingCommands']);
+    Route::post('/commands/{id}/confirm', [TurnstileController::class, 'confirmCommand']);
+    Route::post('/events', [TurnstileController::class, 'handleEvent']);
+    Route::get('/users/pending-sync', [TurnstileController::class, 'pendingSyncUsers']);
+    Route::post('/users/{id}/synced', [TurnstileController::class, 'confirmUserSync']);
+});

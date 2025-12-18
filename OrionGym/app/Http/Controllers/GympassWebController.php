@@ -16,6 +16,7 @@ class GympassWebController extends Controller
         }
 
         $gympassUsers = \App\Models\User::where('is_gympass', true)->latest()->get();
+        
         return view('gympass.index', compact('checkins', 'gympassUsers'));
     }
 

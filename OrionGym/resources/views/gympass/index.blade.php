@@ -138,6 +138,7 @@
                         {{ $checkins->links() }}
                     </div>
                 </div>
+
             </div>
         </div>
         <!-- /.card -->

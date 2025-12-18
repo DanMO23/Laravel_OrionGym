@@ -153,6 +153,7 @@
                         <p>Exibir Avaliações</p>
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a href="{{ route('fichas.index') }}" class="nav-link {{ request()->routeIs('fichas.index') ? 'active' : '' }}">
                         <i class="far fa-circle nav-icon"></i>
@@ -206,17 +207,7 @@
                 </li>
             </ul>
         </li>
-
-        <!-- Gympass -->
-        <li class="nav-item">
-            <a href="{{ route('gympass.index') }}" class="nav-link {{ request()->routeIs('gympass.index') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-id-card"></i>
-                <p>Gympass</p>
-            </a>
-        </li>
-
-        <!-- Pacotes -->
-        <li class="nav-item has-treeview {{ request()->is('pacotes*') ? 'menu-open' : '' }}">
+         <li class="nav-item has-treeview {{ request()->is('pacotes*') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is('pacotes*') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-box-open"></i>
                 <p>
@@ -241,6 +232,24 @@
                 @endif
             </ul>
         </li>
+        <!-- Integração Gympass -->
+        <li class="nav-item">
+            <a href="{{ route('gympass.index') }}" class="nav-link {{ request()->routeIs('gympass.index') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-id-card"></i>
+                <p>Integração Gympass</p>
+            </a>
+        </li>
+
+        <!-- Gerenciamento de Catraca -->
+        <li class="nav-item">
+            <a href="{{ route('turnstile.index') }}" class="nav-link {{ request()->routeIs('turnstile.index') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-door-open"></i>
+                <p>Gerenciamento de Catraca</p>
+            </a>
+        </li>
+
+        <!-- Pacotes -->
+       
 
         <!-- Botões de Ação -->
         <a href="{{ route('compra.create') }}" class="btn btn-block btn-outline-success">
