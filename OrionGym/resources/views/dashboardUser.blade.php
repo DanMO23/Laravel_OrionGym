@@ -46,6 +46,26 @@
 </div>
 
 <div class="container-fluid py-4">
+    <!-- Welcome Message -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="welcome-banner card text-white shadow-sm border-0" style="background-color: #4e5d6c;">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="welcome-icon mr-3">
+                        <div class="bonequinho-wrapper rounded-circle overflow-hidden border border-white" style="width: 60px; height: 60px; border-width: 2px !important;">
+                            <!-- Custom 3D Character (Face Focus Zoomed) -->
+                            <img src="{{ asset('img/gym_character.png') }}" alt="Gym Character" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; transform: scale(1.8) translateY(5px);">
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-weight-bold mb-0">Olá, seja bem vindo {{ auth()->user()->name }}!</h4>
+                        <small class="mb-0 opacity-8">Estamos felizes em te ver por aqui</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Cards de Estatísticas Principais -->
     <div class="row mb-4">
         <div class="col-lg-3 col-md-6 mb-3">
@@ -798,6 +818,51 @@
         .standby-title {
             font-size: 2.5rem;
         }
+    }
+
+    /* Welcome Banner Styles */
+    .welcome-banner {
+        /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); Removed for custom gray */
+        overflow: hidden;
+        position: relative;
+    }
+
+    .welcome-banner::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==');
+        opacity: 0.3;
+    }
+
+    .bonequinho-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .waving-hand {
+        position: absolute;
+        bottom: -5px;
+        right: -10px;
+        font-size: 2.5rem;
+        animation: wave 2.5s infinite;
+        transform-origin: 70% 70%;
+    }
+
+    @keyframes wave {
+        0% { transform: rotate(0.0deg); }
+        10% { transform: rotate(14.0deg); }
+        20% { transform: rotate(-8.0deg); }
+        30% { transform: rotate(14.0deg); }
+        40% { transform: rotate(-4.0deg); }
+        50% { transform: rotate(10.0deg); }
+        60% { transform: rotate(0.0deg); }
+        100% { transform: rotate(0.0deg); }
+    }
+
         
         .standby-clock .time {
             font-size: 3rem;
