@@ -22,6 +22,7 @@ use Illuminate\Database\Query\IndexHint;
 use App\Http\Controllers\FichaTreinoController;
 use App\Http\Controllers\PesquisaFichaController;
 use App\Http\Controllers\AlunoPersonalController;
+use App\Http\Controllers\GympassWebController;
 
 //Rotas protegidas que requerem autenticação
 
@@ -162,6 +163,10 @@ Route::post('/alunos/resgate/remover/{id}', [AlunoController::class, 'removerRes
       ->name('alunos-personal.registrar-pagamento');
   Route::get('alunos-personal-pagamentos', [AlunoPersonalController::class, 'painelPagamentos'])
       ->name('alunos-personal.painel-pagamentos');
+
+  // Rota Gympass
+  Route::get('/gympass', [GympassWebController::class, 'index'])->name('gympass.index');
+  Route::post('/gympass', [GympassWebController::class, 'store'])->name('gympass.store');
  
 });
 

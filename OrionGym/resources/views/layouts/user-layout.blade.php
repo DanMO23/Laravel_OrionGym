@@ -207,6 +207,14 @@
             </ul>
         </li>
 
+        <!-- Gympass -->
+        <li class="nav-item">
+            <a href="{{ route('gympass.index') }}" class="nav-link {{ request()->routeIs('gympass.index') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-id-card"></i>
+                <p>Gympass</p>
+            </a>
+        </li>
+
         <!-- Pacotes -->
         <li class="nav-item has-treeview {{ request()->is('pacotes*') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is('pacotes*') ? 'active' : '' }}">
