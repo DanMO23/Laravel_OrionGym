@@ -15,7 +15,6 @@ class AlunoPersonal extends Model
     protected $fillable = [
         'professor_id',
         'nome_completo',
-        'cpf',
         'tipo_aluno',
         'aluno_id',
         'telefone',
@@ -26,6 +25,7 @@ class AlunoPersonal extends Model
         'valor_mensalidade',
         'status',
         'status_pagamento',
+        'dias_restantes',
         'observacoes'
     ];
 
@@ -55,16 +55,38 @@ class AlunoPersonal extends Model
     public function getProximoVencimentoAttribute()
     {
         $hoje = Carbon::now();
-        $diaVencimento = $this->dia_vencimento;
+        $diaVencimento = $this->dia_vencimento ?? 10;
+        
+        // Garantir que o dia não seja maior que 28 para evitar problemas com meses curtos
+        $diaVencimento = min($diaVencimento, 28);
         
         // Se o dia do vencimento já passou este mês, calcular para o próximo mês
         if ($hoje->day > $diaVencimento) {
             return Carbon::create($hoje->year, $hoje->month, 1)
                 ->addMonth()
-                ->addDays($diaVencimento - 1);
+                ->day($diaVencimento);
         }
         
         return Carbon::create($hoje->year, $hoje->month, $diaVencimento);
+    }
+
+    // Calcular o início do ciclo atual de pagamento
+    public function getInicioCicloAtualAttribute()
+    {
+        $hoje = Carbon::now();
+        $diaVencimento = $this->dia_vencimento ?? 10;
+        $diaVencimento = min($diaVencimento, 28);
+        
+        // O ciclo começa no dia de vencimento do mês anterior
+        if ($hoje->day >= $diaVencimento) {
+            // Estamos após o vencimento deste mês, então o ciclo atual começou neste mês
+            return Carbon::create($hoje->year, $hoje->month, $diaVencimento);
+        } else {
+            // Ainda não chegou o vencimento deste mês, ciclo começou no mês anterior
+            return Carbon::create($hoje->year, $hoje->month, 1)
+                ->subMonth()
+                ->day($diaVencimento);
+        }
     }
 
     // Calcular dias restantes até o próximo vencimento
@@ -75,7 +97,7 @@ class AlunoPersonal extends Model
         
         $dias = $hoje->diffInDays($proximoVencimento, false);
         
-        return $dias >= 0 ? $dias : 0;
+        return max($dias, 0);
     }
 
     // Verificar se está vencido
@@ -84,17 +106,18 @@ class AlunoPersonal extends Model
         return $this->dias_restantes == 0 && $this->status_pagamento != 'pago';
     }
 
-    // Verificar se o pagamento está atrasado
-    public function getAtrasadoAttribute()
+    // Verificar se o pagamento do ciclo atual foi feito
+    public function isPagoCicloAtual()
     {
         if (!$this->ultimo_pagamento) {
-            return true;
+            return false;
         }
-
-        $ultimoPagamento = Carbon::parse($this->ultimo_pagamento);
-        $hoje = Carbon::now();
         
-        return $ultimoPagamento->diffInDays($hoje) > 35;
+        $ultimoPagamento = Carbon::parse($this->ultimo_pagamento);
+        $inicioCiclo = $this->inicio_ciclo_atual;
+        
+        // O pagamento é válido se foi feito após o início do ciclo atual
+        return $ultimoPagamento->gte($inicioCiclo);
     }
 
     // Registrar pagamento
@@ -103,12 +126,8 @@ class AlunoPersonal extends Model
         $this->ultimo_pagamento = Carbon::now();
         $this->status_pagamento = 'pago';
         
-        // Calcular próximo vencimento
-        $hoje = Carbon::now();
-        $proximoVencimento = Carbon::create($hoje->year, $hoje->month, 1)
-            ->addMonth()
-            ->addDays($this->dia_vencimento - 1);
-            
+        // Calcular próximo vencimento (próximo mês)
+        $proximoVencimento = $this->proximo_vencimento->copy()->addMonth();
         $this->data_vencimento = $proximoVencimento;
         
         $this->save();
@@ -118,15 +137,24 @@ class AlunoPersonal extends Model
     public function atualizarStatusPagamento()
     {
         $hoje = Carbon::now();
-        $vencimento = $this->proximo_vencimento;
+        $diaVencimento = $this->dia_vencimento ?? 10;
         
-        if ($this->ultimo_pagamento && Carbon::parse($this->ultimo_pagamento)->isCurrentMonth()) {
+        // Verificar se o pagamento do ciclo atual foi feito
+        if ($this->isPagoCicloAtual()) {
             $this->status_pagamento = 'pago';
-        } elseif ($hoje->isAfter($vencimento)) {
-            $this->status_pagamento = 'atrasado';
         } else {
-            $this->status_pagamento = 'pendente';
+            // Verificar se já passou o dia de vencimento
+            $vencimentoAtual = $this->proximo_vencimento;
+            
+            if ($hoje->gt($vencimentoAtual)) {
+                $this->status_pagamento = 'atrasado';
+            } else {
+                $this->status_pagamento = 'pendente';
+            }
         }
+        
+        // Calcular dias restantes e salvar
+        $this->dias_restantes = $this->dias_restantes;
         
         $this->save();
     }

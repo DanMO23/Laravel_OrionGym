@@ -22,6 +22,7 @@ use Illuminate\Database\Query\IndexHint;
 use App\Http\Controllers\FichaTreinoController;
 use App\Http\Controllers\PesquisaFichaController;
 use App\Http\Controllers\AlunoPersonalController;
+use App\Http\Controllers\TurmaController;
 
 //Rotas protegidas que requerem autenticação
 
@@ -163,9 +164,14 @@ Route::post('/alunos/resgate/remover/{id}', [AlunoController::class, 'removerRes
   Route::get('alunos-personal-pagamentos', [AlunoPersonalController::class, 'painelPagamentos'])
       ->name('alunos-personal.painel-pagamentos');
  
+
+  Route::resource('turmass', TurmaController::class)->names('turmas'); // Using 'turmass' to avoid conflicts if 'turmas' was taken or just preference, but renaming to standard resource 'turmas' is better. Let's stick to resource 'turmas'.
+  Route::resource('turmas', TurmaController::class);
+  Route::post('turmas/{id}/alunos', [TurmaController::class, 'addAluno'])->name('turmas.addAluno');
+  Route::delete('turmas/alunos/{id}', [TurmaController::class, 'removeAluno'])->name('turmas.removeAluno');
+
 });
 
-//Rotas de PesquisaFicha
 Route::get('/pesquisaFicha', [PesquisaFichaController::class, 'index'])->name('pesquisaFicha.index');
 Route::get('/pesquisaFicha/buscar', [PesquisaFichaController::class, 'buscar']);
 Route::get('/pesquisaFicha/{id}', [PesquisaFichaController::class, 'mostrar']);
