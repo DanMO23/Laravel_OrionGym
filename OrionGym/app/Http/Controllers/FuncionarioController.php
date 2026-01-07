@@ -74,8 +74,36 @@ class FuncionarioController extends Controller
 
     public function update(Request $request, Funcionario $funcionario)
     {
-        $funcionario->update($request->all());
-        return redirect()->route('funcionarios.index');
+        $request->validate([
+            'nome' => 'required',
+            'email' => 'required|email',
+            'cargo' => 'required',
+        ]);
+
+        $funcionario->nome_completo = $request->nome;
+        $funcionario->email = $request->email;
+        $funcionario->telefone = $request->telefone;
+        $funcionario->cargo = $request->cargo;
+        $funcionario->sexo = $request->sexo;
+        $funcionario->endereco = $request->endereco;
+
+        // Upload da foto, se fornecida
+        if ($request->hasFile('foto')) {
+            // Delete old photo if exists
+            if ($funcionario->foto && file_exists(public_path('uploads/' . $funcionario->foto))) {
+                unlink(public_path('uploads/' . $funcionario->foto));
+            }
+
+            $file = $request->file('foto');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads'), $fileName);
+            $funcionario->foto = $fileName;
+        }
+
+        $funcionario->save();
+
+        return redirect()->route('funcionarios.index')
+            ->with('success', 'Funcionário atualizado com sucesso!');
     }
 
     public function destroy($id)

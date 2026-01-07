@@ -131,12 +131,39 @@
             </ul>
         </li>
 
+
+        <!-- Turmas -->
+        <li class="nav-item has-treeview {{ request()->is('turmas*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is('turmas*') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-users-cog"></i> <!-- Using users-cog or similar icon -->
+                <p>
+                    Turmas
+                    <i class="fas fa-angle-left right"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ route('turmas.index') }}" class="nav-link {{ request()->routeIs('turmas.index') ? 'active' : '' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Listar Turmas</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('turmas.create') }}" class="nav-link {{ request()->routeIs('turmas.create') ? 'active' : '' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Nova Turma</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
         <!-- Ficha -->
+
         <li class="nav-item has-treeview {{ request()->is('avaliacao*') || request()->is('fichas*') || request()->is('pesquisaFicha*') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is('avaliacao*') || request()->is('fichas*') || request()->is('pesquisaFicha*') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-file-alt"></i>
                 <p>
-                    Fichas
+                    Avaliação Física
                     <i class="fas fa-angle-left right"></i>
                 </p>
             </a>
@@ -153,7 +180,7 @@
                         <p>Exibir Avaliações</p>
                     </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="{{ route('fichas.index') }}" class="nav-link {{ request()->routeIs('fichas.index') ? 'active' : '' }}">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Lista de Fichas</p>
@@ -170,7 +197,7 @@
                         <i class="far fa-circle nav-icon"></i>
                         <p>Pesquisar Ficha</p>
                     </a>
-                </li>
+                </li> -->
             </ul>
         </li>
 

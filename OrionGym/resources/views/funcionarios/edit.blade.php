@@ -1,20 +1,20 @@
 @extends('layouts.user-layout')
 
-@section('header-user', 'Cadastrar Professor')
+@section('header-user', 'Editar Funcionário')
 
 @section('content')
 <div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
+        <div class="col-lg-8">
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-gradient-primary text-white py-3">
+                <div class="card-header bg-gradient-info text-white py-3">
                     <div class="d-flex align-items-center">
-                        <div class="icon-circle bg-white text-primary mr-3">
-                            <i class="fas fa-chalkboard-teacher"></i>
+                        <div class="icon-circle bg-white text-info mr-3">
+                            <i class="fas fa-user-edit"></i>
                         </div>
                         <div>
-                            <h4 class="mb-0 font-weight-bold">Cadastrar Professor</h4>
-                            <small class="opacity-75">Preencha os dados do novo professor</small>
+                            <h4 class="mb-0 font-weight-bold">Editar Funcionário</h4>
+                            <small class="opacity-75">Atualize os dados do funcionário</small>
                         </div>
                     </div>
                 </div>
@@ -33,8 +33,9 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('professores.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('funcionarios.update', $funcionario->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        @method('PUT')
                         
                         <!-- Seção: Dados Pessoais -->
                         <div class="section-divider mb-4">
@@ -43,7 +44,7 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label-custom" for="nome_completo">
+                                <label class="form-label-custom" for="nome">
                                     Nome Completo <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group input-group-lg">
@@ -52,35 +53,34 @@
                                             <i class="fas fa-user text-muted"></i>
                                         </span>
                                     </div>
-                                    <input type="text" name="nome_completo" id="nome_completo" 
-                                           class="form-control border-left-0 @error('nome_completo') is-invalid @enderror" 
-                                           value="{{ old('nome_completo') }}"
+                                    <input type="text" name="nome" id="nome" 
+                                           class="form-control border-left-0 @error('nome') is-invalid @enderror" 
+                                           value="{{ old('nome', $funcionario->nome_completo) }}"
                                            placeholder="Digite o nome completo"
                                            required>
                                 </div>
-                                @error('nome_completo')
+                                @error('nome')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label-custom" for="cpf">
-                                    CPF <span class="text-danger">*</span>
+                                <label class="form-label-custom" for="email">
+                                    E-mail <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group input-group-lg">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text bg-light border-right-0">
-                                            <i class="fas fa-id-card text-muted"></i>
+                                            <i class="fas fa-envelope text-muted"></i>
                                         </span>
                                     </div>
-                                    <input type="text" name="cpf" id="cpf" 
-                                           class="form-control border-left-0 @error('cpf') is-invalid @enderror" 
-                                           value="{{ old('cpf') }}"
-                                           placeholder="000.000.000-00"
-                                           maxlength="14"
+                                    <input type="email" name="email" id="email" 
+                                           class="form-control border-left-0 @error('email') is-invalid @enderror" 
+                                           value="{{ old('email', $funcionario->email) }}"
+                                           placeholder="email@exemplo.com"
                                            required>
                                 </div>
-                                @error('cpf')
+                                @error('email')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -99,7 +99,7 @@
                                     </div>
                                     <input type="text" name="telefone" id="telefone" 
                                            class="form-control border-left-0 @error('telefone') is-invalid @enderror" 
-                                           value="{{ old('telefone') }}"
+                                           value="{{ old('telefone', $funcionario->telefone) }}"
                                            placeholder="(00) 00000-0000"
                                            maxlength="15"
                                            required>
@@ -110,21 +110,16 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label-custom" for="email">
-                                    Email
+                                <label class="form-label-custom" for="sexo">
+                                    Sexo <span class="text-danger">*</span>
                                 </label>
-                                <div class="input-group input-group-lg">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text bg-light border-right-0">
-                                            <i class="fas fa-envelope text-muted"></i>
-                                        </span>
-                                    </div>
-                                    <input type="email" name="email" id="email" 
-                                           class="form-control border-left-0 @error('email') is-invalid @enderror" 
-                                           value="{{ old('email') }}"
-                                           placeholder="email@exemplo.com">
-                                </div>
-                                @error('email')
+                                <select name="sexo" id="sexo" 
+                                        class="form-control form-control-lg custom-select @error('sexo') is-invalid @enderror" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="M" {{ old('sexo', $funcionario->sexo) == 'M' ? 'selected' : '' }}>👨 Masculino</option>
+                                    <option value="F" {{ old('sexo', $funcionario->sexo) == 'F' ? 'selected' : '' }}>👩 Feminino</option>
+                                </select>
+                                @error('sexo')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -132,23 +127,8 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label-custom" for="sexo">
-                                    Sexo <span class="text-danger">*</span>
-                                </label>
-                                <select name="sexo" id="sexo" 
-                                        class="form-control form-control-lg custom-select @error('sexo') is-invalid @enderror" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="M" {{ old('sexo') == 'M' ? 'selected' : '' }}>👨 Masculino</option>
-                                    <option value="F" {{ old('sexo') == 'F' ? 'selected' : '' }}>👩 Feminino</option>
-                                </select>
-                                @error('sexo')
-                                    <div class="text-danger small mt-1">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-3">
                                 <label class="form-label-custom" for="endereco">
-                                    Endereço
+                                    Endereço <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group input-group-lg">
                                     <div class="input-group-prepend">
@@ -158,21 +138,15 @@
                                     </div>
                                     <input type="text" name="endereco" id="endereco" 
                                            class="form-control border-left-0 @error('endereco') is-invalid @enderror" 
-                                           value="{{ old('endereco') }}"
-                                           placeholder="Endereço completo">
+                                           value="{{ old('endereco', $funcionario->endereco) }}"
+                                           placeholder="Endereço completo"
+                                           required>
                                 </div>
                                 @error('endereco')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
 
-                        <!-- Seção: Dados Profissionais -->
-                        <div class="section-divider mb-4 mt-4">
-                            <span class="section-title"><i class="fas fa-briefcase mr-2"></i>Dados Profissionais</span>
-                        </div>
-
-                        <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label-custom" for="cargo">
                                     Cargo <span class="text-danger">*</span>
@@ -185,27 +159,11 @@
                                     </div>
                                     <input type="text" name="cargo" id="cargo" 
                                            class="form-control border-left-0 @error('cargo') is-invalid @enderror" 
-                                           value="{{ old('cargo', 'Professor') }}"
-                                           placeholder="Ex: Professor, Instrutor"
+                                           value="{{ old('cargo', $funcionario->cargo) }}"
+                                           placeholder="Ex: Recepcionista, Auxiliar"
                                            required>
                                 </div>
                                 @error('cargo')
-                                    <div class="text-danger small mt-1">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label-custom" for="tipo">
-                                    Tipo de Professor <span class="text-danger">*</span>
-                                </label>
-                                <select name="tipo" id="tipo" 
-                                        class="form-control form-control-lg custom-select @error('tipo') is-invalid @enderror" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="integral" {{ old('tipo') == 'integral' ? 'selected' : '' }}>🏋️ Professor Integral</option>
-                                    <option value="personal" {{ old('tipo') == 'personal' ? 'selected' : '' }}>💪 Personal Trainer</option>
-                                    <option value="ambos" {{ old('tipo') == 'ambos' ? 'selected' : '' }}>⭐ Ambos</option>
-                                </select>
-                                @error('tipo')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -220,15 +178,15 @@
                             <div class="custom-file-upload">
                                 <div class="upload-area" id="uploadArea">
                                     <div class="upload-content text-center">
-                                        <div class="preview-container" id="previewContainer" style="display: none;">
-                                            <img id="imagePreview" src="" alt="Preview" class="img-preview">
+                                        <div class="preview-container" id="previewContainer" style="{{ $funcionario->foto ? 'display: inline-block;' : 'display: none;' }}">
+                                            <img id="imagePreview" src="{{ $funcionario->foto ? asset('uploads/' . $funcionario->foto) : '' }}" alt="Preview" class="img-preview">
                                             <button type="button" class="btn btn-sm btn-danger btn-remove-image" id="removeImage">
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         </div>
-                                        <div class="upload-placeholder" id="uploadPlaceholder">
+                                        <div class="upload-placeholder" id="uploadPlaceholder" style="{{ $funcionario->foto ? 'display: none;' : '' }}">
                                             <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                                            <p class="mb-1 text-muted">Clique ou arraste uma imagem</p>
+                                            <p class="mb-1 text-muted">Clique ou arraste uma nova imagem</p>
                                             <small class="text-muted">JPG, PNG ou GIF (máx. 2MB)</small>
                                         </div>
                                     </div>
@@ -240,22 +198,17 @@
                             @enderror
                         </div>
 
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            <strong>Nota:</strong> Se o tipo for "Personal Trainer" ou "Ambos", será gerado automaticamente um número de matrícula começando em 8000.
-                        </div>
-
                         <!-- Botões de Ação -->
                         <div class="form-actions pt-3 border-top mt-4">
                             <div class="row">
                                 <div class="col-6">
-                                    <a href="{{ route('professores.index') }}" class="btn btn-light btn-lg btn-block">
+                                    <a href="{{ route('funcionarios.index') }}" class="btn btn-light btn-lg btn-block">
                                         <i class="fas fa-arrow-left mr-2"></i>Cancelar
                                     </a>
                                 </div>
                                 <div class="col-6">
-                                    <button type="submit" class="btn btn-primary btn-lg btn-block shadow-sm">
-                                        <i class="fas fa-save mr-2"></i>Cadastrar
+                                    <button type="submit" class="btn btn-warning btn-lg btn-block shadow-sm">
+                                        <i class="fas fa-save mr-2"></i>Atualizar
                                     </button>
                                 </div>
                             </div>
@@ -268,10 +221,11 @@
 </div>
 
 <style>
-    .bg-gradient-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .bg-gradient-info {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
     }
     
+    /* Mesmo CSS do create.blade.php */
     .icon-circle {
         width: 50px;
         height: 50px;
@@ -312,8 +266,8 @@
     }
     
     .form-control:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102,126,234,.15);
+        border-color: #17a2b8;
+        box-shadow: 0 0 0 0.2rem rgba(23,162,184,.15);
     }
     
     .input-group-text {
@@ -328,7 +282,6 @@
         border-right: 0 !important;
     }
     
-    /* Custom File Upload */
     .upload-area {
         border: 2px dashed #dee2e6;
         border-radius: 12px;
@@ -340,13 +293,13 @@
     }
     
     .upload-area:hover {
-        border-color: #667eea;
-        background: #f0f2ff;
+        border-color: #17a2b8;
+        background: #e8f7fa;
     }
     
     .upload-area.dragover {
-        border-color: #667eea;
-        background: #e8ebff;
+        border-color: #17a2b8;
+        background: #d4f1f7;
     }
     
     .file-input {
@@ -408,18 +361,6 @@
 </style>
 
 <script>
-    // Máscara para CPF
-    document.getElementById('cpf').addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length <= 11) {
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-        }
-        e.target.value = value;
-    });
-
-    // Máscara para Telefone
     document.getElementById('telefone').addEventListener('input', function(e) {
         let value = e.target.value.replace(/\D/g, '');
         if (value.length <= 11) {
@@ -429,7 +370,6 @@
         e.target.value = value;
     });
 
-    // Preview de imagem
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('foto');
     const previewContainer = document.getElementById('previewContainer');
@@ -441,7 +381,6 @@
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             
-            // Validar tamanho (2MB)
             if (file.size > 2 * 1024 * 1024) {
                 alert('A imagem deve ter no máximo 2MB');
                 fileInput.value = '';
@@ -464,9 +403,22 @@
         fileInput.value = '';
         previewContainer.style.display = 'none';
         uploadPlaceholder.style.display = 'block';
+        // Limpar o src para garantir que não envie lixo se for submetido, 
+        // mas o backend que decide se remove ou não.
+        // Se a pessoa remover a imagem no preview, talvez ela queira excluir a foto atual?
+        // O formulário padrão não remove a foto antiga a menos que enviemos um campo hidden.
+        // Como o backend atual não parece suportar remoção explícita no update (só substituição),
+        // este botão serve mais para "cancelar a seleção de nova foto".
+        imagePreview.src = '';
+        
+        // Se já tinha foto antes, talvez devêssemos restaurar a visualização da foto original?
+        @if($funcionario->foto)
+            imagePreview.src = "{{ asset('uploads/' . $funcionario->foto) }}";
+            previewContainer.style.display = 'inline-block';
+            uploadPlaceholder.style.display = 'none';
+        @endif
     });
 
-    // Drag and drop
     uploadArea.addEventListener('dragover', function(e) {
         e.preventDefault();
         uploadArea.classList.add('dragover');

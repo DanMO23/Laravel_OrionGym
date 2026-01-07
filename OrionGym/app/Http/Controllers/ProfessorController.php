@@ -35,6 +35,7 @@ class ProfessorController extends Controller
         // Validação dos dados
         $validated = $request->validate([
             'nome_completo' => 'required|string|max:255',
+            'cpf' => 'required|string|max:14|unique:professores,cpf',
             'email' => 'nullable|email|max:255',
             'telefone' => 'required|string|max:20',
             'sexo' => 'required|in:M,F',
@@ -47,6 +48,7 @@ class ProfessorController extends Controller
         // Criar um novo registro de professor
         $professor = new Professor();
         $professor->nome_completo = $validated['nome_completo'];
+        $professor->cpf = $validated['cpf'];
         $professor->email = $validated['email'] ?? null;
         $professor->telefone = $validated['telefone'];
         $professor->cargo = $validated['cargo'];
@@ -94,11 +96,42 @@ class ProfessorController extends Controller
     public function update(Request $request, Professor $professor)
     {
         if (!auth()->user()->hasRole('admin')) {
-            // Redireciona para uma página de erro ou retorna um erro 403 se o usuário não for admin
             abort(403, 'Unauthorized action.');
         }
-        $professor->update($request->all());
-        return redirect()->route('professores.index');
+
+        $validated = $request->validate([
+            'nome_completo' => 'required|string|max:255',
+            'cpf' => 'required|string|max:14|unique:professores,cpf,' . $professor->id,
+            'email' => 'nullable|email|max:255',
+            'telefone' => 'required|string|max:20',
+            'sexo' => 'required|in:M,F',
+            'cargo' => 'required|string|max:100',
+            'tipo' => 'required|in:integral,personal,ambos',
+            'endereco' => 'nullable|string|max:255',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $professor->nome_completo = $validated['nome_completo'];
+        $professor->cpf = $validated['cpf'];
+        $professor->email = $validated['email'] ?? null;
+        $professor->telefone = $validated['telefone'];
+        $professor->cargo = $validated['cargo'];
+        $professor->sexo = $validated['sexo'];
+        $professor->endereco = $validated['endereco'] ?? null;
+        $professor->tipo = $validated['tipo'];
+
+        // Upload da foto
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads'), $filename);
+            $professor->foto = $filename;
+        }
+
+        $professor->save();
+
+        return redirect()->route('professores.index')
+            ->with('success', 'Professor atualizado com sucesso!');
     }
 
     public function destroy(Professor $professor)

@@ -51,19 +51,40 @@ class AvaliacaoController extends Controller
     return redirect()->route('avaliacao.index')->with('success', 'Avaliação criada com sucesso!');
 }
 
-    public function index()
+    public function index(Request $request)
     {
-        // Busca todas as avaliações
-        $avaliacoes = AlunoAvaliacao::orderBy('created_at', 'asc')->get();
-        
+        // Query base
+        $query = AlunoAvaliacao::orderBy('data_avaliacao', 'desc')
+                               ->orderBy('horario_avaliacao', 'desc');
 
-        //retorte a data de avaliacao no formato brasileiro
-        foreach ($avaliacoes as $avaliacao) {
-            $avaliacao->data_avaliacao = date('d/m/Y', strtotime($avaliacao->data_avaliacao));
+        // Filtro por busca
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nome', 'like', "%{$search}%")
+                  ->orWhere('cpf', 'like', "%{$search}%");
+            });
         }
-       
 
-        return view('avaliacao.index', compact('avaliacoes'));
+        // Filtro por status
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
+        }
+
+        // Paginação
+        $avaliacoes = $query->paginate(10)->withQueryString();
+
+        // Contadores para estatísticas (sem paginação)
+        $totalPendentes = AlunoAvaliacao::where('status', 'Pendente')->count();
+        $totalFinalizadas = AlunoAvaliacao::where('status', 'Finalizada')->count();
+
+        // Total do mês atual (apenas finalizadas)
+        $totalMesAtual = AlunoAvaliacao::where('status', 'Finalizada')
+                                       ->whereMonth('data_avaliacao', now()->month)
+                                       ->whereYear('data_avaliacao', now()->year)
+                                       ->sum('valor_avaliacao');
+
+        return view('avaliacao.index', compact('avaliacoes', 'totalPendentes', 'totalFinalizadas', 'totalMesAtual'));
     }
 
     public function confirmarAvaliacao($id)
