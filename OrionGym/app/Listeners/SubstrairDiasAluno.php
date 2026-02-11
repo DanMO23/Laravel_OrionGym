@@ -20,17 +20,22 @@ class SubstrairDiasAluno
     {
         $compra = $event->compra;
         $aluno = Aluno::findOrFail($compra->aluno_id);
-        $pacote = Pacote::findOrFail($compra->pacote_id);
+        $pacote = Pacote::find($compra->pacote_id);
 
+        // Usar dias_totais se disponível (inclui dias extras), senão usar validade do pacote
+        $diasASubtrair = $compra->dias_totais ?? ($pacote ? $pacote->validade : 0);
         
         // Subtrair os dias do plano do aluno
-        $aluno->dias_restantes -= $pacote->validade;
+        $aluno->dias_restantes -= $diasASubtrair;
        
-        if ($compra->dias_restantes == 0 && $compra->matricula_ativa == 'ativa') {
-                $compra->handlePackageDaysRemaining();
-                
-               
-            }
+        // Garantir que dias_restantes não fique negativo
+        if ($aluno->dias_restantes < 0) {
+            $aluno->dias_restantes = 0;
+        }
+
+        if ($aluno->dias_restantes == 0 && $aluno->matricula_ativa == 'ativa') {
+            $aluno->handlePackageDaysRemaining();
+        }
         
         // Salvar a atualização
         $aluno->save();

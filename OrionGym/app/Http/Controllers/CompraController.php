@@ -61,18 +61,10 @@ class CompraController extends Controller
             'pacote_id' => $pacote->id,
             'descricao_pagamento' => $descricaoCompleta,
             'valor_pacote' => $valorTotal,
+            'dias_totais' => $diasTotais,
         ]);
 
-        // Atualizar dias restantes do aluno
-        $aluno->dias_restantes += $diasTotais;
-
-        if ($aluno->dias_restantes > 0) {
-            $aluno->matricula_ativa = 'ativa';
-        }
-
-        $aluno->save();
-
-        // Disparar evento de nova compra
+        // Disparar evento de nova compra (o listener AtualizarDiasRestantes vai adicionar os dias)
         event(new NovaCompra($alunoPacote));
 
         return redirect()->route('compra.historico')->with('success', 'Compra realizada com sucesso!');

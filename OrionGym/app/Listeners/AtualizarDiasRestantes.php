@@ -19,10 +19,16 @@ class AtualizarDiasRestantes
         $alunoPacote = $event->alunoPacote;
         $aluno = $alunoPacote->aluno;
 
-        // Verifica se existe um pacote associado antes de adicionar os dias
-        if ($alunoPacote->pacote) {
-            // Adicione os dias da validade do pacote aos dias restantes do plano do aluno
-            $aluno->dias_restantes += $alunoPacote->pacote->validade;
+        // Usar dias_totais se disponível (inclui dias extras), senão usar validade do pacote
+        $diasAAdicionar = $alunoPacote->dias_totais ?? ($alunoPacote->pacote ? $alunoPacote->pacote->validade : 0);
+        
+        if ($diasAAdicionar > 0) {
+            $aluno->dias_restantes += $diasAAdicionar;
+            
+            if ($aluno->dias_restantes > 0) {
+                $aluno->matricula_ativa = 'ativa';
+            }
+            
             $aluno->save();
         }
 

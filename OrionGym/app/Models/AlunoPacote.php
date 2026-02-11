@@ -11,7 +11,8 @@ class AlunoPacote extends Model
         'aluno_id',
         'pacote_id',
         'descricao_pagamento',
-        'valor_pacote'
+        'valor_pacote',
+        'dias_totais'
     ];
 
     public function aluno()

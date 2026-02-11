@@ -85,11 +85,11 @@
                                         <div class="custom-control custom-checkbox mb-3">
                                             <input type="checkbox" class="custom-control-input" id="adicionar_dias_extras" name="adicionar_dias_extras" value="1" {{ old('adicionar_dias_extras') ? 'checked' : '' }}>
                                             <label class="custom-control-label font-weight-bold" for="adicionar_dias_extras">
-                                                <i class="fas fa-plus-circle"></i> Adicionar Dias Extras ao Pacote Mensal
+                                                <i class="fas fa-plus-circle"></i> Adicionar Dias Extras ao Pacote
                                             </label>
                                         </div>
                                         <small class="form-text text-muted">
-                                            <i class="fas fa-info-circle"></i> Disponível apenas para pacotes mensais. Os dias extras serão somados ao período do pacote.
+                                            <i class="fas fa-info-circle"></i> Disponível para pacotes mensais e avulsos. Os dias extras serão somados ao período do pacote.
                                         </small>
                                     </div>
                                 </div>
@@ -304,7 +304,7 @@
         }
 
         // Mostrar seção de dias extras se for pacote mensal
-        if (nomePacote && nomePacote.includes('mensal')) {
+        if (nomePacote && (nomePacote.includes('mensal') || nomePacote.includes('avulso'))) {
             diasExtrasSection.style.display = 'block';
         } else {
             diasExtrasSection.style.display = 'none';

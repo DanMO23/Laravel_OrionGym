@@ -87,7 +87,9 @@
                                 <td>{{ $compra->descricao_pagamento }}</td>
                                 <td class="font-weight-bold text-success">R$ {{ number_format($compra->valor_pacote, 2, ',', '.') }}</td>
                                 <td>
-                                    @if($compra->pacote)
+                                    @if($compra->dias_totais)
+                                        <span class="badge badge-secondary">{{ $compra->dias_totais }} dias</span>
+                                    @elseif($compra->pacote)
                                         <span class="badge badge-secondary">{{ $compra->pacote->validade }} dias</span>
                                     @else
                                         <span class="badge badge-secondary">N/A</span>
