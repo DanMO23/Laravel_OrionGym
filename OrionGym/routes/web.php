@@ -114,6 +114,7 @@ Route::post('/alunos/resgate/remover/{id}', [AlunoController::class, 'removerRes
   Route::delete('/pre-registrations/{pre_registration}', [PreRegistrationController::class, 'destroy'])->name('pre-registrations.destroy');
   //Rotas Aunos Vencidos
   Route::get('/alunos-vencidos', [App\Http\Controllers\AlunoController::class, 'alunosVencidos'])->name('alunos.vencidos');
+  Route::get('/alunos-vencidos/danca', [App\Http\Controllers\AlunoController::class, 'alunosVencidosDanca'])->name('alunos.vencidos.danca');
   Route::post('alunos/{id}/bloquear', [AlunoController::class, 'bloquear'])->name('alunos.bloquear');
 
   //Rota para Avaliação

@@ -18,6 +18,9 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap">
                 <h4 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Alunos Vencidos</h4>
                 <div class="mt-2 mt-md-0">
+                    <a href="{{ route('alunos.vencidos.danca') }}" class="btn btn-warning btn-sm mr-2">
+                        <i class="fas fa-music"></i> Página Dança
+                    </a>
                     <a href="{{ route('alunos.index') }}" class="btn btn-light btn-sm">
                         <i class="fas fa-arrow-left"></i> Voltar para Lista
                     </a>
@@ -34,8 +37,9 @@
                 </div>
             @else
                 <!-- Barra de Pesquisa -->
-                <div class="search-bar mb-4">
+                <div class="search-bar mb-3">
                     <form action="{{ route('alunos.vencidos') }}" method="GET">
+                        <input type="hidden" name="filtro" value="{{ $filtro ?? 'todos' }}">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text bg-white border-right-0">
@@ -51,7 +55,7 @@
                                    autofocus>
                             @if($search)
                                 <div class="input-group-append">
-                                    <a href="{{ route('alunos.vencidos') }}" class="btn btn-outline-secondary" title="Limpar busca">
+                                    <a href="{{ route('alunos.vencidos', ['filtro' => $filtro ?? 'todos']) }}" class="btn btn-outline-secondary" title="Limpar busca">
                                         <i class="fas fa-times"></i>
                                     </a>
                                 </div>
@@ -64,6 +68,20 @@
                             Mostrando resultados para: <strong>"{{ $search }}"</strong>
                         </small>
                     @endif
+                </div>
+
+                <!-- Filtro por Tipo de Pacote -->
+                <div class="filtro-pacote mb-4">
+                    <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+                        <a href="{{ route('alunos.vencidos', ['search' => $search, 'filtro' => 'todos']) }}" 
+                           class="btn {{ ($filtro ?? 'todos') === 'todos' ? 'btn-danger' : 'btn-outline-danger' }} flex-fill">
+                            <i class="fas fa-users"></i> Todos
+                        </a>
+                        <a href="{{ route('alunos.vencidos', ['search' => $search, 'filtro' => 'danca']) }}" 
+                           class="btn {{ ($filtro ?? 'todos') === 'danca' ? 'btn-warning text-dark' : 'btn-outline-warning' }} flex-fill">
+                            <i class="fas fa-music"></i> Com Dança
+                        </a>
+                    </div>
                 </div>
 
                 @if($alunosVencidos->isEmpty())
@@ -90,9 +108,9 @@
                                 <tr>
                                     <th><i class="fas fa-id-card"></i> Matrícula</th>
                                     <th><i class="fas fa-user"></i> Nome</th>
-                                    <th><i class="fas fa-phone"></i> Telefone</th>
                                     <th><i class="fas fa-flag"></i> Status</th>
-                                    <th><i class="fas fa-calendar-times"></i> Data de Vencimento</th>
+                                    <th><i class="fas fa-shopping-cart"></i> Última Compra</th>
+                                    <th><i class="fas fa-calendar-times"></i> Vencimento</th>
                                     <th class="text-center"><i class="fas fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
@@ -101,7 +119,6 @@
                                 <tr class="table-danger">
                                     <td class="font-weight-bold">{{ $aluno->numero_matricula }}</td>
                                     <td>{{ $aluno->nome }}</td>
-                                    <td>{{ $aluno->telefone }}</td>
                                     <td>
                                         @php
                                             $statusClass = '';
@@ -124,6 +141,35 @@
                                             <i class="fas {{ $statusIcon }}"></i>
                                             {{ ucfirst($aluno->matricula_ativa) }}
                                         </span>
+                                    </td>
+                                    <td>
+                                        @if($aluno->ultimaCompra && $aluno->ultimaCompra->pacote)
+                                            <div class="ultima-compra-info">
+                                                <span class="badge badge-pill badge-primary p-2">
+                                                    <i class="fas fa-box"></i>
+                                                    {{ $aluno->ultimaCompra->pacote->nome_pacote }}
+                                                </span>
+                                                <br>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-money-bill-wave"></i>
+                                                    R$ {{ number_format($aluno->ultimaCompra->valor_pacote ?? $aluno->ultimaCompra->pacote->valor, 2, ',', '.') }}
+                                                </small>
+                                                <br>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-calendar"></i>
+                                                    {{ $aluno->ultimaCompra->created_at->format('d/m/Y') }}
+                                                </small>
+                                            </div>
+                                        @elseif($aluno->ultimaCompra && $aluno->ultimaCompra->descricao_pagamento)
+                                            <span class="badge badge-pill badge-secondary p-2">
+                                                <i class="fas fa-exchange-alt"></i>
+                                                {{ Str::limit($aluno->ultimaCompra->descricao_pagamento, 30) }}
+                                            </span>
+                                        @else
+                                            <span class="text-muted">
+                                                <i class="fas fa-minus-circle"></i> Sem compras
+                                            </span>
+                                        @endif
                                     </td>
                                     <td>
                                         <span class="text-danger font-weight-bold">
@@ -241,6 +287,23 @@
         border-right: none;
     }
 
+    .filtro-pacote .btn {
+        font-weight: 600;
+        padding: 0.6rem 1rem;
+        transition: all 0.3s ease;
+        border-radius: 8px;
+        margin: 0 2px;
+    }
+
+    .filtro-pacote .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .ultima-compra-info {
+        line-height: 1.8;
+    }
+
     .card {
         border-radius: 10px;
         border: none;
@@ -248,13 +311,16 @@
 
     .table th {
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.82rem;
         border-top: none;
         white-space: nowrap;
+        padding: 0.5rem 0.6rem;
     }
 
     .table td {
         vertical-align: middle;
+        font-size: 0.85rem;
+        padding: 0.45rem 0.6rem;
     }
 
     .table-hover tbody tr:hover {
@@ -283,6 +349,11 @@
         .search-bar .form-control {
             font-size: 0.9rem;
             padding: 0.75rem 1rem;
+        }
+
+        .filtro-pacote .btn {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.5rem;
         }
     }
 </style>

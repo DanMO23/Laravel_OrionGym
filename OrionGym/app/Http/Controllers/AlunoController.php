@@ -7,6 +7,7 @@ use App\Models\Aluno;
 use App\Models\AlunosVencidos;
 use App\Models\AlunosResgate;
 use App\Models\AlunoPacote;
+use App\Models\Pacote;
 use App\Events\NovaCompra;
 use Illuminate\Support\Facades\DB;
 
@@ -255,8 +256,64 @@ class AlunoController extends Controller
     public function alunosVencidos(Request $request)
     {
         $search = $request->input('search');
+        $filtro = $request->input('filtro', 'todos'); // todos, danca, sem_danca
         
-        $query = AlunosVencidos::query();
+        $query = AlunosVencidos::with(['ultimaCompra.pacote']);
+        
+        // Aplicar busca
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nome', 'LIKE', "%{$search}%")
+                  ->orWhere('numero_matricula', 'LIKE', "%{$search}%")
+                  ->orWhere('telefone', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Aplicar filtro de Dança baseado na ÚLTIMA compra do aluno
+        // "danca" = última compra contém "Dança" e NÃO contém "Musculação"
+        // "sem_danca" = última compra NÃO contém a palavra "Dança"
+        if ($filtro === 'danca') {
+            $alunoIdsDanca = DB::table('aluno_pacote as ap')
+                ->join('pacotes as p', 'p.id', '=', 'ap.pacote_id')
+                ->whereRaw('ap.id = (SELECT MAX(ap2.id) FROM aluno_pacote ap2 WHERE ap2.aluno_id = ap.aluno_id)')
+                ->where(function($q) {
+                    $q->where('p.nome_pacote', 'LIKE', '%danç%')
+                      ->orWhere('p.nome_pacote', 'LIKE', '%danca%');
+                })
+                ->where('p.nome_pacote', 'NOT LIKE', '%musculaç%')
+                ->where('p.nome_pacote', 'NOT LIKE', '%musculaca%')
+                ->pluck('ap.aluno_id');
+
+            $query->whereIn('aluno_id', $alunoIdsDanca);
+        }
+        
+        // Ordenar por data de criação em ordem decrescente
+        $alunosVencidos = $query->orderBy('created_at', 'desc')->get();
+        
+        return view('alunos.vencidos', compact('alunosVencidos', 'search', 'filtro'));
+    }
+
+    /**
+     * Página dedicada para alunos vencidos de Dança.
+     */
+    public function alunosVencidosDanca(Request $request)
+    {
+        $search = $request->input('search');
+        
+        // Somente alunos cuja ÚLTIMA compra é de pacote com "Dança" sem "Musculação"
+        $alunoIdsDanca = DB::table('aluno_pacote as ap')
+            ->join('pacotes as p', 'p.id', '=', 'ap.pacote_id')
+            ->whereRaw('ap.id = (SELECT MAX(ap2.id) FROM aluno_pacote ap2 WHERE ap2.aluno_id = ap.aluno_id)')
+            ->where(function($q) {
+                $q->where('p.nome_pacote', 'LIKE', '%danç%')
+                  ->orWhere('p.nome_pacote', 'LIKE', '%danca%');
+            })
+            ->where('p.nome_pacote', 'NOT LIKE', '%musculaç%')
+            ->where('p.nome_pacote', 'NOT LIKE', '%musculaca%')
+            ->pluck('ap.aluno_id');
+
+        $query = AlunosVencidos::with(['ultimaCompra.pacote'])
+            ->whereIn('aluno_id', $alunoIdsDanca);
         
         // Aplicar busca
         if ($search) {
@@ -267,10 +324,18 @@ class AlunoController extends Controller
             });
         }
         
-        // Ordenar por data de criação em ordem decrescente
         $alunosVencidos = $query->orderBy('created_at', 'desc')->get();
+
+        // Estatísticas para o dashboard
+        $totalDanca = $alunosVencidos->count();
+        $inativos = $alunosVencidos->where('matricula_ativa', 'inativa')->count();
+
+        // Agrupar por pacote de dança
+        $pacotesDanca = $alunosVencidos->groupBy(function($aluno) {
+            return $aluno->ultimaCompra?->pacote?->nome_pacote ?? 'Pacote não identificado';
+        });
         
-        return view('alunos.vencidos', compact('alunosVencidos', 'search'));
+        return view('alunos.vencidos-danca', compact('alunosVencidos', 'search', 'totalDanca', 'inativos', 'pacotesDanca'));
     }
 
     public function indexVencidos()

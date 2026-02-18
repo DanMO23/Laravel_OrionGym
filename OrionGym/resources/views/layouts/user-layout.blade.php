@@ -54,6 +54,12 @@
                         <p>Alunos Vencidos</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('alunos.vencidos.danca') }}" class="nav-link {{ request()->routeIs('alunos.vencidos.danca') ? 'active' : '' }}">
+                        <i class="fas fa-music nav-icon" style="font-size: 0.6rem;"></i>
+                        <p>Vencidos Dança</p>
+                    </a>
+                </li>
             </ul>
         </li>
 
